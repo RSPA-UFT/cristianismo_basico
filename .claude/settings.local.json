@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/mnt/c/cristianismo_basico/.venv/bin/python:*)",
+      "Bash(sh)",
+      "Bash(export PATH=\"$HOME/.local/bin:$PATH\")",
+      "Bash(uv venv:*)",
+      "Bash(uv sync:*)",
+      "Bash(.venv/bin/python:*)",
+      "Bash(uv run python:*)",
+      "Bash(uv add:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(mkdir:*)"
+    ]
+  }
+}
