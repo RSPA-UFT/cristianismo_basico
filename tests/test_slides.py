@@ -193,20 +193,83 @@ class TestGenerateSlides:
         assert "Fluxo Argumentativo" in content
         assert "Fluxo Argumentativo (cont.)" in content, "Should have continuation sub-slides"
 
-    def test_summary_truncation(self, tmp_path: Path):
-        """Long summaries should be truncated."""
+    def test_summary_multi_slide(self, tmp_path: Path):
+        """Long summaries should be split into multiple sub-slides."""
         output_dir = tmp_path / "output"
         output_dir.mkdir()
 
-        long_summary = "A" * 800
+        long_summary = (
+            "Primeira frase do resumo executivo com bastante conteudo. "
+            "Segunda frase explicando a Parte 1 do livro sobre a pessoa de Cristo. "
+            "Terceira frase sobre a Parte 2 e a necessidade do homem diante do pecado. "
+            "Quarta frase descrevendo a Parte 3 e a obra redentora de Cristo na cruz. "
+            "Quinta frase sobre a Parte 4 e a resposta esperada do ser humano. "
+            "Sexta frase concluindo o resumo executivo com uma visao geral completa. "
+            "Setima frase adicionando mais detalhes sobre a estrutura argumentativa. "
+            "Oitava frase finalizando o resumo com consideracoes metodologicas."
+        )
         analysis = BookAnalysis(summary=long_summary)
 
         path = generate_slides(output_dir, analysis=analysis)
         content = path.read_text(encoding="utf-8")
 
-        # The full 800 chars should not appear; truncated version with ... should
-        assert "A" * 800 not in content, "Full 800-char summary should not appear"
-        assert "..." in content, "Truncated summary should end with ellipsis"
+        assert "Resumo Executivo" in content
+        assert "Resumo Executivo (cont.)" in content, "Long summary should have continuation sub-slides"
+
+    def test_no_background_color_tint(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Part slides should NOT use data-background-color with alpha tint."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert 'data-background-color' not in content, (
+            "Part slides should not use data-background-color (marca-texto effect)"
+        )
+
+    def test_part_slides_have_border_accent(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Part slides should have a colored border-top accent."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert "border-top: 5px solid #048fcc" in content, "Parte 1 should have blue border accent"
+        assert "border-top: 5px solid #dc3545" in content, "Parte 2 should have red border accent"
+        assert "border-top: 5px solid #fd7e14" in content, "Parte 3 should have orange border accent"
+        assert "border-top: 5px solid #28a745" in content, "Parte 4 should have green border accent"
+
+    def test_logo_embedded_when_provided(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Logo should be embedded as base64 when logo_path is provided."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        # Create a minimal PNG file (1x1 pixel)
+        logo_path = tmp_path / "logo.png"
+        import base64
+        # Minimal valid PNG (1x1 transparent pixel)
+        png_data = base64.b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        )
+        logo_path.write_bytes(png_data)
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis, logo_path=logo_path)
+        content = path.read_text(encoding="utf-8")
+
+        assert "data:image/png;base64," in content, "Logo should be embedded as base64"
+        assert "125 Anos" in content, "Logo alt text should mention 125 Anos"
+
+    def test_no_logo_when_not_provided(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """No logo should appear when logo_path is not provided."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert "data:image/png;base64," not in content, "No logo should appear without logo_path"
 
     def test_flow_card_has_overflow_protection(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
         """Flow card CSS should include max-height and overflow-y for safety."""

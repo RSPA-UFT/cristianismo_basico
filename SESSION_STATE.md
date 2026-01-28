@@ -1,7 +1,7 @@
 # Estado da Sessao - Cristianismo Basico
 
-Data: 2026-01-27
-Versao atual: v0.7.0
+Data: 2026-01-28
+Versao atual: v0.8.0
 Ultima sessao encerrada com todos os objetivos cumpridos.
 
 ---
@@ -34,15 +34,15 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | `validators.py` | Validacao pos-processamento + detect_footnotes() | OK |
 | `output.py` | Geracao de output (JSON, Markdown, secao scholarly) | OK |
 | `pdf_report.py` | Geracao de relatorio PDF/HTML print-ready | OK |
-| `slides.py` | Geracao de apresentacao Reveal.js (10+ slides, sub-slides, grid) | OK |
+| `slides.py` | Geracao de apresentacao Reveal.js (10+ slides, sub-slides, grid, logo) | OK |
 | `scrollytelling.py` | Scrollytelling (Scrollama.js + D3.js, 12 secoes) | OK |
 | `pipeline.py` | Orquestrador dos 4 estagios (com fase 3a+ e scrollytelling) | OK |
 
 ### Testes (tests/)
-- **199 testes passando** (pytest)
+- **206 testes passando** (pytest)
 - Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators, scholarly, pdf_report, slides, scrollytelling, html_audit
-- Arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (12), `test_scrollytelling.py` (17), `test_html_audit.py` (18)
-- Testes atualizados: test_models (+3), test_validators (+3), test_output (+2), test_pipeline (+2)
+- Arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (16), `test_scrollytelling.py` (17), `test_html_audit.py` (21)
+- Testes atualizados: test_models (+3), test_validators (+3), test_output (+2), test_pipeline (+2), test_slides (+4), test_html_audit (+5/-2)
 - Dependencias dev: pytest>=8.0, pytest-cov>=6.0
 
 ### Output Final (output/)
@@ -53,7 +53,7 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | `citations.json` | 36 KB | 186 citacoes (169 biblicas + 17 scholarly) |
 | `citation_groups.json` | 4 KB | 8 grupos tematicos |
 | `report.md` | 57 KB | Relatorio completo em Markdown (com secao scholarly) |
-| `visualizacao.html` | 150 KB | Dashboard interativo (8 abas, D3.js + Chart.js + d3-sankey) |
+| `visualizacao.html` | ~145 KB | Dashboard interativo (7 abas, D3.js + Chart.js) |
 | `apresentacao.html` | 13 KB | Apresentacao Reveal.js (10+ slides, sub-slides verticais) |
 | `relatorio.html` | 74 KB | Relatorio HTML print-ready para PDF |
 | `scrollytelling.html` | 98 KB | Scrollytelling narrativo (Scrollama.js + D3.js, 12 secoes) |
@@ -137,25 +137,33 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 - Resumo executivo truncado (600 chars) + overflow-y fallback
 - `tests/test_html_audit.py` — 18 testes de auditoria HTML automatizada
 - **199 testes** (23 novos, 0 falhas)
+
+### Iteracao 8: Slides, referencias biblicas, simplificacao do painel (v0.8.0)
+- Efeito "marca-texto" removido dos slides de partes (border-top accent em vez de background tintado)
+- Resumo executivo completo em multiplos sub-slides (sem truncamento)
+- Selo ICEB 125 anos embutido como base64 no slide de titulo
+- Nova aba "Referencias" no dashboard (tese → citacoes biblicas com busca)
+- Abas "Fluxo Sankey" e "Confianca" removidas (simplificacao, 7 abas total)
+- d3-sankey CDN removido
+- **206 testes** (7 novos, 0 falhas)
 - Este e o output final atual
 
 ---
 
 ## Visualizacao (output/visualizacao.html)
 
-Dashboard HTML auto-contido com 8 abas:
+Dashboard HTML auto-contido com 7 abas:
 1. **Visao Geral** - Donut charts (distribuicao por tipo, raciocinio) + barras (capitulos)
 2. **Rede Logica** - Grafo D3.js force-directed (52 nos, 57 arestas, drag/zoom/hover/click)
 3. **Hierarquia** - Arvore colapsavel D3.js (Livro > Parte > Capitulo > Tese)
 4. **Citacoes Biblicas** - Barras por livro biblico (AT/NT) e por grupo tematico
 5. **Fluxo Argumentativo** - 4 movimentos do argumento em HTML formatado
-6. **Fluxo Sankey** - Diagrama Sankey (D3-sankey) com fluxo inter-partes
-7. **Confianca** - Grafico de barras com indice de confianca LLM por tese (aba propria desde v0.7.0)
-8. **Dados** - Tabela pesquisavel com todas as 52 teses (badges em portugues)
+6. **Referencias** - Listagem tese → citacoes biblicas associadas com busca (v0.8.0)
+7. **Dados** - Tabela pesquisavel com todas as 52 teses (badges em portugues)
 
 Cores por parte: P1=#048fcc (azul), P2=#dc3545 (vermelho), P3=#fd7e14 (laranja), P4=#28a745 (verde)
 Tipos traduzidos: principal, suporte, conclusao, premissa (via TYPE_LABELS)
-CDNs: D3.js v7, Chart.js v4, d3-sankey v0.12
+CDNs: D3.js v7, Chart.js v4
 Export: Botoes PNG/SVG em todos os paineis
 
 ## Scrollytelling (output/scrollytelling.html)

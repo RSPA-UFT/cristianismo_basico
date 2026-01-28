@@ -14,7 +14,7 @@ Pipeline de extracao e analise automatizada de teses teologicas do livro
 - Correlacao tematica de citacoes biblicas
 - Sintese e deduplicacao de teses
 - Validacao pos-processamento de citacoes e referencias
-- Dashboard interativo (8 abas: visao geral, rede logica, hierarquia, citacoes, fluxo, Sankey, confianca, dados)
+- Dashboard interativo (7 abas: visao geral, rede logica, hierarquia, citacoes, referencias, fluxo, dados)
 - Tipos de tese traduzidos para portugues (principal, suporte, conclusao, premissa)
 - Export de graficos como PNG/SVG
 - Scrollytelling narrativo (12 secoes com Scrollama.js + D3.js)
@@ -77,7 +77,7 @@ uv run python -m src
 | `output/citations.json` | 186 citacoes (169 biblicas + 17 scholarly) |
 | `output/citation_groups.json` | 8 grupos tematicos de citacoes |
 | `output/report.md` | Relatorio completo em Markdown (com secao scholarly) |
-| `output/visualizacao.html` | Dashboard interativo (8 abas, D3.js + Chart.js + d3-sankey) |
+| `output/visualizacao.html` | Dashboard interativo (7 abas, D3.js + Chart.js) |
 | `output/apresentacao.html` | Apresentacao Reveal.js (10+ slides, sub-slides verticais) |
 | `output/relatorio.html` | Relatorio HTML print-ready para PDF |
 | `output/scrollytelling.html` | Scrollytelling narrativo (12 secoes, Scrollama.js + D3.js) |

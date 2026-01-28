@@ -10,7 +10,15 @@
       "Bash(uv run python:*)",
       "Bash(uv add:*)",
       "Bash(uv run pytest:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(uv run python3:*)",
+      "WebFetch(domain:rspa-uft.github.io)",
+      "Bash(git -C /mnt/c/cristianismo_basico log --oneline --all)",
+      "Bash(git -C /mnt/c/cristianismo_basico show 88c0648 --stat)",
+      "WebFetch(domain:icemetropolitana.com.br)",
+      "Bash(gh api:*)",
+      "Bash(dpkg:*)",
+      "Bash(apt list:*)"
     ]
   }
 }

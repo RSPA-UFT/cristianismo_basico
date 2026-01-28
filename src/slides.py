@@ -4,6 +4,7 @@ Generates a self-contained HTML file with Reveal.js CDN v5 for presenting
 the theological analysis results.
 """
 
+import base64
 import json
 import logging
 from collections import defaultdict
@@ -48,6 +49,7 @@ def _truncate(text: str, max_len: int) -> str:
 def generate_slides(
     output_dir: Path,
     analysis: BookAnalysis | None = None,
+    logo_path: Path | None = None,
 ) -> Path:
     """Generate a Reveal.js slide presentation from analysis data.
 
@@ -57,6 +59,8 @@ def generate_slides(
         Directory to write the presentation to.
     analysis : BookAnalysis | None
         If provided, uses this data. Otherwise loads from JSON files in output_dir.
+    logo_path : Path | None
+        If provided, embeds the logo as base64 in the title slide.
 
     Returns
     -------
@@ -66,11 +70,24 @@ def generate_slides(
     if analysis is None:
         analysis = _load_analysis(output_dir)
 
-    html = _build_slides(analysis)
+    html = _build_slides(analysis, logo_path=logo_path)
     path = output_dir / "apresentacao.html"
     path.write_text(html, encoding="utf-8")
     logger.info(f"Presentation generated: {path}")
     return path
+
+
+def _build_logo_img(logo_path: Path | None) -> str:
+    """Return an <img> tag with base64-encoded logo, or empty string if no logo."""
+    if logo_path is None or not logo_path.exists():
+        return ""
+    data = logo_path.read_bytes()
+    b64 = base64.b64encode(data).decode("ascii")
+    return (
+        f'<img src="data:image/png;base64,{b64}" '
+        f'alt="Igreja Cristã Evangélica - 125 Anos" '
+        f'style="max-width: 140px; margin-bottom: 16px; border-radius: 50%;">'
+    )
 
 
 def _build_flow_slides(argument_flow: str | None) -> str:
@@ -140,7 +157,53 @@ def _build_flow_slides(argument_flow: str | None) -> str:
     return "<section>\n" + "\n".join(slides) + "\n  </section>"
 
 
-def _build_slides(analysis: BookAnalysis) -> str:
+def _build_summary_slides(summary: str) -> str:
+    """Build one or more slides for the executive summary.
+
+    If summary fits in ~500 chars, returns a single slide.
+    Otherwise splits into sentences and distributes across vertical sub-slides.
+    """
+    text = summary or "(Não disponível)"
+    if len(text) <= 500:
+        return f"""
+  <section>
+    <h2>Resumo Executivo</h2>
+    <div class="flow-card">
+      {_esc(text)}
+    </div>
+  </section>"""
+
+    # Split into sentences and group into chunks of ~450 chars
+    sentences = [s.strip() for s in text.replace(". ", ".\n").split("\n") if s.strip()]
+    chunks: list[str] = []
+    current: list[str] = []
+    current_len = 0
+    for sentence in sentences:
+        if current_len + len(sentence) > 450 and current:
+            chunks.append(" ".join(current))
+            current = [sentence]
+            current_len = len(sentence)
+        else:
+            current.append(sentence)
+            current_len += len(sentence) + 1
+    if current:
+        chunks.append(" ".join(current))
+
+    slides = []
+    for i, chunk in enumerate(chunks):
+        title = "Resumo Executivo" if i == 0 else "Resumo Executivo (cont.)"
+        slides.append(f"""
+    <section>
+      <h2>{title}</h2>
+      <div class="flow-card">
+        {_esc(chunk)}
+      </div>
+    </section>""")
+
+    return "<section>\n" + "\n".join(slides) + "\n  </section>"
+
+
+def _build_slides(analysis: BookAnalysis, *, logo_path: Path | None = None) -> str:
     """Build a Reveal.js HTML presentation."""
     # Collect stats
     type_counts: dict[str, int] = defaultdict(int)
@@ -178,13 +241,15 @@ def _build_slides(analysis: BookAnalysis) -> str:
             thesis_items += f'<li><strong>{_esc(t.id)}</strong>: {_esc(t.title)}</li>\n'
 
         part_slides.append(f"""
-        <section data-background-color="{color}10">
-          <h2 style="color:{text_color};">{_esc(part_name)}</h2>
-          <p class="subtitle">{_esc(subtitle)}</p>
-          <ul class="thesis-list">
-            {thesis_items}
-          </ul>
-          <p class="count">{len(theses)} teses &bull; {len(main_theses)} principais</p>
+        <section>
+          <div style="border-top: 5px solid {color}; padding-top: 12px;">
+            <h2 style="color:{text_color};">{_esc(part_name)}</h2>
+            <p class="subtitle">{_esc(subtitle)}</p>
+            <ul class="thesis-list">
+              {thesis_items}
+            </ul>
+            <p class="count">{len(theses)} teses &bull; {len(main_theses)} principais</p>
+          </div>
         </section>
         """)
 
@@ -241,18 +306,14 @@ def _build_slides(analysis: BookAnalysis) -> str:
 
   <!-- Slide 1: Title -->
   <section>
+    {_build_logo_img(logo_path)}
     <h1>Cristianismo B\u00e1sico</h1>
     <h3>John Stott</h3>
     <p class="subtitle">An\u00e1lise teol\u00f3gica estruturada: teses, cadeias l\u00f3gicas e cita\u00e7\u00f5es</p>
   </section>
 
   <!-- Slide 2: Summary -->
-  <section>
-    <h2>Resumo Executivo</h2>
-    <div class="flow-card">
-      {_esc(_truncate(analysis.summary or '(N\u00e3o dispon\u00edvel)', 600))}
-    </div>
-  </section>
+  {_build_summary_slides(analysis.summary)}
 
   <!-- Slide 3: Stats -->
   <section>

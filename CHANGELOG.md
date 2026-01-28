@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-01-28
+
+### Added
+- "Referências" tab in dashboard: lists each thesis with its associated biblical citations, with search/filter
+- Multi-slide executive summary: long summaries are split into vertical sub-slides instead of being truncated
+- ICEB 125th anniversary logo embedded as base64 in the title slide of the presentation
+- `logo_path` parameter in `generate_slides()` for optional logo embedding
+- `_build_summary_slides()` and `_build_logo_img()` helper functions in slides generator
+- New tests: `test_summary_multi_slide`, `test_no_background_color_tint`, `test_part_slides_have_border_accent`, `test_logo_embedded_when_provided`, `test_no_logo_when_not_provided`
+- `TestReferencesTab` and `TestNoRemovedTabs` audit test classes
+- CSS for `.ref-card`, `.ref-header`, `.ref-badge`, `.ref-title`, `.ref-refs`, `.ref-tag`
+
+### Removed
+- "Fluxo Sankey" tab from dashboard (user found visualization unclear)
+- "Confiança" tab from dashboard (simplified interface)
+- `d3-sankey@0.12` CDN dependency
+- `initSankey()` and `initConfidence()` JavaScript functions
+- `.sankey-node`, `.sankey-link` CSS classes
+- Summary truncation to 600 chars (replaced by multi-slide approach)
+- `TestConfidenceTab` test class (replaced by `TestReferencesTab`)
+
+### Fixed
+- "Marca-texto" effect on part slides: replaced `data-background-color` with alpha tint by white background with colored `border-top` accent
+- Executive summary no longer truncated: full text distributed across multiple sub-slides
+
+### Changed
+- Dashboard reduced from 8 tabs to 7 (removed Sankey and Confiança, added Referências)
+- Part slides use `border-top: 5px solid {color}` instead of tinted background
+- `pyproject.toml` version bumped to `0.8.0`
+
 ## [0.7.0] - 2026-01-27
 
 ### Added

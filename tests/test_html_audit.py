@@ -6,7 +6,8 @@ Verifies:
 - No English labels in visible text
 - Consistent color palette
 - TYPE_LABELS in Portuguese
-- Confidence tab present and separated from Overview
+- References tab present with search
+- No removed tabs (Sankey, Confidence)
 - Slide heading contrast colors
 - Slide overflow protections
 - Consistent navigation
@@ -193,35 +194,53 @@ class TestTypeLabelsPortuguese:
         assert "'premissa'" in content, "Should contain Portuguese label 'premissa'"
 
 
-class TestConfidenceTab:
-    """E6: Confidence tab should be separate from Overview."""
+class TestReferencesTab:
+    """E6: References tab should exist with search."""
 
-    def test_confidence_tab_exists(self):
+    def test_references_tab_exists(self):
         viz_file = DOCS_DIR / "visualizacao.html"
         if not viz_file.exists():
             pytest.skip("visualizacao.html not found")
 
         content = viz_file.read_text(encoding="utf-8")
-        assert 'data-tab="confidence"' in content, "Confidence tab should exist"
-        assert 'id="panel-confidence"' in content, "Confidence panel should exist"
+        assert 'data-tab="references"' in content, "References tab should exist"
+        assert 'id="panel-references"' in content, "References panel should exist"
 
-    def test_confidence_chart_not_in_overview(self):
+    def test_references_has_search(self):
         viz_file = DOCS_DIR / "visualizacao.html"
         if not viz_file.exists():
             pytest.skip("visualizacao.html not found")
 
         content = viz_file.read_text(encoding="utf-8")
-        # Find panel-overview content
-        overview_match = re.search(
-            r'id="panel-overview">(.*?)(?=<div class="viz-panel"|$)',
-            content,
-            re.DOTALL,
-        )
-        if overview_match:
-            overview_content = overview_match.group(1)
-            assert "chart-confidence" not in overview_content, (
-                "chart-confidence should NOT be inside panel-overview"
-            )
+        assert 'id="ref-search"' in content, "References panel should have search input"
+
+
+class TestNoRemovedTabs:
+    """E6b: Removed tabs (Sankey, Confidence) should not exist."""
+
+    def test_no_sankey_tab(self):
+        viz_file = DOCS_DIR / "visualizacao.html"
+        if not viz_file.exists():
+            pytest.skip("visualizacao.html not found")
+
+        content = viz_file.read_text(encoding="utf-8")
+        assert 'data-tab="sankey"' not in content, "Sankey tab should be removed"
+
+    def test_no_confidence_tab(self):
+        viz_file = DOCS_DIR / "visualizacao.html"
+        if not viz_file.exists():
+            pytest.skip("visualizacao.html not found")
+
+        content = viz_file.read_text(encoding="utf-8")
+        assert 'data-tab="confidence"' not in content, "Confidence tab should be removed"
+
+    def test_no_d3_sankey_cdn(self):
+        viz_file = DOCS_DIR / "visualizacao.html"
+        if not viz_file.exists():
+            pytest.skip("visualizacao.html not found")
+
+        content = viz_file.read_text(encoding="utf-8")
+        assert "d3-sankey" not in content, "d3-sankey CDN should be removed"
 
 
 class TestSlideContrast:
