@@ -157,6 +157,25 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 - **Relatorio HTML print-ready** (`output/relatorio.html`) para impressao/PDF
 - **143 testes passando** (30 novos: scholarly, footnotes, slides, PDF, output, pipeline)
 
+### Iteracao 5: Scrollytelling + GitHub Pages
+- **Scrollytelling** (`output/scrollytelling.html`) — pagina narrativa com scroll progressivo
+  - 12 secoes: Hero, Visao Geral, 4x(Intro+Teses por Parte), Rede Logica, Citacoes, Conclusao
+  - Scrollama.js v3.2 (IntersectionObserver, 2.7KB) + D3.js v7
+  - Layout sticky graphic + scrolling text (padrao NYT/The Pudding)
+  - Mobile: layout stacked abaixo de 768px
+  - Acessibilidade: `lang="pt-BR"`, `prefers-reduced-motion`, `aria-label`, formas+cores no grafo
+  - Dados embutidos como JS constants (funciona offline)
+  - Grafo D3 force-directed anima parte a parte, cross-part chains em dourado
+  - Barras horizontais D3 por livro biblico com grupos tematicos
+- **GitHub Pages** (`docs/`) — site publico com 3 paginas navegaveis
+  - `docs/index.html` — scrollytelling (pagina principal)
+  - `docs/visualizacao.html` — dashboard interativo
+  - `docs/apresentacao.html` — slides Reveal.js
+  - Navegacao `<nav>` entre as 3 paginas em cada HTML
+- **src/scrollytelling.py** — modulo gerador (mesmo padrao de slides.py)
+- **pipeline.py** atualizado com chamada `generate_scrollytelling()`
+- **160 testes passando** (17 novos: criacao, estrutura, dados, secoes, acessibilidade, load)
+
 ---
 
 ## Recomendacoes Restantes
@@ -170,7 +189,7 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 
 ## Arquivos de Referencia
 
-### Output final (v2 + scholarly)
+### Output final (v2 + scholarly + scrollytelling)
 - Teses finais (52): `output/theses.json`
 - Chains logicas (57): `output/chains.json`
 - Citacoes (186 = 169 biblicas + 17 scholarly): `output/citations.json`
@@ -179,6 +198,12 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 - Dashboard interativo (7 abas): `output/visualizacao.html`
 - Apresentacao Reveal.js (10 slides): `output/apresentacao.html`
 - Relatorio HTML print-ready: `output/relatorio.html`
+- Scrollytelling (12 secoes): `output/scrollytelling.html`
+
+### GitHub Pages (docs/)
+- Pagina principal (scrollytelling): `docs/index.html`
+- Dashboard interativo: `docs/visualizacao.html`
+- Apresentacao Reveal.js: `docs/apresentacao.html`
 
 ### Scripts e dados intermediarios
 - Script de sintese v1: scratchpad `synthesize.py`
@@ -193,4 +218,5 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 - Pipeline: `src/pipeline.py`
 - PDF report: `src/pdf_report.py`
 - Slides: `src/slides.py`
+- Scrollytelling: `src/scrollytelling.py`
 - Output: `src/output.py`

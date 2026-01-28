@@ -16,9 +16,11 @@ Pipeline de extracao e analise automatizada de teses teologicas do livro
 - Validacao pos-processamento de citacoes e referencias
 - Dashboard interativo (7 abas: visao geral, rede logica, hierarquia, citacoes, fluxo, dados, Sankey)
 - Export de graficos como PNG/SVG
+- Scrollytelling narrativo (12 secoes com Scrollama.js + D3.js)
 - Apresentacao Reveal.js (10 slides auto-contidos)
 - Relatorio HTML print-ready (PDF via WeasyPrint ou Ctrl+P)
 - Geracao de relatorio em Markdown
+- GitHub Pages com 3 paginas navegaveis (scrollytelling, dashboard, slides)
 
 ## Estrutura do Livro Analisado
 
@@ -76,12 +78,13 @@ uv run python -m src
 | `output/visualizacao.html` | Dashboard interativo (7 abas, D3.js + Chart.js + d3-sankey) |
 | `output/apresentacao.html` | Apresentacao Reveal.js (10 slides auto-contidos) |
 | `output/relatorio.html` | Relatorio HTML print-ready para PDF |
+| `output/scrollytelling.html` | Scrollytelling narrativo (12 secoes, Scrollama.js + D3.js) |
 
 ## Testes
 
 ```bash
 uv sync --extra dev
-uv run pytest tests/ -v              # 143 testes
+uv run pytest tests/ -v              # 160 testes
 uv run pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
@@ -101,6 +104,7 @@ src/
   output.py        - Geracao de output (JSON, Markdown)
   pdf_report.py    - Geracao de relatorio PDF/HTML print-ready
   slides.py        - Geracao de apresentacao Reveal.js
+  scrollytelling.py - Geracao de scrollytelling (Scrollama.js + D3.js)
   config.py        - Configuracao via .env (Pydantic Settings)
 ```
 
@@ -114,4 +118,17 @@ src/
    - 3b: Identificacao de cadeias logicas entre teses
    - 3c: Correlacao tematica de citacoes biblicas
    - 3d: Deduplicacao e sintese final
-4. **Output** - Gera JSON estruturado, relatorio Markdown, PDF e slides
+4. **Output** - Gera JSON estruturado, relatorio Markdown, PDF, slides e scrollytelling
+
+## GitHub Pages
+
+O diretorio `docs/` contem as paginas para publicacao via GitHub Pages:
+
+| Pagina | URL relativa | Conteudo |
+|--------|-------------|----------|
+| `docs/index.html` | `/` | Scrollytelling (pagina principal) |
+| `docs/visualizacao.html` | `/visualizacao.html` | Dashboard interativo |
+| `docs/apresentacao.html` | `/apresentacao.html` | Slides Reveal.js |
+
+Todas as paginas incluem navegacao entre si. Para configurar:
+Settings > Pages > Source: `master` branch, `/docs` folder.

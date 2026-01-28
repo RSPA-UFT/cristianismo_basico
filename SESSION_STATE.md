@@ -34,12 +34,13 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | `output.py` | Geracao de output (JSON, Markdown, secao scholarly) | OK |
 | `pdf_report.py` | Geracao de relatorio PDF/HTML print-ready | OK |
 | `slides.py` | Geracao de apresentacao Reveal.js (10 slides) | OK |
-| `pipeline.py` | Orquestrador dos 4 estagios (com fase 3a+) | OK |
+| `scrollytelling.py` | Scrollytelling (Scrollama.js + D3.js, 12 secoes) | OK |
+| `pipeline.py` | Orquestrador dos 4 estagios (com fase 3a+ e scrollytelling) | OK |
 
 ### Testes (tests/)
-- **143 testes passando** (pytest)
-- Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators, scholarly, pdf_report, slides
-- Novos arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (5)
+- **160 testes passando** (pytest)
+- Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators, scholarly, pdf_report, slides, scrollytelling
+- Arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (5), `test_scrollytelling.py` (17)
 - Testes atualizados: test_models (+3), test_validators (+3), test_output (+2), test_pipeline (+2)
 - Dependencias dev: pytest>=8.0, pytest-cov>=6.0
 
@@ -54,15 +55,23 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | `visualizacao.html` | 150 KB | Dashboard interativo (7 abas, D3.js + Chart.js + d3-sankey) |
 | `apresentacao.html` | 11 KB | Apresentacao Reveal.js (10 slides auto-contidos) |
 | `relatorio.html` | 74 KB | Relatorio HTML print-ready para PDF |
+| `scrollytelling.html` | 98 KB | Scrollytelling narrativo (Scrollama.js + D3.js, 12 secoes) |
 | `extracted_text.md` | 265 KB | Texto bruto extraido do PDF |
 | `chunks/` | 30 arquivos | Chunks Markdown por capitulo |
 | `per_chapter/` | 30 JSONs | Analises por capitulo (cache pipeline) |
+
+### GitHub Pages (docs/)
+| Arquivo | Conteudo |
+|---------|----------|
+| `docs/index.html` | Scrollytelling (pagina principal do site) |
+| `docs/visualizacao.html` | Dashboard interativo |
+| `docs/apresentacao.html` | Slides Reveal.js |
 
 ### Documentacao
 | Arquivo | Conteudo |
 |---------|----------|
 | `README.md` | Documentacao do projeto (instalacao, uso, arquitetura) |
-| `QUALITY_REPORT.md` | Relatorio de qualidade com 4 iteracoes documentadas |
+| `QUALITY_REPORT.md` | Relatorio de qualidade com 5 iteracoes documentadas |
 | `SESSION_STATE.md` | Este arquivo |
 
 ### Configuracao
@@ -98,6 +107,15 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 - **Apresentacao Reveal.js** (10 slides auto-contidos)
 - **Relatorio HTML print-ready** (PDF via WeasyPrint ou Ctrl+P)
 - **143 testes** (30 novos, 0 falhas)
+
+### Iteracao 5: Scrollytelling + GitHub Pages
+- **Scrollytelling** (`output/scrollytelling.html`) — 12 secoes narrativas com scroll progressivo
+  - Scrollama.js v3.2 + D3.js v7 (sticky graphic + scrolling text)
+  - Grafo force-directed, barras de citacoes, contadores animados
+  - Mobile stacked, `prefers-reduced-motion`, `aria-label`
+- **GitHub Pages** (`docs/`) — 3 paginas com navegacao inter-paginas
+- **src/scrollytelling.py** — modulo gerador (507 linhas)
+- **160 testes** (17 novos, 0 falhas)
 - Este e o output final atual
 
 ---
@@ -116,6 +134,26 @@ Dashboard HTML auto-contido com 7 abas:
 Cores por parte: P1=#4682B4 (azul), P2=#DC143C (vermelho), P3=#FF8C00 (laranja), P4=#228B22 (verde)
 CDNs: D3.js v7, Chart.js v4, d3-sankey v0.12
 Export: Botoes PNG/SVG em todos os paineis
+
+## Scrollytelling (output/scrollytelling.html)
+
+Pagina narrativa auto-contida com scroll progressivo (12 secoes):
+1. **Hero** - Titulo, autor, tagline com estatisticas
+2. **Visao Geral** - 4 contadores animados + barra de partes proporcional
+3. **Parte 1 Intro** - Pilares: Declaracoes, Carater, Ressurreicao
+4. **Parte 1 Teses** - Cards com badge ID, titulo, barra de confianca
+5. **Parte 2 Intro** - Pilares: Separacao, Escravidao, Conflito
+6. **Parte 2 Teses** - Cards com accent vermelho
+7. **Parte 3 Intro** - Pilares: Perdao, Transformacao, Comunhao
+8. **Parte 3 Teses** - Cards com accent laranja
+9. **Parte 4 Intro** - Pilares: Arrependimento, Fe, Obediencia
+10. **Parte 4 Teses** - Cards com accent verde
+11. **Rede Logica** - Grafo D3 force-directed (nos por parte, cross-part dourado)
+12. **Citacoes** - Barras horizontais D3 por livro biblico
+
+Layout: sticky graphic (55%) + scrolling text (45%), stacked em mobile (<768px)
+CDNs: Scrollama.js v3.2, D3.js v7
+Acessibilidade: lang="pt-BR", prefers-reduced-motion, aria-label, formas+cores no grafo
 
 ---
 
@@ -136,7 +174,7 @@ Localizacao: `/tmp/claude/-mnt-c-cristianismo-basico/.../scratchpad/`
 
 ## Possiveis Proximos Passos
 
-### Concluidos na Iteracao 4
+### Concluidos nas Iteracoes 4-5
 - ~~Diagrama Sankey (fluxo argumentativo visual entre partes)~~ FEITO
 - ~~Exportar graficos como PNG/SVG~~ FEITO
 - ~~Versao em PDF do relatorio~~ FEITO (HTML print-ready + WeasyPrint opcional)
@@ -144,6 +182,8 @@ Localizacao: `/tmp/claude/-mnt-c-cristianismo-basico/.../scratchpad/`
 - ~~Extrair citacoes de teologos como `citation_type: "scholarly"`~~ FEITO (17 citacoes)
 - ~~Identificar notas de rodape (`citation_type: "footnote"`)~~ FEITO
 - ~~Inicializar repositorio git~~ FEITO
+- ~~Scrollytelling (narrativa progressiva via scroll)~~ FEITO (Scrollama.js + D3.js)
+- ~~GitHub Pages (docs/ com 3 paginas)~~ FEITO
 
 ### Melhorias no Conteudo
 - Adicionar provedor Anthropic/OpenAI ao pipeline automatizado (src/analyzer.py)
@@ -168,7 +208,7 @@ cd /mnt/c/cristianismo_basico
 
 # Verificar ambiente
 .venv/bin/python --version   # Python 3.12
-uv run pytest tests/ -q      # 143 passed
+uv run pytest tests/ -q      # 160 passed
 
 # Executar pipeline completo (requer Ollama rodando)
 uv run python -m src
@@ -193,3 +233,5 @@ uv run python -m src
 7. **Scholarly como modulo separado** (src/scholarly.py) em vez de inline no analyzer - dados hardcoded + regex para maxima precisao
 8. **Reveal.js CDN** em vez de framework local - apresentacao auto-contida, zero build
 9. **HTML print-ready como fallback** para PDF - WeasyPrint e opcional (deps de sistema), Ctrl+P sempre funciona
+10. **Scrollama.js** para scrollytelling em vez de GSAP - 2.7KB vs 30KB, IntersectionObserver, sem scroll events
+11. **GitHub Pages via docs/** em vez de output/ - output/ no .gitignore, docs/ versionado com nav entre paginas
