@@ -321,6 +321,21 @@ class TestGenerateSlides:
         assert "solução definitiva" in content, "Parte 3 should have description"
         assert "Arrependimento, fé" in content, "Parte 4 should have description"
 
+    def test_part_slides_have_vertical_subslides(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Part slides should use nested sections for vertical navigation."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        # Check for nested section structure (vertical slides)
+        assert "Teses Principais" in content, "Should have thesis sub-slides"
+        # Verify nested sections exist (parent <section> containing child <section>s)
+        import re
+        nested_pattern = r'<section>\s*\n\s*<section>'
+        assert re.search(nested_pattern, content), "Part slides should have nested sections for vertical navigation"
+
     def test_accessibility_css_present(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
         """Accessibility CSS should include focus states and media queries."""
         output_dir = tmp_path / "output"

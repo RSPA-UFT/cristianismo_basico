@@ -270,10 +270,13 @@ class TestSlideOverflow:
 
         content = slides_file.read_text(encoding="utf-8")
         assert "Fluxo Argumentativo" in content
-        # Nested sections indicate vertical sub-slides
-        # Find the flow section and check for nested <section> tags
-        assert "Fluxo Argumentativo (cont.)" in content, (
-            "Flow slide should have continuation sub-slides"
+        # Flow slides use nested sections for vertical navigation (4 movements)
+        # Check for individual movement slides instead of (cont.) suffix
+        assert "Movimento 1:" in content, (
+            "Flow slide should have movement 1 sub-slide"
+        )
+        assert "Movimento 4:" in content, (
+            "Flow slide should have movement 4 sub-slide"
         )
 
     def test_scholarly_grid_layout(self):

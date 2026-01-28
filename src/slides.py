@@ -288,29 +288,47 @@ def _build_slides(analysis: BookAnalysis, *, logo_path: Path | None = None) -> s
         ]
 
         main_theses = [t for t in theses if t.thesis_type == "main"]
-        thesis_items = ""
-        for idx, t in enumerate(main_theses[:4], 1):
-            thesis_items += f'<li><strong>{idx}.</strong> {_esc(t.title)}</li>\n'
-
         icon = _PART_ICONS.get(short, "")
         desc = _PART_DESCRIPTIONS.get(short, "")
 
-        part_slides.append(f"""
-        <section>
-          <div style="border-top: 6px solid {color}; padding-top: 20px;">
-            <h2 style="color:{text_color}; font-size: 1.8em;">
-              <span style="font-size: 1.2em; margin-right: 8px;">{icon}</span>
-              {_esc(short)} - {_esc(full_title)}
-            </h2>
-            <p class="subtitle" style="font-size: 1.1em; margin-bottom: 16px;">{_esc(subtitle)}</p>
-            <p style="font-size: 0.95em; color: #444; line-height: 1.6; max-width: 520px; margin: 0 auto 20px;">{_esc(desc)}</p>
-            <ul class="thesis-list">
-              {thesis_items}
-            </ul>
-            <p class="count">Esta seção contém <strong>{len(theses)}</strong> ideias-chave</p>
-          </div>
-        </section>
-        """)
+        # Create vertical section with sub-slides
+        sub_slides = []
+
+        # Sub-slide 1: Overview da parte
+        sub_slides.append(f"""
+    <section>
+      <div style="border-top: 6px solid {color}; padding-top: 20px;">
+        <h2 style="color:{text_color}; font-size: 1.8em;">
+          <span style="font-size: 1.2em; margin-right: 8px;">{icon}</span>
+          {_esc(short)} - {_esc(full_title)}
+        </h2>
+        <p class="subtitle" style="font-size: 1.1em; margin-bottom: 16px;">{_esc(subtitle)}</p>
+        <p style="font-size: 0.95em; color: #444; line-height: 1.6; max-width: 520px; margin: 0 auto 20px;">
+          {_esc(desc)}
+        </p>
+        <p class="count">Esta seção contém <strong>{len(theses)}</strong> ideias-chave</p>
+      </div>
+    </section>""")
+
+        # Sub-slides 2+: Teses em pares (2 por slide)
+        for i in range(0, len(main_theses[:4]), 2):
+            pair = main_theses[i:i + 2]
+            thesis_items = ""
+            for idx, t in enumerate(pair, i + 1):
+                thesis_items += f'<li><strong>{idx}.</strong> {_esc(t.title)}</li>\n'
+
+            sub_slides.append(f"""
+    <section>
+      <div style="border-top: 6px solid {color}; padding-top: 12px;">
+        <h3 style="color:{text_color};">{_esc(short)} - Teses Principais</h3>
+        <ul class="thesis-list" style="max-width: 90%;">
+          {thesis_items}
+        </ul>
+      </div>
+    </section>""")
+
+        # Wrap em seção vertical (nested sections for vertical navigation)
+        part_slides.append(f"<section>\n{''.join(sub_slides)}\n        </section>")
 
     # Scholarly citations slide (2-column grid)
     scholarly_items = ""
