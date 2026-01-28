@@ -113,7 +113,7 @@ class TestGenerateSlides:
         assert "Tese da Parte 1" in content, "Thesis T1.x should appear in Parte 1 slide"
         assert "Tese da Parte 2" in content, "Thesis T2.x should appear in Parte 2 slide"
         # Parts 1 and 2 should each have 1 thesis, not 0
-        assert "1 teses" in content, "Parts with data should show non-zero thesis counts"
+        assert ">1</strong> ideias-chave" in content, "Parts with data should show non-zero thesis counts"
 
     def test_all_scholarly_shown(self, tmp_path: Path):
         """All scholarly citations should be shown, not limited to 8."""
@@ -174,24 +174,23 @@ class TestGenerateSlides:
         assert "grid-template-columns: 1fr 1fr" in content, "Grid should have 2 columns"
 
     def test_flow_slide_has_sub_sections(self, tmp_path: Path):
-        """Flow slide with long text should be split into vertical sub-slides."""
+        """Flow slide should have structured movement sub-slides."""
         output_dir = tmp_path / "output"
         output_dir.mkdir()
 
         analysis = BookAnalysis(
-            argument_flow=(
-                "First paragraph of flow text.\n\n"
-                "Second paragraph with more details.\n\n"
-                "Third paragraph with even more.\n\n"
-                "Fourth paragraph concluding."
-            ),
+            argument_flow="Any flow text",
         )
 
         path = generate_slides(output_dir, analysis=analysis)
         content = path.read_text(encoding="utf-8")
 
-        assert "Fluxo Argumentativo" in content
-        assert "Fluxo Argumentativo (cont.)" in content, "Should have continuation sub-slides"
+        assert "Fluxo Argumentativo: 4 Movimentos" in content
+        assert "Movimento 1:" in content, "Should have Movement 1 sub-slide"
+        assert "Movimento 2:" in content, "Should have Movement 2 sub-slide"
+        assert "Movimento 3:" in content, "Should have Movement 3 sub-slide"
+        assert "Movimento 4:" in content, "Should have Movement 4 sub-slide"
+        assert "content-bullets" in content, "Should use bullet point structure"
 
     def test_summary_multi_slide(self, tmp_path: Path):
         """Long summaries should be split into multiple sub-slides."""
@@ -236,10 +235,10 @@ class TestGenerateSlides:
         path = generate_slides(output_dir, analysis=sample_book_analysis)
         content = path.read_text(encoding="utf-8")
 
-        assert "border-top: 5px solid #048fcc" in content, "Parte 1 should have blue border accent"
-        assert "border-top: 5px solid #dc3545" in content, "Parte 2 should have red border accent"
-        assert "border-top: 5px solid #fd7e14" in content, "Parte 3 should have orange border accent"
-        assert "border-top: 5px solid #28a745" in content, "Parte 4 should have green border accent"
+        assert "border-top: 6px solid #048fcc" in content, "Parte 1 should have blue border accent"
+        assert "border-top: 6px solid #dc3545" in content, "Parte 2 should have red border accent"
+        assert "border-top: 6px solid #fd7e14" in content, "Parte 3 should have orange border accent"
+        assert "border-top: 6px solid #28a745" in content, "Parte 4 should have green border accent"
 
     def test_logo_embedded_when_provided(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
         """Logo should be embedded as base64 when logo_path is provided."""
@@ -281,3 +280,92 @@ class TestGenerateSlides:
 
         assert "max-height: 420px" in content, "flow-card should have max-height"
         assert "overflow-y: auto" in content, "flow-card should have overflow-y: auto"
+
+    def test_glossary_slide_present(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Glossary slide should be present with theological terms."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert "Termos Explicados" in content, "Should have glossary slide"
+        assert "glossary-grid" in content, "Should use glossary grid layout"
+        assert "Impecabilidade" in content, "Should explain impeccability"
+        assert "Arrependimento" in content, "Should explain repentance"
+        assert "Reconciliação" in content, "Should explain reconciliation"
+
+    def test_part_slides_have_icons(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Part slides should have visual emoji icons."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert "👤" in content, "Parte 1 should have person icon"
+        assert "⚠️" in content, "Parte 2 should have warning icon"
+        assert "✝️" in content, "Parte 3 should have cross icon"
+        assert "🙏" in content, "Parte 4 should have prayer icon"
+
+    def test_part_slides_have_descriptions(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Part slides should have contextual descriptions."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert "quem Jesus é" in content, "Parte 1 should have description"
+        assert "realidade do pecado" in content, "Parte 2 should have description"
+        assert "solução definitiva" in content, "Parte 3 should have description"
+        assert "Arrependimento, fé" in content, "Parte 4 should have description"
+
+    def test_accessibility_css_present(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Accessibility CSS should include focus states and media queries."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert "*:focus" in content, "Should have focus styles"
+        assert "prefers-reduced-motion" in content, "Should support reduced motion"
+        assert "prefers-contrast" in content, "Should support high contrast"
+
+    def test_improved_typography_sizes(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Typography should use larger sizes for accessibility."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert "font-size: 2.2em" in content, "h1 should be 2.2em"
+        assert "font-size: 1.6em" in content, "h2 should be 1.6em"
+        # Check for improved contrast colors
+        assert "color: #333" in content, "Should use darker subtitle color for contrast"
+
+    def test_reveal_navigation_config(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Reveal.js should have improved navigation configuration."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert "slideNumber: 'c/t'" in content, "Should show current/total slide numbers"
+        assert "transition: 'fade'" in content, "Should use fade transition"
+        assert "transitionSpeed: 'slow'" in content, "Should use slow transition"
+        assert "controls: true" in content, "Should show navigation controls"
+
+    def test_title_slide_has_aria_role(self, tmp_path: Path, sample_book_analysis: BookAnalysis):
+        """Title slide should have ARIA role for screen readers."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        path = generate_slides(output_dir, analysis=sample_book_analysis)
+        content = path.read_text(encoding="utf-8")
+
+        assert 'role="region"' in content, "Title slide should have ARIA role"
+        assert 'aria-label="Slide de título"' in content, "Title slide should have ARIA label"
