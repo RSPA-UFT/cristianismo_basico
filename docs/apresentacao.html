@@ -19,9 +19,11 @@
   .reveal .thesis-list { text-align: left; font-size: 0.75em; list-style: none; }
   .reveal .thesis-list li { margin: 8px 0; padding: 6px 12px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #048fcc; }
   .reveal .count { font-size: 0.7em; color: #888; margin-top: 16px; }
-  .reveal .flow-card { background: #f8f9fa; padding: 14px; border-radius: 6px; margin: 8px 0; text-align: left; font-size: 0.7em; line-height: 1.5; }
+  .reveal .flow-card { background: #f8f9fa; padding: 14px; border-radius: 6px; margin: 8px 0; text-align: left; font-size: 0.7em; line-height: 1.5; max-height: 420px; overflow-y: auto; }
   .reveal .scholarly-list { text-align: left; font-size: 0.7em; list-style: none; }
   .reveal .scholarly-list li { margin: 6px 0; padding: 4px 0; border-bottom: 1px solid #eee; }
+  .reveal .scholarly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; text-align: left; font-size: 0.7em; }
+  .reveal .scholarly-grid .sg-item { padding: 4px 0; border-bottom: 1px solid #eee; }
   .reveal .chain-viz { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
   .reveal .chain-node { background: #048fcc; color: white; padding: 8px 14px; border-radius: 2rem; font-size: 0.7em; font-weight: bold; }
   .reveal .chain-arrow { font-size: 1.5em; color: #999; }
@@ -51,7 +53,7 @@
   <section>
     <h2>Resumo Executivo</h2>
     <div class="flow-card">
-      &quot;Cristianismo Basico&quot; de John Stott apresenta uma defesa sistematica e progressiva da fe crista em quatro movimentos. Na Parte 1, Stott estabelece a divindade de Cristo por meio de tres linhas convergentes de evidencia: suas declaracoes extraordinarias (incluindo o uso do nome divino 'Eu Sou'), seu carater impecavel (confirmado por amigos e inimigos), e sua ressurreicao historica (sustentada pelo tumulo vazio, pelas aparicoes e pela transformacao dos discipulos). Na Parte 2, diagnostica a condicao humana: o pecado e universal, e fundamentalmente a exaltacao do eu a custa de Deus, resultando em separacao de Deus, escravidao interior e conflito relacional. Na Parte 3, apresenta a solucao divina: a morte substitutiva de Cristo na cruz, que nao e mero exemplo moral mas sacrificio redentor prefigurado pelo sistema sacrificial do Antigo Testamento. A salvacao abrange perdao, transformacao interior pelo Espirito Santo, e incorporacao a igreja como corpo de Cristo. Na Parte 4, expoe a resposta exigida: calcular o custo do discipulado, tomar uma decisao pessoal e definitiva por Cristo, e viver a vida crista com responsabilidade triplice -- para com Deus, a igreja e o mundo.
+      &quot;Cristianismo Basico&quot; de John Stott apresenta uma defesa sistematica e progressiva da fe crista em quatro movimentos. Na Parte 1, Stott estabelece a divindade de Cristo por meio de tres linhas convergentes de evidencia: suas declaracoes extraordinarias (incluindo o uso do nome divino 'Eu Sou'), seu carater impecavel (confirmado por amigos e inimigos), e sua ressurreicao historica (sustentada pelo tumulo vazio, pelas aparicoes e pela transformacao dos discipulos). Na Parte 2, diagnostica a condicao humana: o pecado e universal, e fundamentalmente a exaltacao do eu a custa de Deus, resultando em...
     </div>
   </section>
 
@@ -75,7 +77,7 @@
   <!-- Slides 4-7: Parts -->
   
         <section data-background-color="#048fcc10">
-          <h2 style="color:#048fcc;">Parte 1 - A Pessoa de Cristo</h2>
+          <h2 style="color:#036c9a;">Parte 1 - A Pessoa de Cristo</h2>
           <p class="subtitle">Cap. 1–4: Quem é Jesus Cristo?</p>
           <ul class="thesis-list">
             <li><strong>T1.1.1</strong>: A iniciativa divina na revelacao e salvacao</li>
@@ -88,7 +90,7 @@
         </section>
         
         <section data-background-color="#dc354510">
-          <h2 style="color:#dc3545;">Parte 2 - A Necessidade do Homem</h2>
+          <h2 style="color:#b02a37;">Parte 2 - A Necessidade do Homem</h2>
           <p class="subtitle">Cap. 5–6: O problema do pecado</p>
           <ul class="thesis-list">
             <li><strong>T2.5.1</strong>: A universalidade do pecado</li>
@@ -101,7 +103,7 @@
         </section>
         
         <section data-background-color="#fd7e1410">
-          <h2 style="color:#fd7e14;">Parte 3 - A Obra de Cristo</h2>
+          <h2 style="color:#c96209;">Parte 3 - A Obra de Cristo</h2>
           <p class="subtitle">Cap. 7–8: A solução na cruz</p>
           <ul class="thesis-list">
             <li><strong>T3.7.1</strong>: A reconciliacao com Deus como iniciativa divina atraves da cruz</li>
@@ -114,7 +116,7 @@
         </section>
         
         <section data-background-color="#28a74510">
-          <h2 style="color:#28a745;">Parte 4 - A Resposta do Homem</h2>
+          <h2 style="color:#1e7b34;">Parte 4 - A Resposta do Homem</h2>
           <p class="subtitle">Cap. 9–11: O que fazer?</p>
           <ul class="thesis-list">
             <li><strong>T4.9.1</strong>: O compromisso cristao exige calculo previo do custo</li>
@@ -127,54 +129,63 @@
         </section>
         
 
-  <!-- Slide 8: Argument Flow -->
+  <!-- Slide 8: Argument Flow (vertical sub-slides) -->
   <section>
-    <h2>Fluxo Argumentativo</h2>
-    <div class="chain-viz">
-      <div class="chain-node p1">P1: Pessoa</div>
-      <div class="chain-arrow">&rarr;</div>
-      <div class="chain-node p2">P2: Pecado</div>
-      <div class="chain-arrow">&rarr;</div>
-      <div class="chain-node p3">P3: Cruz</div>
-      <div class="chain-arrow">&rarr;</div>
-      <div class="chain-node p4">P4: Resposta</div>
-    </div>
-    <div class="flow-card">
-      O argumento de Stott segue uma logica rigorosa em quatro movimentos:
 
-MOVIMENTO 1 -- A PESSOA DE CRISTO (Cap. 1-4): Stott comeca estabelecendo a abordagem correta: Deus tomou a iniciativa de se revelar, e o homem deve busca-lo com humildade. Passa entao a examinar tres evidencias da divindade de Jesus. Primeiro, suas DECLARACOES -- Jesus falava de si mesmo como nenhum lider religioso jamais ousou, afirmando ser 'Eu Sou' (o nome divino), perdoando pecados, oferecendo vida eterna e reivindicando o papel de juiz final. Seus milagres dramatizavam visualmente essas afirmacoes. Segundo, seu CARATER -- a impecabilidade de Jesus, confirmada por amigos e inimigos, revela um paradoxo unico: autoridade suprema combinada com altruismo absoluto. Terceiro, sua RESSURREICAO -- o tumulo vazio, as aparicoes a mais de 500 testemunhas, e a transformacao radical dos discipulos. O peso cumulativo das tres evidencias conduz a confissao de Tome: 'Senhor meu e Deus meu'.
+    <section>
+      <h2>Fluxo Argumentativo</h2>
+      <div class="chain-viz">
+        <div class="chain-node p1">P1: Pessoa</div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-node p2">P2: Pecado</div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-node p3">P3: Cruz</div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-node p4">P4: Resposta</div>
+      </div>
+      <div class="flow-card">
+        O argumento de Stott segue uma logica rigorosa em quatro movimentos:
+      </div>
+    </section>
 
-MOVIMENTO 2 -- A NECESSIDADE DO HOMEM (Cap. 5-6): Estabelecida a identidade de Cristo, Stott diagnostica a condicao humana. O pecado e universal (nenhum ser humano esta isento), e sua natureza e a exaltacao do proprio eu em detrimento de Deus. Os Dez Mandamentos revelam pecados interiores, nao apenas exteriores -- a raiva e homicidio, a cobicha e roubo, o olhar impuro e adulterio. As consequencias sao triplas: separacao de Deus (morte espiritual), escravidao interior (incapacidade de fazer o bem), e conflito nos relacionamentos. A conclusao e inevitavel: o homem precisa de um Salvador, pois regras, sermoes e educacao nao resolvem o problema.
+    <section>
+      <h2>Fluxo Argumentativo (cont.)</h2>
+      <div class="flow-card">
+        MOVIMENTO 1 -- A PESSOA DE CRISTO (Cap. 1-4): Stott comeca estabelecendo a abordagem correta: Deus tomou a iniciativa de se revelar, e o homem deve busca-lo com humildade. Passa entao a examinar tres evidencias da divindade de Jesus. Primeiro, suas DECLARACOES -- Jesus falava de si mesmo como nenhum lider religioso jamais ousou, afirmando ser 'Eu Sou' (o nome divino), perdoando pecados, oferecendo vida eterna e reivindicando o papel de juiz final. Seus milagres dramatizavam visualmente essas afirmacoes. Segundo, seu CARATER -- a impecabilidade de Jesus, confirmada por amigos e inimigos, revela um paradoxo unico: autoridade suprema combinada com altruismo absoluto. Terceiro, sua RESSURREICAO -- o tumulo vazio, as aparicoes a mais de 500 testemunhas, e a transformacao radical dos discipulos. O peso cumulativo das tres evidencias conduz a confissao de Tome: 'Senhor meu e Deus meu'.<br><br>MOVIMENTO 2 -- A NECESSIDADE DO HOMEM (Cap. 5-6): Estabelecida a identidade de Cristo, Stott diagnostica a condicao humana. O pecado e universal (nenhum ser humano esta isento), e sua natureza e a exaltacao do proprio eu em detrimento de Deus. Os Dez Mandamentos revelam pecados interiores, nao apenas exteriores -- a raiva e homicidio, a cobicha e roubo, o olhar impuro e adulterio. As consequencias sao triplas: separacao de Deus (morte espiritual), escravidao interior (incapacidade de fazer o bem), e conflito nos relacionamentos. A conclusao e inevitavel: o homem precisa de um Salvador, pois regras, sermoes e educacao nao resolvem o problema.
+      </div>
+    </section>
 
-MOVIMENTO 3 -- A OBRA DE CRISTO (Cap. 7-8): A resposta divina ao diagnostico do pecado e a cruz. Stott demonstra que 'levar o pecado' no AT significava sofrer suas consequencias como substituto -- do sistema sacrificial ao bode expiatorio ao Servo Sofredor de Isaias 53. Cristo cumpriu e superou todos esses tipos, identificando-se com nossos pecados na cruz. A salvacao resultante nao se limita ao perdao: inclui transformacao interior pelo Espirito Santo (que produz o fruto de amor, alegria, paz) e incorporacao a igreja como corpo de Cristo, onde cada membro tem funcao necessaria.
-
-MOVIMENTO 4 -- A RESPOSTA DO HOMEM (Cap. 9-11): A oferta de salvacao exige resposta. Stott insiste em calcular o custo: negar a si mesmo, tomar a cruz, perder a vida. Mas o paradoxo do evangelho e que quem perde a vida a encontra. A decisao deve ser pessoal (ninguem decide por voce), definitiva (a porta esta fechada e precisa ser aberta), e integral (Cristo entra como Salvador E Senhor). Uma vez tomada a decisao, o cristao nasce de novo como filho de Deus e assume triplice responsabilidade: cultivar comunhao com Deus (Biblia e oracao), participar da igreja local, e servir ao mundo com testemunho e acao.
-    </div>
+    <section>
+      <h2>Fluxo Argumentativo (cont.)</h2>
+      <div class="flow-card">
+        MOVIMENTO 3 -- A OBRA DE CRISTO (Cap. 7-8): A resposta divina ao diagnostico do pecado e a cruz. Stott demonstra que 'levar o pecado' no AT significava sofrer suas consequencias como substituto -- do sistema sacrificial ao bode expiatorio ao Servo Sofredor de Isaias 53. Cristo cumpriu e superou todos esses tipos, identificando-se com nossos pecados na cruz. A salvacao resultante nao se limita ao perdao: inclui transformacao interior pelo Espirito Santo (que produz o fruto de amor, alegria, paz) e incorporacao a igreja como corpo de Cristo, onde cada membro tem funcao necessaria.<br><br>MOVIMENTO 4 -- A RESPOSTA DO HOMEM (Cap. 9-11): A oferta de salvacao exige resposta. Stott insiste em calcular o custo: negar a si mesmo, tomar a cruz, perder a vida. Mas o paradoxo do evangelho e que quem perde a vida a encontra. A decisao deve ser pessoal (ninguem decide por voce), definitiva (a porta esta fechada e precisa ser aberta), e integral (Cristo entra como Salvador E Senhor). Uma vez tomada a decisao, o cristao nasce de novo como filho de Deus e assume triplice responsabilidade: cultivar comunhao com Deus (Biblia e oracao), participar da igreja local, e servir ao mundo com testemunho e acao.
+      </div>
+    </section>
   </section>
 
   <!-- Slide 9: Scholarly Citations -->
   <section>
     <h2>Citações Acadêmicas</h2>
-    <ul class="scholarly-list">
-      <li><strong>FORSYTH, P.T.</strong> &mdash; <em>This Life and the Next</em></li>
-<li><strong>LEWIS, C.S.</strong> &mdash; <em>Miracles</em></li>
-<li><strong>THOMAS, W.H. Griffith</strong> &mdash; <em>Christianity is Christ</em></li>
-<li><strong>SIMPSON, P. Carnegie</strong> &mdash; <em>The Fact of Christ</em></li>
-<li><strong>DENNEY, James</strong> &mdash; <em>Studies in Theology</em></li>
-<li><strong>ORR, James</strong> &mdash; <em>The Virgin Birth of Christ</em></li>
-<li><strong>MACHEN, J. Gresham</strong> &mdash; <em>The Virgin Birth</em></li>
-<li><strong>LATHAM, Henry</strong> &mdash; <em>The Risen Master</em></li>
-<li><strong>Studdert Kennedy</strong></li>
-<li><strong>Archbishop Temple</strong> &mdash; <em>Christianity and Social Order</em></li>
-<li><strong>Emerson</strong></li>
-<li><strong>John Stuart Mill</strong></li>
-<li><strong>Carnegie Simpson</strong> &mdash; <em>The Fact of Christ</em></li>
-<li><strong>Charles Lamb</strong></li>
-<li><strong>Thomas Arnold</strong></li>
-<li><strong>Sir Edward Clarke</strong></li>
-<li><strong>C.S. Lewis</strong></li>
+    <div class="scholarly-grid">
+      <div class="sg-item"><strong>FORSYTH, P.T.</strong> &mdash; <em>This Life and the Next</em></div>
+<div class="sg-item"><strong>LEWIS, C.S.</strong> &mdash; <em>Miracles</em></div>
+<div class="sg-item"><strong>THOMAS, W.H. Griffith</strong> &mdash; <em>Christianity is Christ</em></div>
+<div class="sg-item"><strong>SIMPSON, P. Carnegie</strong> &mdash; <em>The Fact of Christ</em></div>
+<div class="sg-item"><strong>DENNEY, James</strong> &mdash; <em>Studies in Theology</em></div>
+<div class="sg-item"><strong>ORR, James</strong> &mdash; <em>The Virgin Birth of Christ</em></div>
+<div class="sg-item"><strong>MACHEN, J. Gresham</strong> &mdash; <em>The Virgin Birth</em></div>
+<div class="sg-item"><strong>LATHAM, Henry</strong> &mdash; <em>The Risen Master</em></div>
+<div class="sg-item"><strong>Studdert Kennedy</strong></div>
+<div class="sg-item"><strong>Archbishop Temple</strong> &mdash; <em>Christianity and Social Order</em></div>
+<div class="sg-item"><strong>Emerson</strong></div>
+<div class="sg-item"><strong>John Stuart Mill</strong></div>
+<div class="sg-item"><strong>Carnegie Simpson</strong> &mdash; <em>The Fact of Christ</em></div>
+<div class="sg-item"><strong>Charles Lamb</strong></div>
+<div class="sg-item"><strong>Thomas Arnold</strong></div>
+<div class="sg-item"><strong>Sir Edward Clarke</strong></div>
+<div class="sg-item"><strong>C.S. Lewis</strong></div>
 
-    </ul>
+    </div>
     <p class="count">17 autores/obras citados(as)</p>
   </section>
 

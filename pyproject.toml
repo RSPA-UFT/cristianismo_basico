@@ -1,6 +1,6 @@
 [project]
 name = "cristianismo-basico"
-version = "0.6.0"
+version = "0.7.0"
 description = "Extrator de teses e analise do livro Cristianismo Basico de John Stott"
 requires-python = ">=3.12"
 dependencies = [

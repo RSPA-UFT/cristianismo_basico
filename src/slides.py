@@ -20,6 +20,13 @@ _PART_COLORS = {
     "Parte 4": "#28a745",
 }
 
+_PART_TEXT_COLORS = {
+    "Parte 1": "#036c9a",
+    "Parte 2": "#b02a37",
+    "Parte 3": "#c96209",
+    "Parte 4": "#1e7b34",
+}
+
 
 def _esc(text: str) -> str:
     """Escape HTML special characters."""
@@ -29,6 +36,13 @@ def _esc(text: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
+
+
+def _truncate(text: str, max_len: int) -> str:
+    """Truncate text to max_len characters, adding ellipsis if needed."""
+    if len(text) <= max_len:
+        return text
+    return text[:max_len].rstrip() + "..."
 
 
 def generate_slides(
@@ -59,6 +73,73 @@ def generate_slides(
     return path
 
 
+def _build_flow_slides(argument_flow: str | None) -> str:
+    """Build vertical sub-slides for the Argument Flow section.
+
+    Splits flow text into paragraphs and distributes across sub-slides
+    to prevent overflow on the 1100x700 viewport.
+    """
+    flow_text = argument_flow or "(Não disponível)"
+    paragraphs = [p.strip() for p in flow_text.split("\n\n") if p.strip()]
+
+    if len(paragraphs) <= 2:
+        # Short text: single slide
+        return f"""
+  <section>
+    <h2>Fluxo Argumentativo</h2>
+    <div class="chain-viz">
+      <div class="chain-node p1">P1: Pessoa</div>
+      <div class="chain-arrow">&rarr;</div>
+      <div class="chain-node p2">P2: Pecado</div>
+      <div class="chain-arrow">&rarr;</div>
+      <div class="chain-node p3">P3: Cruz</div>
+      <div class="chain-arrow">&rarr;</div>
+      <div class="chain-node p4">P4: Resposta</div>
+    </div>
+    <div class="flow-card">
+      {_esc(flow_text)}
+    </div>
+  </section>"""
+
+    # Multiple paragraphs: split into vertical sub-slides
+    # First sub-slide: title + chain-viz + first paragraph
+    # Remaining: pairs of paragraphs
+    slides = []
+
+    # Slide 8a: title + chain viz + intro paragraph
+    slides.append(f"""
+    <section>
+      <h2>Fluxo Argumentativo</h2>
+      <div class="chain-viz">
+        <div class="chain-node p1">P1: Pessoa</div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-node p2">P2: Pecado</div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-node p3">P3: Cruz</div>
+        <div class="chain-arrow">&rarr;</div>
+        <div class="chain-node p4">P4: Resposta</div>
+      </div>
+      <div class="flow-card">
+        {_esc(paragraphs[0])}
+      </div>
+    </section>""")
+
+    # Remaining paragraphs in pairs
+    remaining = paragraphs[1:]
+    for i in range(0, len(remaining), 2):
+        chunk = remaining[i : i + 2]
+        body = "<br><br>".join(_esc(p) for p in chunk)
+        slides.append(f"""
+    <section>
+      <h2>Fluxo Argumentativo (cont.)</h2>
+      <div class="flow-card">
+        {body}
+      </div>
+    </section>""")
+
+    return "<section>\n" + "\n".join(slides) + "\n  </section>"
+
+
 def _build_slides(analysis: BookAnalysis) -> str:
     """Build a Reveal.js HTML presentation."""
     # Collect stats
@@ -78,13 +159,13 @@ def _build_slides(analysis: BookAnalysis) -> str:
     # Build part slides (one per part)
     part_slides = []
     part_info = [
-        ("Parte 1 - A Pessoa de Cristo", "#048fcc", "Cap. 1\u20134: Quem \u00e9 Jesus Cristo?"),
-        ("Parte 2 - A Necessidade do Homem", "#dc3545", "Cap. 5\u20136: O problema do pecado"),
-        ("Parte 3 - A Obra de Cristo", "#fd7e14", "Cap. 7\u20138: A solu\u00e7\u00e3o na cruz"),
-        ("Parte 4 - A Resposta do Homem", "#28a745", "Cap. 9\u201311: O que fazer?"),
+        ("Parte 1 - A Pessoa de Cristo", "#048fcc", "#036c9a", "Cap. 1\u20134: Quem \u00e9 Jesus Cristo?"),
+        ("Parte 2 - A Necessidade do Homem", "#dc3545", "#b02a37", "Cap. 5\u20136: O problema do pecado"),
+        ("Parte 3 - A Obra de Cristo", "#fd7e14", "#c96209", "Cap. 7\u20138: A solu\u00e7\u00e3o na cruz"),
+        ("Parte 4 - A Resposta do Homem", "#28a745", "#1e7b34", "Cap. 9\u201311: O que fazer?"),
     ]
 
-    for part_name, color, subtitle in part_info:
+    for part_name, color, text_color, subtitle in part_info:
         short = part_name.split(" - ")[0] if " - " in part_name else part_name
         theses = [
             t for t in analysis.theses
@@ -98,7 +179,7 @@ def _build_slides(analysis: BookAnalysis) -> str:
 
         part_slides.append(f"""
         <section data-background-color="{color}10">
-          <h2 style="color:{color};">{_esc(part_name)}</h2>
+          <h2 style="color:{text_color};">{_esc(part_name)}</h2>
           <p class="subtitle">{_esc(subtitle)}</p>
           <ul class="thesis-list">
             {thesis_items}
@@ -107,12 +188,12 @@ def _build_slides(analysis: BookAnalysis) -> str:
         </section>
         """)
 
-    # Scholarly citations slide
+    # Scholarly citations slide (2-column grid)
     scholarly_items = ""
     for c in scholarly:
         author = c.author or c.reference
         work = f" &mdash; <em>{_esc(c.work)}</em>" if c.work else ""
-        scholarly_items += f"<li><strong>{_esc(author)}</strong>{work}</li>\n"
+        scholarly_items += f'<div class="sg-item"><strong>{_esc(author)}</strong>{work}</div>\n'
 
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR">
@@ -135,9 +216,11 @@ def _build_slides(analysis: BookAnalysis) -> str:
   .reveal .thesis-list {{ text-align: left; font-size: 0.75em; list-style: none; }}
   .reveal .thesis-list li {{ margin: 8px 0; padding: 6px 12px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #048fcc; }}
   .reveal .count {{ font-size: 0.7em; color: #888; margin-top: 16px; }}
-  .reveal .flow-card {{ background: #f8f9fa; padding: 14px; border-radius: 6px; margin: 8px 0; text-align: left; font-size: 0.7em; line-height: 1.5; }}
+  .reveal .flow-card {{ background: #f8f9fa; padding: 14px; border-radius: 6px; margin: 8px 0; text-align: left; font-size: 0.7em; line-height: 1.5; max-height: 420px; overflow-y: auto; }}
   .reveal .scholarly-list {{ text-align: left; font-size: 0.7em; list-style: none; }}
   .reveal .scholarly-list li {{ margin: 6px 0; padding: 4px 0; border-bottom: 1px solid #eee; }}
+  .reveal .scholarly-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; text-align: left; font-size: 0.7em; }}
+  .reveal .scholarly-grid .sg-item {{ padding: 4px 0; border-bottom: 1px solid #eee; }}
   .reveal .chain-viz {{ display: flex; justify-content: center; align-items: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }}
   .reveal .chain-node {{ background: #048fcc; color: white; padding: 8px 14px; border-radius: 2rem; font-size: 0.7em; font-weight: bold; }}
   .reveal .chain-arrow {{ font-size: 1.5em; color: #999; }}
@@ -167,7 +250,7 @@ def _build_slides(analysis: BookAnalysis) -> str:
   <section>
     <h2>Resumo Executivo</h2>
     <div class="flow-card">
-      {_esc(analysis.summary or '(N\u00e3o dispon\u00edvel)')}
+      {_esc(_truncate(analysis.summary or '(N\u00e3o dispon\u00edvel)', 600))}
     </div>
   </section>
 
@@ -191,29 +274,15 @@ def _build_slides(analysis: BookAnalysis) -> str:
   <!-- Slides 4-7: Parts -->
   {''.join(part_slides)}
 
-  <!-- Slide 8: Argument Flow -->
-  <section>
-    <h2>Fluxo Argumentativo</h2>
-    <div class="chain-viz">
-      <div class="chain-node p1">P1: Pessoa</div>
-      <div class="chain-arrow">&rarr;</div>
-      <div class="chain-node p2">P2: Pecado</div>
-      <div class="chain-arrow">&rarr;</div>
-      <div class="chain-node p3">P3: Cruz</div>
-      <div class="chain-arrow">&rarr;</div>
-      <div class="chain-node p4">P4: Resposta</div>
-    </div>
-    <div class="flow-card">
-      {_esc(analysis.argument_flow or '(N\u00e3o dispon\u00edvel)')}
-    </div>
-  </section>
+  <!-- Slide 8: Argument Flow (vertical sub-slides) -->
+  {_build_flow_slides(analysis.argument_flow)}
 
   <!-- Slide 9: Scholarly Citations -->
   <section>
     <h2>Cita\u00e7\u00f5es Acad\u00eamicas</h2>
-    <ul class="scholarly-list">
-      {scholarly_items if scholarly_items else '<li>(Nenhuma cita\u00e7\u00e3o acad\u00eamica)</li>'}
-    </ul>
+    <div class="scholarly-grid">
+      {scholarly_items if scholarly_items else '<div class="sg-item">(Nenhuma cita\u00e7\u00e3o acad\u00eamica)</div>'}
+    </div>
     <p class="count">{len(scholarly)} autores/obras citados(as)</p>
   </section>
 

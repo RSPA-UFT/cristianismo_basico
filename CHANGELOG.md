@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-01-27
+
+### Added
+- Dedicated "Confiança" tab in dashboard, separated from "Visão Geral"
+- Explanatory text for confidence index (LLM extraction certainty)
+- `TYPE_LABELS` JS map translating thesis types to Portuguese: principal, suporte, conclusão, premissa
+- `_PART_TEXT_COLORS` in slides generator with WCAG-compliant darkened heading colors
+- Vertical sub-slides for "Fluxo Argumentativo" to prevent overflow (Reveal.js nested sections)
+- 2-column grid layout for scholarly citations in slides (`scholarly-grid`)
+- Summary truncation (600 chars) with `max-height`/`overflow-y` fallback on `.flow-card`
+- `tests/test_html_audit.py` with 18 automated audit tests for all `docs/*.html`
+- New slide tests: darkened colors, scholarly grid, flow sub-sections, summary truncation, overflow
+
+### Fixed
+- Literal `\u00XX` Unicode escapes in `docs/visualizacao.html` replaced with real UTF-8 characters
+- Portuguese diacritics added to all user-facing text: Análise, Básico, Visão, Lógica, Citações, Confiança, Título, Capítulo, Distribuição, Raciocínio, Conexão, Temáticos, Apresentação, etc.
+- Flow text (4 movements) fully corrected with proper Portuguese diacritics
+- Tree chapter names with proper diacritics (Afirmações, Caráter, Ressurreição, Consequências, Salvação, Decisão, Cristão)
+- Confidence chart color changed from `#3498db` to `#048fcc` (brand consistency)
+- Reasoning chart color changed from `#3498db` to `#048fcc`
+- Citation chart OT bar color changed from `#3498db` to `#048fcc`
+- Low-contrast heading colors in slides (orange `#fd7e14`, green `#28a745`) replaced with darkened variants
+
+### Changed
+- Thesis type badges, tooltips, and table now show Portuguese labels instead of English keys
+- Confidence chart moved from "Visão Geral" tab to dedicated "Confiança" tab
+- Slides: scholarly citations use 2-column grid instead of single-column list
+- Slides: argument flow uses vertical sub-slides for long content
+- `pyproject.toml` version bumped to `0.7.0`
+
 ## [0.6.0] - 2026-01-27
 
 ### Added

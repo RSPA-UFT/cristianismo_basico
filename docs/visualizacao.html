@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>An\u00e1lise Teol\u00f3gica: Cristianismo B\u00e1sico (John Stott)</title>
+<title>Análise Teológica: Cristianismo Básico (John Stott)</title>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
@@ -76,27 +76,28 @@ tr:hover { background: #f5f8ff; }
 <nav class="site-nav" style="background:#036c9a;padding:8px 16px;display:flex;gap:16px;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:0.9rem;">
   <a href="index.html" style="color:#e0f0ff;text-decoration:none;">Narrativa</a>
   <a href="visualizacao.html" style="color:#e0f0ff;text-decoration:none;">Painel</a>
-  <a href="apresentacao.html" style="color:#e0f0ff;text-decoration:none;">Apresenta\u00e7\u00e3o</a>
+  <a href="apresentacao.html" style="color:#e0f0ff;text-decoration:none;">Apresentação</a>
 </nav>
 
 <div class="header">
-  <h1>An\u00e1lise Teol\u00f3gica: Cristianismo B\u00e1sico</h1>
-  <p>John Stott &mdash; Extra\u00e7\u00e3o e an\u00e1lise com Claude Opus 4.5</p>
+  <h1>Análise Teológica: Cristianismo Básico</h1>
+  <p>John Stott &mdash; Extração e análise com Claude Opus 4.5</p>
   <div class="stats">
     <div class="stat"><div class="num">52</div><div class="label">Teses</div></div>
-    <div class="stat"><div class="num">57</div><div class="label">Cadeias L\u00f3gicas</div></div>
-    <div class="stat"><div class="num">169</div><div class="label">Cita\u00e7\u00f5es B\u00edblicas</div></div>
-    <div class="stat"><div class="num">8</div><div class="label">Grupos Tem\u00e1ticos</div></div>
+    <div class="stat"><div class="num">57</div><div class="label">Cadeias Lógicas</div></div>
+    <div class="stat"><div class="num">169</div><div class="label">Citações Bíblicas</div></div>
+    <div class="stat"><div class="num">8</div><div class="label">Grupos Temáticos</div></div>
   </div>
 </div>
 
 <div class="tabs" id="tabs">
-  <div class="tab active" data-tab="overview">Vis\u00e3o Geral</div>
-  <div class="tab" data-tab="network">Rede L\u00f3gica</div>
+  <div class="tab active" data-tab="overview">Visão Geral</div>
+  <div class="tab" data-tab="network">Rede Lógica</div>
   <div class="tab" data-tab="tree">Hierarquia</div>
-  <div class="tab" data-tab="citations">Cita\u00e7\u00f5es B\u00edblicas</div>
+  <div class="tab" data-tab="citations">Citações Bíblicas</div>
   <div class="tab" data-tab="flow">Fluxo Argumentativo</div>
   <div class="tab" data-tab="sankey">Fluxo Sankey</div>
+  <div class="tab" data-tab="confidence">Confiança</div>
   <div class="tab" data-tab="data">Dados</div>
 </div>
 
@@ -107,28 +108,23 @@ tr:hover { background: #f5f8ff; }
     <div class="export-bar">
       <span class="label">Exportar:</span>
       <button class="export-btn" onclick="exportCanvasAsPNG('chart-types','tipos-tese')">Tipos PNG</button>
-      <button class="export-btn" onclick="exportCanvasAsPNG('chart-chapters','teses-capitulo')">Capitulos PNG</button>
-      <button class="export-btn" onclick="exportCanvasAsPNG('chart-reasoning','raciocinio')">Raciocinio PNG</button>
-      <button class="export-btn" onclick="exportCanvasAsPNG('chart-confidence','confianca')">Confianca PNG</button>
+      <button class="export-btn" onclick="exportCanvasAsPNG('chart-chapters','teses-capitulo')">Capítulos PNG</button>
+      <button class="export-btn" onclick="exportCanvasAsPNG('chart-reasoning','raciocinio')">Raciocínio PNG</button>
     </div>
     <div class="chart-row">
       <div class="chart-box">
-        <h3>Distribuicao por Tipo de Tese</h3>
+        <h3>Distribuição por Tipo de Tese</h3>
         <canvas id="chart-types"></canvas>
       </div>
       <div class="chart-box">
-        <h3>Teses por Capitulo</h3>
+        <h3>Teses por Capítulo</h3>
         <canvas id="chart-chapters"></canvas>
       </div>
     </div>
     <div class="chart-row">
-      <div class="chart-box">
-        <h3>Tipo de Raciocinio nas Cadeias</h3>
+      <div class="chart-box" style="grid-column: 1 / -1;">
+        <h3>Tipo de Raciocínio nas Cadeias</h3>
         <canvas id="chart-reasoning"></canvas>
-      </div>
-      <div class="chart-box">
-        <h3>Confianca das Teses</h3>
-        <canvas id="chart-confidence"></canvas>
       </div>
     </div>
   </div>
@@ -145,7 +141,7 @@ tr:hover { background: #f5f8ff; }
       <div class="legend-item"><div class="legend-dot" style="background:#dc3545"></div> Parte 2: A Necessidade do Homem</div>
       <div class="legend-item"><div class="legend-dot" style="background:#fd7e14"></div> Parte 3: A Obra de Cristo</div>
       <div class="legend-item"><div class="legend-dot" style="background:#28a745"></div> Parte 4: A Resposta do Homem</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#DAA520"></div> Conexao entre partes</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#DAA520"></div> Conexão entre partes</div>
     </div>
     <svg id="network-svg" viewBox="0 0 1100 700"></svg>
     <div class="detail-panel" id="network-detail"></div>
@@ -158,7 +154,7 @@ tr:hover { background: #f5f8ff; }
       <button class="export-btn" onclick="exportSVG('tree-svg','hierarquia')">SVG</button>
       <button class="export-btn" onclick="exportSVGasPNG('tree-svg','hierarquia')">PNG</button>
     </div>
-    <p style="margin-bottom:12px;color:#666;">Clique nos nos para expandir/recolher. Passe o mouse sobre as teses para ver detalhes.</p>
+    <p style="margin-bottom:12px;color:#666;">Clique nos nós para expandir/recolher. Passe o mouse sobre as teses para ver detalhes.</p>
     <svg id="tree-svg" viewBox="0 0 1200 800"></svg>
     <div class="detail-panel" id="tree-detail"></div>
   </div>
@@ -172,13 +168,13 @@ tr:hover { background: #f5f8ff; }
     </div>
     <div class="chart-row">
       <div class="chart-box" style="grid-column: 1 / -1;">
-        <h3>Citacoes por Livro Biblico (Top 20)</h3>
+        <h3>Citações por Livro Bíblico (Top 20)</h3>
         <canvas id="chart-books" style="max-height:450px;"></canvas>
       </div>
     </div>
     <div class="chart-row">
       <div class="chart-box" style="grid-column: 1 / -1;">
-        <h3>Grupos Tematicos de Citacoes</h3>
+        <h3>Grupos Temáticos de Citações</h3>
         <canvas id="chart-groups" style="max-height:350px;"></canvas>
       </div>
     </div>
@@ -188,16 +184,16 @@ tr:hover { background: #f5f8ff; }
   <div class="viz-panel" id="panel-flow">
     <div class="flow-text">
       <h3>Movimento 1 &mdash; A Pessoa de Cristo (Cap. 1-4)</h3>
-      <p>Stott comeca estabelecendo a abordagem correta: Deus tomou a iniciativa de se revelar, e o homem deve busca-lo com humildade. Passa entao a examinar tres evidencias da divindade de Jesus. Primeiro, suas <strong>declaracoes</strong> &mdash; Jesus falava de si mesmo como nenhum lider religioso jamais ousou, afirmando ser "Eu Sou" (o nome divino), perdoando pecados, oferecendo vida eterna e reivindicando o papel de juiz final. Seus milagres dramatizavam visualmente essas afirmacoes. Segundo, seu <strong>carater</strong> &mdash; a impecabilidade de Jesus, confirmada por amigos e inimigos, revela um paradoxo unico: autoridade suprema combinada com altruismo absoluto. Terceiro, sua <strong>ressurreicao</strong> &mdash; o tumulo vazio, as aparicoes a mais de 500 testemunhas, e a transformacao radical dos discipulos. O peso cumulativo das tres evidencias conduz a confissao de Tome: "Senhor meu e Deus meu".</p>
+      <p>Stott começa estabelecendo a abordagem correta: Deus tomou a iniciativa de se revelar, e o homem deve buscá-lo com humildade. Passa então a examinar três evidências da divindade de Jesus. Primeiro, suas <strong>declarações</strong> &mdash; Jesus falava de si mesmo como nenhum líder religioso jamais ousou, afirmando ser "Eu Sou" (o nome divino), perdoando pecados, oferecendo vida eterna e reivindicando o papel de juiz final. Seus milagres dramatizavam visualmente essas afirmações. Segundo, seu <strong>caráter</strong> &mdash; a impecabilidade de Jesus, confirmada por amigos e inimigos, revela um paradoxo único: autoridade suprema combinada com altruísmo absoluto. Terceiro, sua <strong>ressurreição</strong> &mdash; o túmulo vazio, as aparições a mais de 500 testemunhas, e a transformação radical dos discípulos. O peso cumulativo das três evidências conduz à confissão de Tomé: "Senhor meu e Deus meu".</p>
 
       <h3>Movimento 2 &mdash; A Necessidade do Homem (Cap. 5-6)</h3>
-      <p>Estabelecida a identidade de Cristo, Stott diagnostica a condicao humana. O pecado e <strong>universal</strong> (nenhum ser humano esta isento), e sua natureza e a <strong>exaltacao do proprio eu</strong> em detrimento de Deus. Os Dez Mandamentos revelam pecados interiores, nao apenas exteriores &mdash; a raiva e homicidio, a cobica e roubo, o olhar impuro e adulterio. As consequencias sao triplas: <strong>separacao de Deus</strong> (morte espiritual), <strong>escravidao interior</strong> (incapacidade de fazer o bem), e <strong>conflito nos relacionamentos</strong>. A conclusao e inevitavel: o homem precisa de um Salvador.</p>
+      <p>Estabelecida a identidade de Cristo, Stott diagnostica a condição humana. O pecado é <strong>universal</strong> (nenhum ser humano está isento), e sua natureza é a <strong>exaltação do próprio eu</strong> em detrimento de Deus. Os Dez Mandamentos revelam pecados interiores, não apenas exteriores &mdash; a raiva é homicídio, a cobiça é roubo, o olhar impuro é adultério. As consequências são triplas: <strong>separação de Deus</strong> (morte espiritual), <strong>escravidão interior</strong> (incapacidade de fazer o bem), e <strong>conflito nos relacionamentos</strong>. A conclusão é inevitável: o homem precisa de um Salvador.</p>
 
       <h3>Movimento 3 &mdash; A Obra de Cristo (Cap. 7-8)</h3>
-      <p>A resposta divina ao diagnostico do pecado e a <strong>cruz</strong>. Stott demonstra que "levar o pecado" no AT significava sofrer suas consequencias como substituto &mdash; do sistema sacrificial ao bode expiatorio ao Servo Sofredor de Isaias 53. Cristo cumpriu e superou todos esses tipos, identificando-se com nossos pecados na cruz. A salvacao resultante nao se limita ao perdao: inclui <strong>transformacao interior</strong> pelo Espirito Santo e <strong>incorporacao a igreja</strong> como corpo de Cristo.</p>
+      <p>A resposta divina ao diagnóstico do pecado é a <strong>cruz</strong>. Stott demonstra que "levar o pecado" no AT significava sofrer suas consequências como substituto &mdash; do sistema sacrificial ao bode expiatório ao Servo Sofredor de Isaías 53. Cristo cumpriu e superou todos esses tipos, identificando-se com nossos pecados na cruz. A salvação resultante não se limita ao perdão: inclui <strong>transformação interior</strong> pelo Espírito Santo e <strong>incorporação à igreja</strong> como corpo de Cristo.</p>
 
       <h3>Movimento 4 &mdash; A Resposta do Homem (Cap. 9-11)</h3>
-      <p>A oferta de salvacao exige resposta. Stott insiste em <strong>calcular o custo</strong>: negar a si mesmo, tomar a cruz, perder a vida. Mas o paradoxo do evangelho e que quem perde a vida a encontra. A decisao deve ser <strong>pessoal</strong>, <strong>definitiva</strong> e <strong>integral</strong> (Cristo entra como Salvador E Senhor). Uma vez tomada, o cristao nasce de novo como filho de Deus e assume triplice responsabilidade: comunhao com Deus, participacao na igreja e servico ao mundo.</p>
+      <p>A oferta de salvação exige resposta. Stott insiste em <strong>calcular o custo</strong>: negar a si mesmo, tomar a cruz, perder a vida. Mas o paradoxo do evangelho é que quem perde a vida a encontra. A decisão deve ser <strong>pessoal</strong>, <strong>definitiva</strong> e <strong>integral</strong> (Cristo entra como Salvador E Senhor). Uma vez tomada, o cristão nasce de novo como filho de Deus e assume tríplice responsabilidade: comunhão com Deus, participação na igreja e serviço ao mundo.</p>
     </div>
   </div>
 
@@ -217,13 +213,28 @@ tr:hover { background: #f5f8ff; }
     <svg id="sankey-svg" viewBox="0 0 1100 500"></svg>
   </div>
 
+  <!-- TAB: CONFIDENCE -->
+  <div class="viz-panel" id="panel-confidence">
+    <p style="margin-bottom:16px;color:#666;font-size:0.9em;">Índice de confiança (0-1) atribuído pelo modelo LLM a cada tese extraída. Valores mais altos indicam maior certeza na extração.</p>
+    <div class="export-bar">
+      <span class="label">Exportar:</span>
+      <button class="export-btn" onclick="exportCanvasAsPNG('chart-confidence','confianca')">Confiança PNG</button>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box" style="grid-column: 1 / -1;">
+        <h3>Confiança das Teses</h3>
+        <canvas id="chart-confidence"></canvas>
+      </div>
+    </div>
+  </div>
+
   <!-- TAB: DATA -->
   <div class="viz-panel" id="panel-data">
-    <input type="text" class="search-box" id="data-search" placeholder="Buscar teses por titulo, ID ou descricao...">
+    <input type="text" class="search-box" id="data-search" placeholder="Buscar teses por título, ID ou descrição...">
     <div style="overflow-x:auto;">
       <table id="data-table">
         <thead>
-          <tr><th>ID</th><th>Titulo</th><th>Tipo</th><th>Conf.</th><th>Citacoes</th></tr>
+          <tr><th>ID</th><th>Título</th><th>Tipo</th><th>Conf.</th><th>Citações</th></tr>
         </thead>
         <tbody id="data-tbody"></tbody>
       </table>
@@ -233,7 +244,7 @@ tr:hover { background: #f5f8ff; }
 </div>
 
 <div style="text-align:center;padding:24px;color:#999;font-size:0.85em;">
-  Analise gerada por Claude Opus 4.5 &mdash; Re-extracao direta dos textos originais &mdash; Jan 2026
+  Análise gerada por Claude Opus 4.5 &mdash; Re-extração direta dos textos originais &mdash; Jan 2026
 </div>
 
 <div class="tooltip" id="tooltip" style="display:none;"></div>
@@ -247,7 +258,8 @@ const CITATION_GROUPS = {"groups": [{"theme": "Revelacao e Iniciativa Divina", "
 
 // === COLORS ===
 const PART_COLORS = { '1': '#048fcc', '2': '#dc3545', '3': '#fd7e14', '4': '#28a745' };
-const TYPE_COLORS = { 'main': '#3498db', 'supporting': '#95a5a6', 'conclusion': '#e67e22', 'premise': '#9b59b6' };
+const TYPE_COLORS = { 'main': '#048fcc', 'supporting': '#95a5a6', 'conclusion': '#e67e22', 'premise': '#9b59b6' };
+const TYPE_LABELS = { 'main': 'principal', 'supporting': 'suporte', 'conclusion': 'conclusão', 'premise': 'premissa' };
 
 function getPartNum(id) { return id.charAt(1); }
 function getPartColor(id) { return PART_COLORS[getPartNum(id)] || '#999'; }
@@ -263,6 +275,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     if (tab.dataset.tab === 'network' && !window._networkInit) initNetwork();
     if (tab.dataset.tab === 'tree' && !window._treeInit) initTree();
     if (tab.dataset.tab === 'citations' && !window._citationsInit) initCitations();
+    if (tab.dataset.tab === 'confidence' && !window._confidenceInit) initConfidence();
     if (tab.dataset.tab === 'data' && !window._dataInit) initDataTable();
   });
 });
@@ -287,7 +300,7 @@ function hideTooltip() { tooltip.style.display = 'none'; }
   new Chart(document.getElementById('chart-types'), {
     type: 'doughnut',
     data: {
-      labels: Object.keys(types).map(t => t.charAt(0).toUpperCase() + t.slice(1)),
+      labels: Object.keys(types).map(t => TYPE_LABELS[t] || t),
       datasets: [{ data: Object.values(types), backgroundColor: Object.keys(types).map(t => TYPE_COLORS[t] || '#ccc') }]
     },
     options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
@@ -327,12 +340,17 @@ function hideTooltip() { tooltip.style.display = 'none'; }
     type: 'doughnut',
     data: {
       labels: Object.keys(reasoning).map(r => r === 'deductive' ? 'Dedutivo' : 'Indutivo'),
-      datasets: [{ data: Object.values(reasoning), backgroundColor: ['#3498db', '#e67e22'] }]
+      datasets: [{ data: Object.values(reasoning), backgroundColor: ['#048fcc', '#e67e22'] }]
     },
     options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
   });
+})();
 
-  // Confidence distribution
+// ============================================================
+// CONFIDENCE CHART (Chart.js) — separate tab
+// ============================================================
+function initConfidence() {
+  window._confidenceInit = true;
   const confBuckets = { '0.88-0.90': 0, '0.91-0.93': 0, '0.94-0.95': 0, '0.96-0.97': 0 };
   THESES.forEach(t => {
     const c = t.confidence;
@@ -345,11 +363,11 @@ function hideTooltip() { tooltip.style.display = 'none'; }
     type: 'bar',
     data: {
       labels: Object.keys(confBuckets),
-      datasets: [{ label: 'Teses', data: Object.values(confBuckets), backgroundColor: '#3498db' }]
+      datasets: [{ label: 'Teses', data: Object.values(confBuckets), backgroundColor: '#048fcc' }]
     },
     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 2 } } } }
   });
-})();
+}
 
 // ============================================================
 // NETWORK GRAPH (D3.js force-directed)
@@ -447,7 +465,7 @@ function initNetwork() {
     .style('fill', '#555');
 
   node.on('mouseover', function(evt, d) {
-    showTooltip(evt, '<strong>' + d.id + '</strong>: ' + d.title + '<br><em>Tipo: ' + d.type + ' | Conf: ' + d.confidence + '</em>');
+    showTooltip(evt, '<strong>' + d.id + '</strong>: ' + d.title + '<br><em>Tipo: ' + (TYPE_LABELS[d.type] || d.type) + ' | Conf: ' + d.confidence + '</em>');
     // Highlight connections
     const connected = new Set();
     links.forEach(l => {
@@ -465,11 +483,11 @@ function initNetwork() {
     const dp = document.getElementById('network-detail');
     const cits = d.citations.map(c => c.reference).join(', ') || 'Nenhuma';
     dp.innerHTML = '<h3>' + d.id + ' &mdash; ' + d.title + '</h3>' +
-      '<span class="badge badge-' + d.type + '">' + d.type + '</span>' +
-      '<span>Confianca: ' + d.confidence + '</span>' +
+      '<span class="badge badge-' + d.type + '">' + (TYPE_LABELS[d.type] || d.type) + '</span>' +
+      '<span>Confiança: ' + d.confidence + '</span>' +
       '<p style="margin-top:10px">' + d.description + '</p>' +
       '<blockquote>' + d.supporting_text + '</blockquote>' +
-      '<p><strong>Citacoes:</strong> ' + cits + '</p>';
+      '<p><strong>Citações:</strong> ' + cits + '</p>';
     dp.classList.add('show');
   });
 
@@ -502,16 +520,16 @@ function initTree() {
     '4': 'Parte 4: A Resposta do Homem'
   };
   const chNames = {
-    '1': 'Cap 1: A Abordagem Correta', '2': 'Cap 2: As Afirmacoes de Cristo',
-    '3': 'Cap 3: O Carater de Cristo', '4': 'Cap 4: A Ressurreicao de Cristo',
-    '5': 'Cap 5: Realidade do Pecado', '6': 'Cap 6: Consequencias do Pecado',
-    '7': 'Cap 7: A Morte de Cristo', '8': 'Cap 8: A Salvacao em Cristo',
-    '9': 'Cap 9: Calculando o Custo', '10': 'Cap 10: Tomando uma Decisao',
-    '11': 'Cap 11: Sendo um Cristao'
+    '1': 'Cap 1: A Abordagem Correta', '2': 'Cap 2: As Afirmações de Cristo',
+    '3': 'Cap 3: O Caráter de Cristo', '4': 'Cap 4: A Ressurreição de Cristo',
+    '5': 'Cap 5: Realidade do Pecado', '6': 'Cap 6: Consequências do Pecado',
+    '7': 'Cap 7: A Morte de Cristo', '8': 'Cap 8: A Salvação em Cristo',
+    '9': 'Cap 9: Calculando o Custo', '10': 'Cap 10: Tomando uma Decisão',
+    '11': 'Cap 11: Sendo um Cristão'
   };
 
   // Build hierarchy
-  const root = { name: 'Cristianismo Basico', children: [] };
+  const root = { name: 'Cristianismo Básico', children: [] };
   const parts = {};
   THESES.forEach(t => {
     const p = getPartNum(t.id);
@@ -575,7 +593,7 @@ function initTree() {
   nodeG.filter(d => d.data.thesis).on('mouseover', function(evt, d) {
     const t = d.data.thesis;
     showTooltip(evt, '<strong>' + t.id + '</strong>: ' + t.title +
-      '<br><em>' + t.thesis_type + ' | conf. ' + t.confidence + '</em>' +
+      '<br><em>' + (TYPE_LABELS[t.thesis_type] || t.thesis_type) + ' | conf. ' + t.confidence + '</em>' +
       '<br><br>' + t.description.substring(0, 200) + '...');
   }).on('mouseout', hideTooltip)
   .on('click', function(evt, d) {
@@ -583,10 +601,10 @@ function initTree() {
     const dp = document.getElementById('tree-detail');
     const cits = (t.citations || []).map(c => c.reference).join(', ') || 'Nenhuma';
     dp.innerHTML = '<h3>' + t.id + ' &mdash; ' + t.title + '</h3>' +
-      '<span class="badge badge-' + t.type + '">' + t.thesis_type + '</span>' +
+      '<span class="badge badge-' + t.thesis_type + '">' + (TYPE_LABELS[t.thesis_type] || t.thesis_type) + '</span>' +
       '<p style="margin-top:10px">' + t.description + '</p>' +
       '<blockquote>' + t.supporting_text + '</blockquote>' +
-      '<p><strong>Citacoes:</strong> ' + cits + '</p>';
+      '<p><strong>Citações:</strong> ' + cits + '</p>';
     dp.classList.add('show');
   });
 }
@@ -620,9 +638,9 @@ function initCitations() {
     data: {
       labels: sorted.map(s => s[0]),
       datasets: [{
-        label: 'Citacoes',
+        label: 'Citações',
         data: sorted.map(s => s[1]),
-        backgroundColor: sorted.map(s => ntBooks.has(s[0]) ? '#e67e22' : '#3498db')
+        backgroundColor: sorted.map(s => ntBooks.has(s[0]) ? '#e67e22' : '#048fcc')
       }]
     },
     options: {
@@ -643,7 +661,7 @@ function initCitations() {
     data: {
       labels: groupData.map(g => g.theme.length > 30 ? g.theme.substring(0, 30) + '...' : g.theme),
       datasets: [{
-        label: 'Citacoes',
+        label: 'Citações',
         data: groupData.map(g => g.citations.length),
         backgroundColor: ['#048fcc', '#048fcc', '#048fcc', '#dc3545', '#dc3545', '#fd7e14', '#fd7e14', '#28a745']
       }]
@@ -667,7 +685,7 @@ function initDataTable() {
     const tr = document.createElement('tr');
     const cits = (t.citations || []).length;
     tr.innerHTML = '<td><strong>' + t.id + '</strong></td><td>' + t.title + '</td>' +
-      '<td><span class="badge badge-' + t.thesis_type + '">' + t.thesis_type + '</span></td>' +
+      '<td><span class="badge badge-' + t.thesis_type + '">' + (TYPE_LABELS[t.thesis_type] || t.thesis_type) + '</span></td>' +
       '<td>' + t.confidence + '</td><td>' + cits + '</td>';
     tr.dataset.search = (t.id + ' ' + t.title + ' ' + t.description).toLowerCase();
     tbody.appendChild(tr);
