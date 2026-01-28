@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-01-28
+
+### Added
+- Glossary slide explaining 6 theological terms (Impecabilidade, Pecado, Salvação, Substituição, Arrependimento, Reconciliação)
+- Visual emoji icons for each part: 👤 (P1), ⚠️ (P2), ✝️ (P3), 🙏 (P4)
+- Contextual descriptions for each part slide explaining its purpose
+- ARIA roles and labels for screen readers (`role="region"`, `aria-label`)
+- CSS media queries for `prefers-reduced-motion` and `prefers-contrast: more`
+- Responsive CSS for mobile (< 768px) and high zoom (> 1600px)
+- 7 new accessibility tests in `test_slides.py` (glossary, icons, descriptions, ARIA, typography, navigation)
+- `_build_glossary_slide()` helper function in slides generator
+- `_PART_ICONS` and `_PART_DESCRIPTIONS` dictionaries for part metadata
+- `content-bullets` CSS class for structured bullet point lists
+
+### Changed
+- Font sizes increased for WCAG compliance: h1 (1.8em → 2.2em), h2 (1.4em → 1.6em), h3 (1.1em → 1.3em)
+- Color contrast improved: subtitle/count colors changed from #666/#888 to #333
+- Flow slides restructured: dense paragraphs replaced with 5 sub-slides using bullet points
+- Each flow movement has 3 bullet points with bold terms in brand color (#048fcc)
+- Part slides border increased from 5px to 6px for better visibility
+- Thesis count text changed from "X teses" to "Esta seção contém X ideias-chave"
+- Line height increased in flow cards (1.5 → 1.8) and content bullets (1.9)
+- Chain node padding increased (8px 14px → 12px 18px)
+- Reveal.js configuration: transition changed to 'fade', speed to 'slow', slideNumber to 'c/t'
+- Logo alt text improved with more descriptive ARIA label
+- `pyproject.toml` version bumped to `0.9.0`
+
+### Fixed
+- Low contrast text in subtitles and counts now meets WCAG AA standards
+- Dense "wall of text" in flow slides replaced with scannable bullet structure
+- Missing visual hierarchy in part slides addressed with icons and descriptions
+
 ## [0.8.0] - 2026-01-28
 
 ### Added

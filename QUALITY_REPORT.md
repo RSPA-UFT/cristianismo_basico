@@ -197,6 +197,29 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 - **18 testes de auditoria HTML** (`tests/test_html_audit.py`): unicode escapes, diacriticos, labels ingleses, paleta, TYPE_LABELS, aba confianca, contraste, overflow, navegacao, lang/charset
 - **199 testes passando** (23 novos: 18 auditoria + 5 slides)
 
+### Iteracao 8: Slides, referencias biblicas, simplificacao do painel (v0.8.0)
+- **Efeito "marca-texto" removido**: slides de partes usam `border-top` accent em vez de background tintado
+- **Resumo executivo completo**: distribuido em multiplos sub-slides (sem truncamento)
+- **Selo ICEB 125 anos**: logo embutido como base64 no slide de titulo
+- **Aba "Referencias"**: nova aba no dashboard (tese → citacoes biblicas com busca/filtro)
+- **Simplificacao**: abas "Fluxo Sankey" e "Confianca" removidas (7 abas total)
+- **d3-sankey CDN removido**
+- **206 testes passando** (7 novos)
+
+### Iteracao 9: Acessibilidade da apresentacao para publicos variados (v0.9.0)
+- **Tipografia aumentada**: h1 (2.2em), h2 (1.6em), body (0.9-1.0em) para WCAG compliance
+- **Contraste melhorado**: subtitles/counts de #666/#888 para #333 (WCAG AA)
+- **Slide de glossario**: 6 termos teologicos explicados (Impecabilidade, Pecado, Salvacao, Substituicao, Arrependimento, Reconciliacao)
+- **Bullet points estruturados**: fluxo argumentativo com 5 sub-slides (overview + 4 movimentos com 3 bullets cada)
+- **Icones visuais**: emojis nas 4 partes (👤⚠️✝️🙏)
+- **Descricoes contextuais**: cada parte tem explicacao do seu proposito
+- **ARIA semantico**: `role="region"`, `aria-label` no slide de titulo, alt text melhorado no logo
+- **CSS acessivel**: `prefers-reduced-motion`, `prefers-contrast: more`, focus states
+- **Responsividade**: media queries para mobile (<768px) e zoom alto (>1600px)
+- **Reveal.js otimizado**: transicao `fade`, velocidade `slow`, slideNumber `c/t`
+- **Backup preservado**: branch `backup/v0.8.0-presentation-original` mantem versao anterior
+- **213 testes passando** (7 novos de acessibilidade)
+
 ---
 
 ## Recomendacoes Restantes

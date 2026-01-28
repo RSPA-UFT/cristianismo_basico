@@ -18,7 +18,7 @@ Pipeline de extracao e analise automatizada de teses teologicas do livro
 - Tipos de tese traduzidos para portugues (principal, suporte, conclusao, premissa)
 - Export de graficos como PNG/SVG
 - Scrollytelling narrativo (12 secoes com Scrollama.js + D3.js)
-- Apresentacao Reveal.js (10+ slides auto-contidos, sub-slides verticais, grid 2 colunas)
+- Apresentacao Reveal.js acessivel (glossario, icones visuais, bullet points, ARIA, responsivo)
 - Relatorio HTML print-ready (PDF via WeasyPrint ou Ctrl+P)
 - Geracao de relatorio em Markdown
 - GitHub Pages com 3 paginas navegaveis (scrollytelling, dashboard, slides)
@@ -86,7 +86,7 @@ uv run python -m src
 
 ```bash
 uv sync --extra dev
-uv run pytest tests/ -v              # 199 testes
+uv run pytest tests/ -v              # 213 testes
 uv run pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
@@ -148,5 +148,5 @@ Mudancas documentadas em [CHANGELOG.md](CHANGELOG.md).
 - **Fix branches** — para correcoes, prefixo `fix/`
 
 ```
-master ─── v0.1.0 ─── v0.3.0 ─── v0.4.0 ─── v0.5.0 ─── v0.6.0 ─── v0.7.0
+master ─── v0.1.0 ─── v0.3.0 ─── v0.4.0 ─── v0.5.0 ─── v0.6.0 ─── v0.7.0 ─── v0.8.0 ─── v0.9.0
 ```

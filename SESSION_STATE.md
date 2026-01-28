@@ -1,7 +1,7 @@
 # Estado da Sessao - Cristianismo Basico
 
 Data: 2026-01-28
-Versao atual: v0.8.0
+Versao atual: v0.9.0
 Ultima sessao encerrada com todos os objetivos cumpridos.
 
 ---
@@ -34,15 +34,15 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | `validators.py` | Validacao pos-processamento + detect_footnotes() | OK |
 | `output.py` | Geracao de output (JSON, Markdown, secao scholarly) | OK |
 | `pdf_report.py` | Geracao de relatorio PDF/HTML print-ready | OK |
-| `slides.py` | Geracao de apresentacao Reveal.js (10+ slides, sub-slides, grid, logo) | OK |
+| `slides.py` | Geracao de apresentacao Reveal.js acessivel (glossario, icones, ARIA, responsivo) | OK |
 | `scrollytelling.py` | Scrollytelling (Scrollama.js + D3.js, 12 secoes) | OK |
 | `pipeline.py` | Orquestrador dos 4 estagios (com fase 3a+ e scrollytelling) | OK |
 
 ### Testes (tests/)
-- **206 testes passando** (pytest)
+- **213 testes passando** (pytest)
 - Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators, scholarly, pdf_report, slides, scrollytelling, html_audit
-- Arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (16), `test_scrollytelling.py` (17), `test_html_audit.py` (21)
-- Testes atualizados: test_models (+3), test_validators (+3), test_output (+2), test_pipeline (+2), test_slides (+4), test_html_audit (+5/-2)
+- Arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (23), `test_scrollytelling.py` (17), `test_html_audit.py` (21)
+- Testes atualizados: test_models (+3), test_validators (+3), test_output (+2), test_pipeline (+2), test_slides (+11), test_html_audit (+5/-2)
 - Dependencias dev: pytest>=8.0, pytest-cov>=6.0
 
 ### Output Final (output/)
@@ -146,6 +146,19 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 - Abas "Fluxo Sankey" e "Confianca" removidas (simplificacao, 7 abas total)
 - d3-sankey CDN removido
 - **206 testes** (7 novos, 0 falhas)
+
+### Iteracao 9: Acessibilidade da apresentacao para publicos variados (v0.9.0)
+- Tipografia aumentada: h1 (2.2em), h2 (1.6em), body (0.9-1.0em) para WCAG compliance
+- Contraste melhorado: subtitles/counts de #666/#888 para #333 (WCAG AA)
+- Slide de glossario com 6 termos teologicos explicados
+- Fluxo argumentativo com bullet points estruturados (5 sub-slides, 4 movimentos)
+- Icones visuais nas 4 partes (👤⚠️✝️🙏) com descricoes contextuais
+- ARIA semantico: `role="region"`, `aria-label`, alt text melhorado
+- CSS acessivel: `prefers-reduced-motion`, `prefers-contrast: more`, focus states
+- Responsividade: media queries para mobile (<768px) e zoom alto (>1600px)
+- Reveal.js: transicao `fade`, velocidade `slow`, slideNumber `c/t`
+- Branch `backup/v0.8.0-presentation-original` preserva versao anterior
+- **213 testes** (7 novos de acessibilidade, 0 falhas)
 - Este e o output final atual
 
 ---
@@ -239,7 +252,7 @@ cd /mnt/c/cristianismo_basico
 
 # Verificar ambiente
 .venv/bin/python --version   # Python 3.12
-uv run pytest tests/ -q      # 199 passed
+uv run pytest tests/ -q      # 213 passed
 
 # Executar pipeline completo (requer Ollama rodando)
 uv run python -m src
