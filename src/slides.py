@@ -105,6 +105,58 @@ def _build_logo_img(logo_path: Path | None) -> str:
     )
 
 
+def _build_architecture_slide() -> str:
+    """Build a visual architecture slide showing the book's structure as pillars.
+
+    Based on the infographic PDFs "A Arquitetura da Fé" and "A Arquitetura de um Clássico".
+    Uses a Q&A format to communicate the flow of ideas.
+    """
+    return """
+  <section>
+    <h2>A Arquitetura do Livro</h2>
+    <p class="subtitle">Quatro pilares que sustentam o argumento de Stott</p>
+    <div class="pillar-architecture">
+      <div class="pillar-foundation">
+        <div class="pillar-label">FUNDAMENTO</div>
+        <div class="pillar-qa">
+          <span class="qa-q">Como abordar?</span>
+          <span class="qa-a">Com humildade e honestidade, reconhecendo a iniciativa de Deus</span>
+        </div>
+      </div>
+      <div class="pillar-row">
+        <div class="pillar p1-pillar">
+          <div class="pillar-label">PILAR 1: A PESSOA</div>
+          <div class="pillar-qa">
+            <span class="qa-q">Quem é Jesus Cristo?</span>
+            <span class="qa-a">O Filho de Deus (afirmações, caráter, ressurreição)</span>
+          </div>
+        </div>
+        <div class="pillar p2-pillar">
+          <div class="pillar-label">PILAR 2: A NECESSIDADE</div>
+          <div class="pillar-qa">
+            <span class="qa-q">Por que precisamos Dele?</span>
+            <span class="qa-a">Por causa do pecado universal que nos separa de Deus</span>
+          </div>
+        </div>
+        <div class="pillar p3-pillar">
+          <div class="pillar-label">A PONTE: A OBRA</div>
+          <div class="pillar-qa">
+            <span class="qa-q">O que Cristo fez?</span>
+            <span class="qa-a">Morreu e ressuscitou para nos salvar do pecado</span>
+          </div>
+        </div>
+        <div class="pillar p4-pillar">
+          <div class="pillar-label">PILAR 4: A RESPOSTA</div>
+          <div class="pillar-qa">
+            <span class="qa-q">O que devemos fazer?</span>
+            <span class="qa-a">Calcular o custo, decidir e viver de forma comprometida</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>"""
+
+
 def _build_flow_slides(argument_flow: str | None) -> str:
     """Build vertical sub-slides for the Argument Flow section.
 
@@ -386,6 +438,61 @@ def _build_slides(analysis: BookAnalysis, *, logo_path: Path | None = None) -> s
   .p1 {{ background: #048fcc; }} .p2 {{ background: #dc3545; }}
   .p3 {{ background: #fd7e14; }} .p4 {{ background: #28a745; }}
 
+  /* Pillar architecture visualization */
+  .reveal .pillar-architecture {{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 95%;
+    margin: 0 auto;
+  }}
+  .reveal .pillar-foundation {{
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    text-align: center;
+  }}
+  .reveal .pillar-row {{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }}
+  .reveal .pillar {{
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }}
+  .reveal .pillar-label {{
+    font-weight: bold;
+    font-size: 0.75em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }}
+  .reveal .pillar-qa {{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }}
+  .reveal .qa-q {{
+    font-style: italic;
+    font-size: 0.8em;
+    opacity: 0.9;
+  }}
+  .reveal .qa-a {{
+    font-size: 0.85em;
+    font-weight: 500;
+  }}
+  .reveal .p1-pillar {{ background: linear-gradient(135deg, #048fcc, #036c9a); color: white; }}
+  .reveal .p2-pillar {{ background: linear-gradient(135deg, #dc3545, #b02a37); color: white; }}
+  .reveal .p3-pillar {{ background: linear-gradient(135deg, #fd7e14, #c96209); color: white; }}
+  .reveal .p4-pillar {{ background: linear-gradient(135deg, #28a745, #1e7b34); color: white; }}
+
   /* Content bullets - for flow slides */
   .reveal .content-bullets {{
     text-align: left;
@@ -483,6 +590,20 @@ def _build_slides(analysis: BookAnalysis, *, logo_path: Path | None = None) -> s
     .reveal .scholarly-grid {{
       grid-template-columns: 1fr;
     }}
+    .reveal .pillar-row {{
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }}
+    .reveal .pillar {{
+      min-height: 80px;
+      padding: 10px;
+    }}
+    .reveal .pillar-label {{
+      font-size: 0.65em;
+    }}
+    .reveal .qa-q, .reveal .qa-a {{
+      font-size: 0.75em;
+    }}
     .reveal h1 {{ font-size: 1.8em; }}
     .reveal h2 {{ font-size: 1.4em; }}
   }}
@@ -534,10 +655,13 @@ def _build_slides(analysis: BookAnalysis, *, logo_path: Path | None = None) -> s
   <!-- Slide 4: Glossary -->
   {_build_glossary_slide()}
 
-  <!-- Slides 5-8: Parts -->
+  <!-- Slide 5: Architecture Overview (from infographic PDFs) -->
+  {_build_architecture_slide()}
+
+  <!-- Slides 6-9: Parts -->
   {''.join(part_slides)}
 
-  <!-- Slide 8: Argument Flow (vertical sub-slides) -->
+  <!-- Slide 10: Argument Flow (vertical sub-slides) -->
   {_build_flow_slides(analysis.argument_flow)}
 
   <!-- Slide 9: Scholarly Citations -->

@@ -86,7 +86,7 @@ uv run python -m src
 
 ```bash
 uv sync --extra dev
-uv run pytest tests/ -v              # 213 testes
+uv run pytest tests/ -v              # 251 testes
 uv run pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
@@ -105,8 +105,9 @@ src/
   prompts.py       - Templates de prompt para LLM
   output.py        - Geracao de output (JSON, Markdown)
   pdf_report.py    - Geracao de relatorio PDF/HTML print-ready
-  slides.py        - Geracao de apresentacao Reveal.js
+  slides.py        - Geracao de apresentacao Reveal.js (com slide de arquitetura visual)
   scrollytelling.py - Geracao de scrollytelling (Scrollama.js + D3.js)
+  pdf_splitter.py  - Processamento de PDFs grandes em chunks (Docling)
   config.py        - Configuracao via .env (Pydantic Settings)
 ```
 
@@ -148,5 +149,5 @@ Mudancas documentadas em [CHANGELOG.md](CHANGELOG.md).
 - **Fix branches** — para correcoes, prefixo `fix/`
 
 ```
-master ─── v0.1.0 ─── v0.3.0 ─── v0.4.0 ─── v0.5.0 ─── v0.6.0 ─── v0.7.0 ─── v0.8.0 ─── v0.9.0
+master ─── v0.1.0 ─── v0.3.0 ─── v0.4.0 ─── v0.5.0 ─── v0.6.0 ─── v0.7.0 ─── v0.8.0 ─── v0.9.0 ─── v0.9.1
 ```

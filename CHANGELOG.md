@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] - 2026-01-28
+
+### Added
+- "A Arquitetura do Livro" slide: visual pillar-based overview with Q&A format for each pillar
+- `_build_architecture_slide()` helper function in slides generator
+- CSS for `.pillar-architecture`, `.pillar-row`, `.pillar`, `.pillar-qa`, `.qa-q`, `.qa-a`
+- Responsive CSS for pillar grid on mobile (2x2 layout on < 768px)
+- PDF processing module `src/pdf_splitter.py` for chunking large PDFs with Docling
+- Processed infographic PDFs:
+  - `A_Arquitetura_da_Fé_Cristianismo_Básico (1).pdf` → 26 chunks in `output/chunks_teste/`
+  - `A_Arquitetura_de_um_Clássico_Cristianismo_Básico.pdf` → 32 chunks in `output/chunks_classico/`
+
+### Changed
+- Architecture slide positioned after glossary, before detailed part slides
+- Pillar colors use gradient backgrounds matching part colors
+- `pyproject.toml` version bumped to `0.9.1`
+
 ## [0.9.0] - 2026-01-28
 
 ### Added

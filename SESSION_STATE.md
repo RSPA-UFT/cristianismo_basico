@@ -1,7 +1,7 @@
 # Estado da Sessao - Cristianismo Basico
 
 Data: 2026-01-28
-Versao atual: v0.9.0
+Versao atual: v0.9.1
 Ultima sessao encerrada com todos os objetivos cumpridos.
 
 ---
@@ -34,12 +34,13 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | `validators.py` | Validacao pos-processamento + detect_footnotes() | OK |
 | `output.py` | Geracao de output (JSON, Markdown, secao scholarly) | OK |
 | `pdf_report.py` | Geracao de relatorio PDF/HTML print-ready | OK |
-| `slides.py` | Geracao de apresentacao Reveal.js acessivel (glossario, icones, ARIA, responsivo) | OK |
+| `slides.py` | Geracao de apresentacao Reveal.js acessivel (glossario, icones, arquitetura visual, ARIA, responsivo) | OK |
 | `scrollytelling.py` | Scrollytelling (Scrollama.js + D3.js, 12 secoes) | OK |
+| `pdf_splitter.py` | Processamento de PDFs grandes em chunks (Docling) | OK |
 | `pipeline.py` | Orquestrador dos 4 estagios (com fase 3a+ e scrollytelling) | OK |
 
 ### Testes (tests/)
-- **213 testes passando** (pytest)
+- **251 testes passando** (pytest)
 - Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators, scholarly, pdf_report, slides, scrollytelling, html_audit
 - Arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (23), `test_scrollytelling.py` (17), `test_html_audit.py` (21)
 - Testes atualizados: test_models (+3), test_validators (+3), test_output (+2), test_pipeline (+2), test_slides (+11), test_html_audit (+5/-2)
@@ -159,6 +160,17 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 - Reveal.js: transicao `fade`, velocidade `slow`, slideNumber `c/t`
 - Branch `backup/v0.8.0-presentation-original` preserva versao anterior
 - **213 testes** (7 novos de acessibilidade, 0 falhas)
+
+### Iteracao 9.1: Slide de arquitetura visual + processamento de PDFs infograficos (v0.9.1)
+- Novo slide "A Arquitetura do Livro" com visualizacao de pilares no formato Q&A
+- Processamento dos PDFs infograficos:
+  - `A_Arquitetura_da_Fé_Cristianismo_Básico (1).pdf` → 26 chunks (output/chunks_teste/)
+  - `A_Arquitetura_de_um_Clássico_Cristianismo_Básico.pdf` → 32 chunks (output/chunks_classico/)
+- Analise comparativa: PDF 1 = resumo visual Q&A; PDF 2 = analise academica
+- Opcao B escolhida: slide de resumo visual (escopo = comunicar fluxo de ideias)
+- CSS responsivo para grid de pilares em mobile (2x2)
+- Pilares com cores gradiente harmonizadas com as partes
+- **251 testes** (0 falhas)
 - Este e o output final atual
 
 ---
@@ -252,7 +264,7 @@ cd /mnt/c/cristianismo_basico
 
 # Verificar ambiente
 .venv/bin/python --version   # Python 3.12
-uv run pytest tests/ -q      # 213 passed
+uv run pytest tests/ -q      # 251 passed
 
 # Executar pipeline completo (requer Ollama rodando)
 uv run python -m src
