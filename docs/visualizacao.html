@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Analise Teologica: Cristianismo Basico (John Stott)</title>
+<title>An\u00e1lise Teol\u00f3gica: Cristianismo B\u00e1sico (John Stott)</title>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #2c3e50; }
-.header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 24px 32px; text-align: center; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #343a40; }
+.header { background: linear-gradient(135deg, #03618b, #048fcc); color: white; padding: 24px 32px; text-align: center; }
 .header h1 { font-size: 1.6em; margin-bottom: 8px; }
 .header p { opacity: 0.85; font-size: 0.95em; }
 .stats { display: flex; justify-content: center; gap: 32px; margin-top: 16px; flex-wrap: wrap; }
@@ -19,23 +19,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .stat .label { font-size: 0.8em; opacity: 0.8; }
 .tabs { display: flex; background: #fff; border-bottom: 2px solid #e0e0e0; padding: 0 16px; overflow-x: auto; }
 .tab { padding: 12px 20px; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 500; white-space: nowrap; transition: all 0.2s; color: #666; }
-.tab:hover { color: #2c3e50; background: #f0f0f0; }
-.tab.active { color: #3498db; border-bottom-color: #3498db; }
+.tab:hover { color: #343a40; background: #f0f0f0; }
+.tab.active { color: #048fcc; border-bottom-color: #048fcc; }
 .viz-container { padding: 24px; min-height: 600px; }
 .viz-panel { display: none; }
 .viz-panel.active { display: block; }
 .detail-panel { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-top: 16px; display: none; }
 .detail-panel.show { display: block; }
-.detail-panel h3 { color: #2c3e50; margin-bottom: 8px; }
+.detail-panel h3 { color: #343a40; margin-bottom: 8px; }
 .detail-panel .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 8px; }
-.badge-main { background: #3498db; color: white; }
+.badge-main { background: #048fcc; color: white; }
 .badge-supporting { background: #95a5a6; color: white; }
 .badge-conclusion { background: #e67e22; color: white; }
 .badge-premise { background: #9b59b6; color: white; }
-blockquote { border-left: 3px solid #3498db; padding: 8px 16px; margin: 8px 0; background: #f8f9fa; font-style: italic; }
+blockquote { border-left: 3px solid #048fcc; padding: 8px 16px; margin: 8px 0; background: #f8f9fa; font-style: italic; }
 .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
 .chart-box { background: white; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-.chart-box h3 { margin-bottom: 12px; font-size: 1.1em; color: #2c3e50; }
+.chart-box h3 { margin-bottom: 12px; font-size: 1.1em; color: #343a40; }
 canvas { max-height: 350px; }
 svg { width: 100%; }
 .node circle { stroke: #fff; stroke-width: 2; cursor: pointer; }
@@ -55,10 +55,10 @@ th { background: #f0f0f0; font-weight: 600; position: sticky; top: 0; }
 tr:hover { background: #f5f8ff; }
 .search-box { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; width: 100%; max-width: 400px; margin-bottom: 16px; font-size: 0.95em; }
 .flow-text { max-width: 900px; line-height: 1.7; }
-.flow-text h3 { margin-top: 20px; color: #2c3e50; }
+.flow-text h3 { margin-top: 20px; color: #343a40; }
 .flow-text p { margin: 10px 0; }
-.export-btn { display: inline-block; padding: 6px 14px; margin: 4px; border: 1px solid #3498db; border-radius: 4px; background: #fff; color: #3498db; cursor: pointer; font-size: 0.8em; font-weight: 500; transition: all 0.2s; }
-.export-btn:hover { background: #3498db; color: #fff; }
+.export-btn { display: inline-block; padding: 6px 14px; margin: 4px; border: 1px solid #048fcc; border-radius: 2rem; background: #fff; color: #048fcc; cursor: pointer; font-size: 0.8em; font-weight: 500; transition: all 0.2s; }
+.export-btn:hover { background: #048fcc; color: #fff; }
 .export-bar { margin-bottom: 12px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .export-bar .label { font-size: 0.8em; color: #888; margin-right: 4px; }
 .sankey-node rect { cursor: pointer; }
@@ -73,28 +73,28 @@ tr:hover { background: #f5f8ff; }
 </style>
 </head>
 <body>
-<nav class="site-nav" style="background:#1a1a2e;padding:8px 16px;display:flex;gap:16px;justify-content:center;font-family:sans-serif;font-size:0.9rem;">
-  <a href="index.html" style="color:#b0c4de;text-decoration:none;">Scrollytelling</a>
-  <a href="visualizacao.html" style="color:#b0c4de;text-decoration:none;">Dashboard</a>
-  <a href="apresentacao.html" style="color:#b0c4de;text-decoration:none;">Slides</a>
+<nav class="site-nav" style="background:#036c9a;padding:8px 16px;display:flex;gap:16px;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:0.9rem;">
+  <a href="index.html" style="color:#e0f0ff;text-decoration:none;">Narrativa</a>
+  <a href="visualizacao.html" style="color:#e0f0ff;text-decoration:none;">Painel</a>
+  <a href="apresentacao.html" style="color:#e0f0ff;text-decoration:none;">Apresenta\u00e7\u00e3o</a>
 </nav>
 
 <div class="header">
-  <h1>Analise Teologica: Cristianismo Basico</h1>
-  <p>John Stott &mdash; Extracao e analise com Claude Opus 4.5</p>
+  <h1>An\u00e1lise Teol\u00f3gica: Cristianismo B\u00e1sico</h1>
+  <p>John Stott &mdash; Extra\u00e7\u00e3o e an\u00e1lise com Claude Opus 4.5</p>
   <div class="stats">
     <div class="stat"><div class="num">52</div><div class="label">Teses</div></div>
-    <div class="stat"><div class="num">57</div><div class="label">Cadeias Logicas</div></div>
-    <div class="stat"><div class="num">169</div><div class="label">Citacoes Biblicas</div></div>
-    <div class="stat"><div class="num">8</div><div class="label">Grupos Tematicos</div></div>
+    <div class="stat"><div class="num">57</div><div class="label">Cadeias L\u00f3gicas</div></div>
+    <div class="stat"><div class="num">169</div><div class="label">Cita\u00e7\u00f5es B\u00edblicas</div></div>
+    <div class="stat"><div class="num">8</div><div class="label">Grupos Tem\u00e1ticos</div></div>
   </div>
 </div>
 
 <div class="tabs" id="tabs">
-  <div class="tab active" data-tab="overview">Visao Geral</div>
-  <div class="tab" data-tab="network">Rede Logica</div>
+  <div class="tab active" data-tab="overview">Vis\u00e3o Geral</div>
+  <div class="tab" data-tab="network">Rede L\u00f3gica</div>
   <div class="tab" data-tab="tree">Hierarquia</div>
-  <div class="tab" data-tab="citations">Citacoes Biblicas</div>
+  <div class="tab" data-tab="citations">Cita\u00e7\u00f5es B\u00edblicas</div>
   <div class="tab" data-tab="flow">Fluxo Argumentativo</div>
   <div class="tab" data-tab="sankey">Fluxo Sankey</div>
   <div class="tab" data-tab="data">Dados</div>
@@ -141,10 +141,10 @@ tr:hover { background: #f5f8ff; }
       <button class="export-btn" onclick="exportSVGasPNG('network-svg','rede-logica')">PNG</button>
     </div>
     <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#4682B4"></div> Parte 1: A Pessoa de Cristo</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#DC143C"></div> Parte 2: A Necessidade do Homem</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#FF8C00"></div> Parte 3: A Obra de Cristo</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#228B22"></div> Parte 4: A Resposta do Homem</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#048fcc"></div> Parte 1: A Pessoa de Cristo</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc3545"></div> Parte 2: A Necessidade do Homem</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fd7e14"></div> Parte 3: A Obra de Cristo</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#28a745"></div> Parte 4: A Resposta do Homem</div>
       <div class="legend-item"><div class="legend-dot" style="background:#DAA520"></div> Conexao entre partes</div>
     </div>
     <svg id="network-svg" viewBox="0 0 1100 700"></svg>
@@ -209,10 +209,10 @@ tr:hover { background: #f5f8ff; }
       <button class="export-btn" onclick="exportSVGasPNG('sankey-svg','sankey')">PNG</button>
     </div>
     <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#4682B4"></div> Parte 1: A Pessoa de Cristo</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#DC143C"></div> Parte 2: A Necessidade do Homem</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#FF8C00"></div> Parte 3: A Obra de Cristo</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#228B22"></div> Parte 4: A Resposta do Homem</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#048fcc"></div> Parte 1: A Pessoa de Cristo</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc3545"></div> Parte 2: A Necessidade do Homem</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fd7e14"></div> Parte 3: A Obra de Cristo</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#28a745"></div> Parte 4: A Resposta do Homem</div>
     </div>
     <svg id="sankey-svg" viewBox="0 0 1100 500"></svg>
   </div>
@@ -246,7 +246,7 @@ const CITATIONS = [{"reference": "Gn 1:1", "text": "No principio criou Deus os c
 const CITATION_GROUPS = {"groups": [{"theme": "Revelacao e Iniciativa Divina", "description": "Passagens que mostram Deus tomando a iniciativa de se revelar e buscar o homem, culminando na encarnacao do Verbo.", "citations": ["Gn 1:1", "Hb 1:1-2", "Jo 1:14", "Sl 19:1", "Rm 1:19-20", "At 17:23", "1 Jo 1:1"]}, {"theme": "Identidade e Divindade de Cristo", "description": "Declaracoes diretas e indiretas de Jesus sobre sua divindade, incluindo titulos messianiicos, as afirmacoes 'Eu Sou', e o trilema (impostor, iludido ou divino).", "citations": ["Jo 6:35", "Jo 8:12", "Jo 8:58", "Jo 10:30", "Jo 11:25", "Jo 14:6", "Jo 14:10", "Jo 20:28", "Ex 3:14", "Mt 11:27", "Mt 11:28-29", "Mc 2:5", "Jo 5:17", "Jo 4:26", "Jo 20:30-31"]}, {"theme": "Impecabilidade e Carater de Cristo", "description": "Testemunhos biblicos sobre a ausencia de pecado em Jesus, confirmados por amigos e inimigos, e o paradoxo de sua humildade e autoridade.", "citations": ["Jo 8:7", "Jo 8:29", "Jo 8:46", "1 Pe 1:19", "1 Pe 2:22", "1 Jo 3:5", "2 Co 5:21", "Hb 4:15", "Hb 7:26"]}, {"theme": "Ressurreicao de Cristo", "description": "Evidencias historicas da ressurreicao: o tumulo vazio, as aparicoes, a transformacao dos discipulos.", "citations": ["Rm 1:4", "Mt 27:63-65", "Mt 28:13", "1 Co 15:6", "1 Co 15:7", "1 Co 15:8", "At 1:3", "Jo 20:1-10"]}, {"theme": "Pecado e Natureza Humana", "description": "Passagens sobre a universalidade, natureza e gravidade do pecado como exaltacao do eu, escravidao interior e corrupcao do coracao.", "citations": ["Sl 14:1-3", "Sl 130:3", "Sl 143:2", "Is 53:6", "Is 64:6", "Jr 17:9", "Rm 3:22-23", "Rm 7:7", "1Jo 1:8", "1Jo 3:4", "Mc 7:21-23", "Gl 5:19-21", "Jo 8:31-34", "Tg 4:17", "Ex 20:3"]}, {"theme": "Sacrificio, Cruz e Redencao", "description": "Passagens que conectam o sistema sacrificial do AT ao sacrificio definitivo de Cristo como Cordeiro de Deus, enfatizando a substituicao penal.", "citations": ["Lv 5:17", "Lv 16:20-22", "Hb 9:22", "Hb 10:4", "Is 53:5-6", "Is 53:7", "Is 53:11-12", "Jo 1:29", "Jo 3:16", "1Pe 2:24", "1Pe 3:18", "1Pe 1:19", "1Co 5:7", "1Co 15:3", "2Co 5:18-19", "2Co 5:21", "Gl 2:21", "Gl 3:13", "Mc 10:45", "Mt 26:28", "Rm 6:23", "Sl 22:1"]}, {"theme": "Salvacao, Espirito Santo e Igreja", "description": "Passagens sobre a amplitude da salvacao (perdao + transformacao + comunhao), a obra do Espirito Santo e a igreja como corpo de Cristo.", "citations": ["Jo 3:3", "2Co 5:17", "2Co 3:18", "Rm 8:9", "Gl 5:17", "Gl 5:22-23", "Gl 5:24", "Gl 3:29", "Mt 28:19", "Ef 4:3", "Fp 2:1", "1Jo 3:14", "2Tm 2:19"]}, {"theme": "Discipulado, Decisao e Vida Crista", "description": "Passagens sobre o custo do discipulado, a decisao pessoal por Cristo, o novo nascimento e a vida crista responsavel.", "citations": ["Lc 14:28-30", "Mc 8:34", "Mc 8:34-37", "Mc 8:35-37", "Fp 2:10-11", "Ap 3:20", "Jo 1:11-12", "1 Jo 5:11-12", "Rm 8:16-17", "Rm 10:10", "1 Jo 1:9", "Hb 13:5"]}]};
 
 // === COLORS ===
-const PART_COLORS = { '1': '#4682B4', '2': '#DC143C', '3': '#FF8C00', '4': '#228B22' };
+const PART_COLORS = { '1': '#048fcc', '2': '#dc3545', '3': '#fd7e14', '4': '#28a745' };
 const TYPE_COLORS = { 'main': '#3498db', 'supporting': '#95a5a6', 'conclusion': '#e67e22', 'premise': '#9b59b6' };
 
 function getPartNum(id) { return id.charAt(1); }
@@ -306,10 +306,10 @@ function hideTooltip() { tooltip.style.display = 'none'; }
   });
   const sortedChs = Object.keys(chCounts).sort((a,b) => parseInt(a) - parseInt(b));
   const chColors = sortedChs.map(ch => {
-    if (parseInt(ch) <= 4) return '#4682B4';
-    if (parseInt(ch) <= 6) return '#DC143C';
-    if (parseInt(ch) <= 8) return '#FF8C00';
-    return '#228B22';
+    if (parseInt(ch) <= 4) return '#048fcc';
+    if (parseInt(ch) <= 6) return '#dc3545';
+    if (parseInt(ch) <= 8) return '#fd7e14';
+    return '#28a745';
   });
   new Chart(document.getElementById('chart-chapters'), {
     type: 'bar',
@@ -559,7 +559,7 @@ function initTree() {
 
   nodeG.append('circle')
     .attr('r', d => d.depth === 0 ? 8 : d.depth === 1 ? 7 : d.depth === 2 ? 6 : 5)
-    .attr('fill', d => d.data.part ? PART_COLORS[d.data.part] : '#2c3e50')
+    .attr('fill', d => d.data.part ? PART_COLORS[d.data.part] : '#343a40')
     .attr('stroke', '#fff')
     .attr('stroke-width', 2);
 
@@ -645,7 +645,7 @@ function initCitations() {
       datasets: [{
         label: 'Citacoes',
         data: groupData.map(g => g.citations.length),
-        backgroundColor: ['#4682B4', '#4682B4', '#4682B4', '#DC143C', '#DC143C', '#FF8C00', '#FF8C00', '#228B22']
+        backgroundColor: ['#048fcc', '#048fcc', '#048fcc', '#dc3545', '#dc3545', '#fd7e14', '#fd7e14', '#28a745']
       }]
     },
     options: {
@@ -729,7 +729,7 @@ function exportSVGasPNG(svgId, filename) {
 
 // === SANKEY DIAGRAM ===
 function initSankey() {
-  const PART_COLORS = { 1: '#4682B4', 2: '#DC143C', 3: '#FF8C00', 4: '#228B22' };
+  const PART_COLORS = { 1: '#048fcc', 2: '#dc3545', 3: '#fd7e14', 4: '#28a745' };
   const PART_NAMES = {
     1: 'P1: A Pessoa de Cristo',
     2: 'P2: A Necessidade do Homem',
@@ -846,7 +846,7 @@ function initSankey() {
     .text(d => d.name)
     .style('font-size', '12px')
     .style('font-weight', '600')
-    .style('fill', '#2c3e50');
+    .style('fill', '#343a40');
 
   // Add value labels on links
   svg.append('g')

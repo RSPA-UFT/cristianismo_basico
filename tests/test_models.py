@@ -12,6 +12,8 @@ from src.models import (
     PageText,
     Thesis,
     ThesisChain,
+    derive_chapter_from_id,
+    derive_part_from_id,
 )
 
 
@@ -403,3 +405,58 @@ class TestSerializationRoundTrip:
         restored = ExtractionResult.model_validate(data)
         assert restored == er
         assert restored.pages[0].text == "Page one"
+
+
+# ---------------------------------------------------------------------------
+# 11. derive_part_from_id and derive_chapter_from_id
+# ---------------------------------------------------------------------------
+
+class TestDeriveFromId:
+    """Tests for the derive_part_from_id and derive_chapter_from_id helpers."""
+
+    @pytest.mark.parametrize(
+        "thesis_id,expected",
+        [
+            ("T1.1.1", "Parte 1"),
+            ("T2.5.1", "Parte 2"),
+            ("T3.7.3", "Parte 3"),
+            ("T4.9.2", "Parte 4"),
+        ],
+    )
+    def test_derive_part_from_id(self, thesis_id, expected):
+        assert derive_part_from_id(thesis_id) == expected
+
+    @pytest.mark.parametrize(
+        "thesis_id,expected",
+        [
+            ("T1.1.1", "Capitulo 1"),
+            ("T2.5.1", "Capitulo 5"),
+            ("T3.8.2", "Capitulo 8"),
+            ("T4.11.1", "Capitulo 11"),
+        ],
+    )
+    def test_derive_chapter_from_id(self, thesis_id, expected):
+        assert derive_chapter_from_id(thesis_id) == expected
+
+    def test_derive_part_unknown_part_number(self):
+        """Part numbers outside 1-4 return empty string."""
+        assert derive_part_from_id("T5.1.1") == ""
+
+    def test_derive_from_invalid_id(self):
+        """Non-matching IDs return empty string."""
+        assert derive_part_from_id("invalid") == ""
+        assert derive_chapter_from_id("invalid") == ""
+        assert derive_part_from_id("") == ""
+        assert derive_chapter_from_id("") == ""
+
+    def test_derive_part_used_as_fallback(self):
+        """When t.part is empty, derive_part_from_id serves as fallback."""
+        t = Thesis(id="T2.5.1", title="Test", description="D", part="")
+        effective_part = t.part or derive_part_from_id(t.id)
+        assert effective_part == "Parte 2"
+
+    def test_derive_chapter_used_as_fallback(self):
+        """When t.chapter is empty, derive_chapter_from_id serves as fallback."""
+        t = Thesis(id="T3.8.1", title="Test", description="D", chapter="")
+        effective_chapter = t.chapter or derive_chapter_from_id(t.id)
+        assert effective_chapter == "Capitulo 8"

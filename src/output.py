@@ -6,7 +6,14 @@ from collections import defaultdict
 from pathlib import Path
 
 from .config import Settings
-from .models import BookAnalysis, ChapterAnalysis, ChunkInfo, ExtractionResult
+from .models import (
+    BookAnalysis,
+    ChapterAnalysis,
+    ChunkInfo,
+    ExtractionResult,
+    derive_chapter_from_id,
+    derive_part_from_id,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -71,8 +78,18 @@ class OutputWriter:
         logger.info(f"Saved chapter analysis to {path}")
         return path
 
+    @staticmethod
+    def _backfill_thesis_fields(analysis: BookAnalysis) -> None:
+        """Fill empty ``part`` and ``chapter`` fields from the thesis ID."""
+        for t in analysis.theses:
+            if not t.part:
+                t.part = derive_part_from_id(t.id)
+            if not t.chapter:
+                t.chapter = derive_chapter_from_id(t.id)
+
     def save_book_analysis(self, analysis: BookAnalysis) -> dict[str, Path]:
         """Save all final analysis files and return their paths."""
+        self._backfill_thesis_fields(analysis)
         paths = {}
 
         # theses.json

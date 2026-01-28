@@ -9,15 +9,15 @@ import logging
 from collections import defaultdict
 from pathlib import Path
 
-from .models import BookAnalysis, Citation, Thesis, ThesisChain
+from .models import BookAnalysis, Citation, Thesis, ThesisChain, derive_part_from_id
 
 logger = logging.getLogger(__name__)
 
 _PART_COLORS = {
-    "Parte 1": "#4682B4",
-    "Parte 2": "#DC143C",
-    "Parte 3": "#FF8C00",
-    "Parte 4": "#228B22",
+    "Parte 1": "#048fcc",
+    "Parte 2": "#dc3545",
+    "Parte 3": "#fd7e14",
+    "Parte 4": "#28a745",
 }
 
 
@@ -72,24 +72,24 @@ def _build_slides(analysis: BookAnalysis) -> str:
     # Group theses by part
     by_part: dict[str, list[Thesis]] = defaultdict(list)
     for t in analysis.theses:
-        part_key = t.part or "Geral"
+        part_key = t.part or derive_part_from_id(t.id) or "Geral"
         by_part[part_key].append(t)
 
     # Build part slides (one per part)
     part_slides = []
     part_info = [
-        ("Parte 1 - A Pessoa de Cristo", "#4682B4", "Cap. 1-4: Quem e Jesus Cristo?"),
-        ("Parte 2 - A Necessidade do Homem", "#DC143C", "Cap. 5-6: O problema do pecado"),
-        ("Parte 3 - A Obra de Cristo", "#FF8C00", "Cap. 7-8: A solucao na cruz"),
-        ("Parte 4 - A Resposta do Homem", "#228B22", "Cap. 9-11: O que fazer?"),
+        ("Parte 1 - A Pessoa de Cristo", "#048fcc", "Cap. 1\u20134: Quem \u00e9 Jesus Cristo?"),
+        ("Parte 2 - A Necessidade do Homem", "#dc3545", "Cap. 5\u20136: O problema do pecado"),
+        ("Parte 3 - A Obra de Cristo", "#fd7e14", "Cap. 7\u20138: A solu\u00e7\u00e3o na cruz"),
+        ("Parte 4 - A Resposta do Homem", "#28a745", "Cap. 9\u201311: O que fazer?"),
     ]
 
     for part_name, color, subtitle in part_info:
-        theses = [t for t in analysis.theses if part_name in (t.part or "")]
-        if not theses:
-            # Try partial match
-            short = part_name.split(" - ")[0] if " - " in part_name else part_name
-            theses = [t for t in analysis.theses if short in (t.part or "")]
+        short = part_name.split(" - ")[0] if " - " in part_name else part_name
+        theses = [
+            t for t in analysis.theses
+            if short in (t.part or derive_part_from_id(t.id))
+        ]
 
         main_theses = [t for t in theses if t.thesis_type == "main"]
         thesis_items = ""
@@ -109,7 +109,7 @@ def _build_slides(analysis: BookAnalysis) -> str:
 
     # Scholarly citations slide
     scholarly_items = ""
-    for c in scholarly[:8]:
+    for c in scholarly:
         author = c.author or c.reference
         work = f" &mdash; <em>{_esc(c.work)}</em>" if c.work else ""
         scholarly_items += f"<li><strong>{_esc(author)}</strong>{work}</li>\n"
@@ -119,65 +119,71 @@ def _build_slides(analysis: BookAnalysis) -> str:
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apresentacao: Cristianismo Basico - John Stott</title>
+<title>Apresenta\u00e7\u00e3o: Cristianismo B\u00e1sico - John Stott</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
 <style>
-  .reveal h1 {{ color: #2c3e50; font-size: 1.8em; }}
-  .reveal h2 {{ color: #2c3e50; font-size: 1.4em; }}
+  .reveal {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }}
+  .reveal h1 {{ color: #343a40; font-size: 1.8em; }}
+  .reveal h2 {{ color: #343a40; font-size: 1.4em; }}
   .reveal h3 {{ color: #555; font-size: 1.1em; }}
   .reveal .subtitle {{ color: #666; font-size: 0.9em; margin-top: -10px; }}
   .reveal .stat-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }}
   .reveal .stat-box {{ background: #f8f9fa; border-radius: 8px; padding: 16px; text-align: center; }}
-  .reveal .stat-box .num {{ font-size: 2.2em; font-weight: bold; color: #3498db; }}
+  .reveal .stat-box .num {{ font-size: 2.2em; font-weight: bold; color: #048fcc; }}
   .reveal .stat-box .label {{ font-size: 0.8em; color: #666; }}
   .reveal .thesis-list {{ text-align: left; font-size: 0.75em; list-style: none; }}
-  .reveal .thesis-list li {{ margin: 8px 0; padding: 6px 12px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #3498db; }}
+  .reveal .thesis-list li {{ margin: 8px 0; padding: 6px 12px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #048fcc; }}
   .reveal .count {{ font-size: 0.7em; color: #888; margin-top: 16px; }}
   .reveal .flow-card {{ background: #f8f9fa; padding: 14px; border-radius: 6px; margin: 8px 0; text-align: left; font-size: 0.7em; line-height: 1.5; }}
   .reveal .scholarly-list {{ text-align: left; font-size: 0.7em; list-style: none; }}
   .reveal .scholarly-list li {{ margin: 6px 0; padding: 4px 0; border-bottom: 1px solid #eee; }}
   .reveal .chain-viz {{ display: flex; justify-content: center; align-items: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }}
-  .reveal .chain-node {{ background: #3498db; color: white; padding: 8px 14px; border-radius: 6px; font-size: 0.7em; font-weight: bold; }}
+  .reveal .chain-node {{ background: #048fcc; color: white; padding: 8px 14px; border-radius: 2rem; font-size: 0.7em; font-weight: bold; }}
   .reveal .chain-arrow {{ font-size: 1.5em; color: #999; }}
   .reveal .method-list {{ text-align: left; font-size: 0.75em; }}
   .reveal .method-list li {{ margin: 10px 0; }}
-  .p1 {{ background: #4682B4; }} .p2 {{ background: #DC143C; }}
-  .p3 {{ background: #FF8C00; }} .p4 {{ background: #228B22; }}
+  .p1 {{ background: #048fcc; }} .p2 {{ background: #dc3545; }}
+  .p3 {{ background: #fd7e14; }} .p4 {{ background: #28a745; }}
 </style>
 </head>
 <body>
+<nav class="site-nav" style="background:#036c9a;padding:8px 16px;display:flex;gap:16px;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:0.9rem;">
+  <a href="index.html" style="color:#e0f0ff;text-decoration:none;">Narrativa</a>
+  <a href="visualizacao.html" style="color:#e0f0ff;text-decoration:none;">Painel</a>
+  <a href="apresentacao.html" style="color:#e0f0ff;text-decoration:none;">Apresenta\u00e7\u00e3o</a>
+</nav>
 <div class="reveal">
 <div class="slides">
 
   <!-- Slide 1: Title -->
   <section>
-    <h1>Cristianismo Basico</h1>
+    <h1>Cristianismo B\u00e1sico</h1>
     <h3>John Stott</h3>
-    <p class="subtitle">Analise teologica estruturada: teses, cadeias logicas e citacoes</p>
+    <p class="subtitle">An\u00e1lise teol\u00f3gica estruturada: teses, cadeias l\u00f3gicas e cita\u00e7\u00f5es</p>
   </section>
 
   <!-- Slide 2: Summary -->
   <section>
     <h2>Resumo Executivo</h2>
     <div class="flow-card">
-      {_esc(analysis.summary or '(Nao disponivel)')}
+      {_esc(analysis.summary or '(N\u00e3o dispon\u00edvel)')}
     </div>
   </section>
 
   <!-- Slide 3: Stats -->
   <section>
-    <h2>Visao Geral</h2>
+    <h2>Vis\u00e3o Geral</h2>
     <div class="stat-grid">
       <div class="stat-box"><div class="num">{len(analysis.theses)}</div><div class="label">Teses</div></div>
-      <div class="stat-box"><div class="num">{len(analysis.chains)}</div><div class="label">Cadeias Logicas</div></div>
-      <div class="stat-box"><div class="num">{biblical}</div><div class="label">Citacoes Biblicas</div></div>
-      <div class="stat-box"><div class="num">{len(scholarly)}</div><div class="label">Citacoes Academicas</div></div>
+      <div class="stat-box"><div class="num">{len(analysis.chains)}</div><div class="label">Cadeias L\u00f3gicas</div></div>
+      <div class="stat-box"><div class="num">{biblical}</div><div class="label">Cita\u00e7\u00f5es B\u00edblicas</div></div>
+      <div class="stat-box"><div class="num">{len(scholarly)}</div><div class="label">Cita\u00e7\u00f5es Acad\u00eamicas</div></div>
     </div>
     <p class="count">
       {type_counts.get('main', 0)} principais &bull;
       {type_counts.get('supporting', 0)} suporte &bull;
-      {type_counts.get('conclusion', 0)} conclusoes &bull;
+      {type_counts.get('conclusion', 0)} conclus\u00f5es &bull;
       {type_counts.get('premise', 0)} premissas
     </p>
   </section>
@@ -198,28 +204,28 @@ def _build_slides(analysis: BookAnalysis) -> str:
       <div class="chain-node p4">P4: Resposta</div>
     </div>
     <div class="flow-card">
-      {_esc(analysis.argument_flow or '(Nao disponivel)')}
+      {_esc(analysis.argument_flow or '(N\u00e3o dispon\u00edvel)')}
     </div>
   </section>
 
   <!-- Slide 9: Scholarly Citations -->
   <section>
-    <h2>Citacoes Academicas</h2>
+    <h2>Cita\u00e7\u00f5es Acad\u00eamicas</h2>
     <ul class="scholarly-list">
-      {scholarly_items if scholarly_items else '<li>(Nenhuma citacao academica)</li>'}
+      {scholarly_items if scholarly_items else '<li>(Nenhuma cita\u00e7\u00e3o acad\u00eamica)</li>'}
     </ul>
-    <p class="count">{len(scholarly)} autores/obras citados</p>
+    <p class="count">{len(scholarly)} autores/obras citados(as)</p>
   </section>
 
   <!-- Slide 10: Methodology -->
   <section>
     <h2>Metodologia</h2>
     <ul class="method-list">
-      <li><strong>Extracao:</strong> PDF &rarr; texto estruturado (Docling/PyMuPDF)</li>
-      <li><strong>Chunking:</strong> Divisao hierarquica por capitulos ({len(analysis.theses)} teses)</li>
-      <li><strong>Analise LLM:</strong> Claude Opus 4.5 para extracao de argumentos</li>
-      <li><strong>Validacao:</strong> Cross-referencia com texto original</li>
-      <li><strong>Sintese:</strong> Deduplicacao + selecao das teses mais relevantes</li>
+      <li><strong>Extra\u00e7\u00e3o:</strong> PDF &rarr; texto estruturado (Docling/PyMuPDF)</li>
+      <li><strong>Chunking:</strong> Divis\u00e3o hier\u00e1rquica por cap\u00edtulos ({len(analysis.theses)} teses)</li>
+      <li><strong>An\u00e1lise LLM:</strong> Claude Opus 4.5 para extra\u00e7\u00e3o de argumentos</li>
+      <li><strong>Valida\u00e7\u00e3o:</strong> Cross-refer\u00eancia com texto original</li>
+      <li><strong>S\u00edntese:</strong> Deduplica\u00e7\u00e3o + sele\u00e7\u00e3o das teses mais relevantes</li>
     </ul>
   </section>
 

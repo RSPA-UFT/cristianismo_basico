@@ -1,6 +1,39 @@
 """Pydantic models for thesis extraction and analysis."""
 
+import re
+
 from pydantic import BaseModel, Field
+
+_PART_NAMES = {
+    1: "Parte 1",
+    2: "Parte 2",
+    3: "Parte 3",
+    4: "Parte 4",
+}
+
+_ID_RE = re.compile(r"^T(\d+)\.(\d+)\.")
+
+
+def derive_part_from_id(thesis_id: str) -> str:
+    """Derive the part name from a thesis ID like ``T1.2.3``.
+
+    Returns e.g. ``"Parte 1"`` or ``""`` if the pattern does not match.
+    """
+    m = _ID_RE.match(thesis_id)
+    if m:
+        return _PART_NAMES.get(int(m.group(1)), "")
+    return ""
+
+
+def derive_chapter_from_id(thesis_id: str) -> str:
+    """Derive a chapter label from a thesis ID like ``T1.2.3``.
+
+    Returns e.g. ``"Capitulo 2"`` or ``""`` if the pattern does not match.
+    """
+    m = _ID_RE.match(thesis_id)
+    if m:
+        return f"Capitulo {m.group(2)}"
+    return ""
 
 
 # --- Extraction models ---

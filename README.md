@@ -132,3 +132,19 @@ O diretorio `docs/` contem as paginas para publicacao via GitHub Pages:
 
 Todas as paginas incluem navegacao entre si. Para configurar:
 Settings > Pages > Source: `master` branch, `/docs` folder.
+
+## Versionamento
+
+Este projeto segue [Semantic Versioning](https://semver.org/).
+Mudancas documentadas em [CHANGELOG.md](CHANGELOG.md).
+
+### Estrategia de branches
+
+- **`master`** — branch principal, sempre deployavel via GitHub Pages
+- **Tags** — cada release recebe tag `vX.Y.Z` (ex: `v0.6.0`)
+- **Feature branches** — para novas funcionalidades, prefixo `feat/`
+- **Fix branches** — para correcoes, prefixo `fix/`
+
+```
+master ─── v0.1.0 ─── v0.3.0 ─── v0.4.0 ─── v0.5.0 ─── v0.6.0
+```

@@ -126,7 +126,7 @@ class TestSectionPresence:
         path = generate_scrollytelling(output_dir, analysis=sample_book_analysis)
         content = path.read_text(encoding="utf-8")
 
-        assert "Cristianismo Basico" in content, "Hero should have title"
+        assert "Cristianismo B\u00e1sico" in content, "Hero should have title"
         assert "John Stott" in content, "Hero should have author"
 
     def test_four_parts_mentioned(
@@ -163,10 +163,10 @@ class TestSectionPresence:
         path = generate_scrollytelling(output_dir, analysis=sample_book_analysis)
         content = path.read_text(encoding="utf-8")
 
-        assert "#4682B4" in content, "Should use Steel Blue for Parte 1"
-        assert "#DC143C" in content, "Should use Crimson for Parte 2"
-        assert "#FF8C00" in content, "Should use Dark Orange for Parte 3"
-        assert "#228B22" in content, "Should use Forest Green for Parte 4"
+        assert "#048fcc" in content, "Should use ICE cyan for Parte 1"
+        assert "#dc3545" in content, "Should use red for Parte 2"
+        assert "#fd7e14" in content, "Should use orange for Parte 3"
+        assert "#28a745" in content, "Should use green for Parte 4"
 
 
 class TestAccessibility:
@@ -250,7 +250,7 @@ class TestLoadFromFiles:
 
         assert path.exists()
         content = path.read_text(encoding="utf-8")
-        assert "Cristianismo Basico" in content
+        assert "Cristianismo B\u00e1sico" in content
         assert "T1.1.1" in content
 
     def test_loads_citation_groups(self, tmp_path: Path):
@@ -278,3 +278,56 @@ class TestLoadFromFiles:
 
         content = path.read_text(encoding="utf-8")
         assert "Cristologia" in content, "Should include citation group theme"
+
+
+class TestPartFilterFallback:
+    """Test that theses with empty part field are matched via ID derivation."""
+
+    def test_part_theses_shown_with_empty_part(self, tmp_path: Path):
+        """Theses with empty part should appear via ID fallback."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        analysis = BookAnalysis(
+            theses=[
+                Thesis(
+                    id="T1.1.1",
+                    title="Tese derivada da Parte 1",
+                    description="Desc",
+                    thesis_type="main",
+                    part="",
+                ),
+                Thesis(
+                    id="T3.7.1",
+                    title="Tese derivada da Parte 3",
+                    description="Desc",
+                    thesis_type="main",
+                    part="",
+                ),
+            ],
+        )
+
+        path = generate_scrollytelling(output_dir, analysis=analysis)
+        content = path.read_text(encoding="utf-8")
+
+        # The thesis titles should appear in the part theses steps
+        assert "Tese derivada da Parte 1" in content, "T1.x thesis should appear in Parte 1"
+        assert "Tese derivada da Parte 3" in content, "T3.x thesis should appear in Parte 3"
+
+    def test_overview_bar_counts_with_empty_part(self, tmp_path: Path):
+        """Part bar percentages should be non-zero when parts derived from IDs."""
+        output_dir = tmp_path / "output"
+        output_dir.mkdir()
+
+        analysis = BookAnalysis(
+            theses=[
+                Thesis(id="T1.1.1", title="A", description="D", part=""),
+                Thesis(id="T2.5.1", title="B", description="D", part=""),
+            ],
+        )
+
+        path = generate_scrollytelling(output_dir, analysis=analysis)
+        content = path.read_text(encoding="utf-8")
+
+        # Both parts should have 50% width
+        assert "width:50.0%" in content, "Each part should have 50% in the bar"
