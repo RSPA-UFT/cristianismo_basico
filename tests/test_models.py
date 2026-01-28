@@ -112,6 +112,9 @@ class TestCitation:
         assert c.text is None
         assert c.page is None
         assert c.citation_type == "biblical"
+        assert c.author is None
+        assert c.work is None
+        assert c.context is None
 
     def test_full_citation(self):
         c = Citation(
@@ -122,6 +125,42 @@ class TestCitation:
         )
         assert c.page == 42
         assert c.citation_type == "scholarly"
+
+    def test_scholarly_fields(self):
+        """Citation with scholarly fields should preserve author, work, and context."""
+        c = Citation(
+            reference="LEWIS, C.S.. Miracles. Bles. 1947",
+            citation_type="scholarly",
+            author="LEWIS, C.S.",
+            work="Miracles",
+            context="Reference about miracles",
+        )
+        assert c.author == "LEWIS, C.S."
+        assert c.work == "Miracles"
+        assert c.context == "Reference about miracles"
+        assert c.citation_type == "scholarly"
+
+    def test_scholarly_backward_compat(self):
+        """Existing citations without author/work/context should still work."""
+        c = Citation(reference="Jo 3:16", citation_type="biblical")
+        assert c.author is None
+        assert c.work is None
+        assert c.context is None
+
+    def test_scholarly_round_trip(self):
+        """Scholarly Citation should survive serialization."""
+        original = Citation(
+            reference="FORSYTH, P.T.. This Life and the Next",
+            citation_type="scholarly",
+            author="FORSYTH, P.T.",
+            work="This Life and the Next",
+            context="Referenced for afterlife discussion",
+        )
+        data = original.model_dump()
+        restored = Citation.model_validate(data)
+        assert restored == original
+        assert restored.author == "FORSYTH, P.T."
+        assert restored.work == "This Life and the Next"
 
 
 # ---------------------------------------------------------------------------

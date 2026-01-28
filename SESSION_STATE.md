@@ -24,18 +24,23 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 |--------|--------|--------|
 | `__main__.py` | Entry point CLI | OK |
 | `config.py` | Settings via .env (Pydantic) | OK |
-| `models.py` | Modelos Pydantic (Thesis, Citation, etc.) | OK |
+| `models.py` | Modelos Pydantic (Thesis, Citation c/ author/work/context) | OK |
 | `extractor.py` | Extracao PDF 3-tier (Docling/PyMuPDF/Tesseract) | OK |
 | `chunker.py` | Chunking hierarquico por capitulos/partes | OK |
 | `analyzer.py` | Analise LLM (4 fases: 3a-3d) | OK |
-| `prompts.py` | Templates de prompt para LLM | OK |
-| `validators.py` | Validacao pos-processamento | OK |
-| `output.py` | Geracao de output (JSON, Markdown) | OK |
-| `pipeline.py` | Orquestrador dos 4 estagios | OK |
+| `scholarly.py` | Extracao de citacoes scholarly + footnotes das notas | OK |
+| `prompts.py` | Templates de prompt para LLM (com regras scholarly) | OK |
+| `validators.py` | Validacao pos-processamento + detect_footnotes() | OK |
+| `output.py` | Geracao de output (JSON, Markdown, secao scholarly) | OK |
+| `pdf_report.py` | Geracao de relatorio PDF/HTML print-ready | OK |
+| `slides.py` | Geracao de apresentacao Reveal.js (10 slides) | OK |
+| `pipeline.py` | Orquestrador dos 4 estagios (com fase 3a+) | OK |
 
 ### Testes (tests/)
-- **113 testes passando** (pytest, ~68s)
-- Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators
+- **143 testes passando** (pytest)
+- Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators, scholarly, pdf_report, slides
+- Novos arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (5)
+- Testes atualizados: test_models (+3), test_validators (+3), test_output (+2), test_pipeline (+2)
 - Dependencias dev: pytest>=8.0, pytest-cov>=6.0
 
 ### Output Final (output/)
@@ -43,10 +48,12 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 |---------|---------|----------|
 | `theses.json` | 76 KB | 52 teses com citacoes exatas de Stott |
 | `chains.json` | 15 KB | 57 cadeias logicas entre teses |
-| `citations.json` | 32 KB | 169 citacoes biblicas unicas |
+| `citations.json` | 36 KB | 186 citacoes (169 biblicas + 17 scholarly) |
 | `citation_groups.json` | 4 KB | 8 grupos tematicos |
-| `report.md` | 55 KB | Relatorio completo em Markdown |
-| `visualizacao.html` | 138 KB | Dashboard interativo (6 abas, D3.js + Chart.js) |
+| `report.md` | 57 KB | Relatorio completo em Markdown (com secao scholarly) |
+| `visualizacao.html` | 150 KB | Dashboard interativo (7 abas, D3.js + Chart.js + d3-sankey) |
+| `apresentacao.html` | 11 KB | Apresentacao Reveal.js (10 slides auto-contidos) |
+| `relatorio.html` | 74 KB | Relatorio HTML print-ready para PDF |
 | `extracted_text.md` | 265 KB | Texto bruto extraido do PDF |
 | `chunks/` | 30 arquivos | Chunks Markdown por capitulo |
 | `per_chapter/` | 30 JSONs | Analises por capitulo (cache pipeline) |
@@ -55,7 +62,7 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | Arquivo | Conteudo |
 |---------|----------|
 | `README.md` | Documentacao do projeto (instalacao, uso, arquitetura) |
-| `QUALITY_REPORT.md` | Relatorio de qualidade com 3 iteracoes documentadas |
+| `QUALITY_REPORT.md` | Relatorio de qualidade com 4 iteracoes documentadas |
 | `SESSION_STATE.md` | Este arquivo |
 
 ### Configuracao
@@ -82,22 +89,33 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 - **169 citacoes** biblicas unicas (5.6x mais que v1)
 - **57 chains** logicas (2x mais que v1)
 - **8 grupos** tematicos
+
+### Iteracao 4: Citacoes Scholarly + Footnotes + Visualizacao + PDF/Slides
+- **17 citacoes scholarly** extraidas com `author`, `work`, `context`
+- **detect_footnotes()** para reclassificacao de refs numericas
+- **Sankey diagram** (7a aba do dashboard, d3-sankey)
+- **Export PNG/SVG** em todos os paineis
+- **Apresentacao Reveal.js** (10 slides auto-contidos)
+- **Relatorio HTML print-ready** (PDF via WeasyPrint ou Ctrl+P)
+- **143 testes** (30 novos, 0 falhas)
 - Este e o output final atual
 
 ---
 
 ## Visualizacao (output/visualizacao.html)
 
-Dashboard HTML auto-contido com 6 abas:
+Dashboard HTML auto-contido com 7 abas:
 1. **Visao Geral** - Donut charts (distribuicao por parte, raciocinio) + barras (capitulos, confianca)
 2. **Rede Logica** - Grafo D3.js force-directed (52 nos, 57 arestas, drag/zoom/hover/click)
 3. **Hierarquia** - Arvore colapsavel D3.js (Livro > Parte > Capitulo > Tese)
 4. **Citacoes Biblicas** - Barras por livro biblico (AT/NT) e por grupo tematico
 5. **Fluxo Argumentativo** - 4 movimentos do argumento em HTML formatado
 6. **Dados** - Tabela pesquisavel com todas as 52 teses
+7. **Fluxo Sankey** - Diagrama Sankey (D3-sankey) com fluxo inter-partes
 
 Cores por parte: P1=#4682B4 (azul), P2=#DC143C (vermelho), P3=#FF8C00 (laranja), P4=#228B22 (verde)
-CDNs: D3.js v7, Chart.js v4
+CDNs: D3.js v7, Chart.js v4, d3-sankey v0.12
+Export: Botoes PNG/SVG em todos os paineis
 
 ---
 
@@ -118,19 +136,19 @@ Localizacao: `/tmp/claude/-mnt-c-cristianismo-basico/.../scratchpad/`
 
 ## Possiveis Proximos Passos
 
-### Melhorias na Visualizacao
-- Diagrama Sankey (fluxo argumentativo visual entre partes)
-- Exportar graficos como PNG/SVG
-- Versao em PDF do relatorio com graficos embutidos
-- Modo de apresentacao (slides)
+### Concluidos na Iteracao 4
+- ~~Diagrama Sankey (fluxo argumentativo visual entre partes)~~ FEITO
+- ~~Exportar graficos como PNG/SVG~~ FEITO
+- ~~Versao em PDF do relatorio~~ FEITO (HTML print-ready + WeasyPrint opcional)
+- ~~Modo de apresentacao (slides)~~ FEITO (Reveal.js)
+- ~~Extrair citacoes de teologos como `citation_type: "scholarly"`~~ FEITO (17 citacoes)
+- ~~Identificar notas de rodape (`citation_type: "footnote"`)~~ FEITO
+- ~~Inicializar repositorio git~~ FEITO
 
 ### Melhorias no Conteudo
-- Extrair citacoes de teologos (C.S. Lewis, etc.) como `citation_type: "scholarly"`
-- Identificar notas de rodape (`citation_type: "footnote"`)
 - Adicionar provedor Anthropic/OpenAI ao pipeline automatizado (src/analyzer.py)
 
 ### Infraestrutura
-- Inicializar repositorio git
 - CI/CD (GitHub Actions com pytest)
 - Aumentar cobertura de testes (pytest-cov)
 - Docker para reproducibilidade
@@ -150,7 +168,7 @@ cd /mnt/c/cristianismo_basico
 
 # Verificar ambiente
 .venv/bin/python --version   # Python 3.12
-uv run pytest tests/ -q      # 113 passed
+uv run pytest tests/ -q      # 143 passed
 
 # Executar pipeline completo (requer Ollama rodando)
 uv run python -m src
@@ -172,3 +190,6 @@ uv run python -m src
 4. **Dados embutidos no HTML** em vez de fetch - funciona offline
 5. **Validador pos-processamento** em vez de two-pass LLM - mais rapido e determinista
 6. **52 teses (4-5 por capitulo)** em vez das 117 originais - equilibrio granularidade/legibilidade
+7. **Scholarly como modulo separado** (src/scholarly.py) em vez de inline no analyzer - dados hardcoded + regex para maxima precisao
+8. **Reveal.js CDN** em vez de framework local - apresentacao auto-contida, zero build
+9. **HTML print-ready como fallback** para PDF - WeasyPrint e opcional (deps de sistema), Ctrl+P sempre funciona

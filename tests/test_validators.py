@@ -17,7 +17,7 @@ import logging
 import pytest
 
 from src.models import ChapterAnalysis, Citation, Thesis
-from src.validators import log_quality_report, validate_citations, validate_theses
+from src.validators import detect_footnotes, log_quality_report, validate_citations, validate_theses
 
 
 # ---------------------------------------------------------------------------
@@ -214,3 +214,33 @@ class TestLogQualityReport:
         assert len(quality_lines) >= 1, (
             "log_quality_report should log a 'QUALITY REPORT' header"
         )
+
+
+# ---------------------------------------------------------------------------
+# detect_footnotes
+# ---------------------------------------------------------------------------
+
+class TestDetectFootnotes:
+    """Tests for the detect_footnotes function."""
+
+    def test_numeric_reference_reclassified(self):
+        """A citation whose reference is a bare number should become 'footnote'."""
+        citations = [_citation(reference="5", citation_type="biblical")]
+        result = detect_footnotes(citations)
+
+        assert len(result) == 1
+        assert result[0].citation_type == "footnote"
+
+    def test_scholarly_not_reclassified(self):
+        """Scholarly citations with numeric-looking ref should not be reclassified."""
+        citations = [_citation(reference="42", citation_type="scholarly")]
+        result = detect_footnotes(citations)
+
+        assert result[0].citation_type == "scholarly"
+
+    def test_biblical_preserved(self):
+        """Biblical citations should not be reclassified as footnotes."""
+        citations = [_citation(reference="Jo 3:16", citation_type="biblical")]
+        result = detect_footnotes(citations)
+
+        assert result[0].citation_type == "biblical"

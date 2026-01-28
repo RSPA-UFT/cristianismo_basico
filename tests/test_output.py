@@ -353,3 +353,48 @@ class TestGenerateReport:
         assert "T1.1.1" in report, "from_thesis_id not found in chain graph"
         assert "T1.1.2" in report, "to_thesis_id not found in chain graph"
         assert "supports" in report, "Relationship label missing in chain graph"
+
+    def test_generate_report_scholarly_section(self, writer):
+        """Report with scholarly citations should include 'Citacoes Academicas' section."""
+        from src.models import BookAnalysis, Citation, Thesis
+
+        analysis = BookAnalysis(
+            theses=[
+                Thesis(
+                    id="T1.1.1", title="Test", description="Desc",
+                    chapter="Cap 1", part="Parte 1",
+                ),
+            ],
+            citations=[
+                Citation(reference="Jo 1:1", citation_type="biblical"),
+                Citation(
+                    reference="LEWIS, C.S.. Miracles",
+                    citation_type="scholarly",
+                    author="LEWIS, C.S.",
+                    work="Miracles",
+                    context="Reference about miracles",
+                ),
+            ],
+            summary="Summary",
+            argument_flow="Flow",
+        )
+        report = writer._generate_report(analysis)
+
+        assert "## Citacoes Academicas" in report, (
+            "Scholarly citations section should appear in report"
+        )
+        assert "LEWIS" in report, "Author name should appear in scholarly section"
+
+    def test_generate_report_no_scholarly_section_without_citations(self, writer):
+        """Report without scholarly citations should not include that section."""
+        from src.models import BookAnalysis, Citation
+
+        analysis = BookAnalysis(
+            citations=[
+                Citation(reference="Jo 1:1", citation_type="biblical"),
+            ],
+            summary="Summary",
+        )
+        report = writer._generate_report(analysis)
+
+        assert "## Citacoes Academicas" not in report

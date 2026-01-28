@@ -28,6 +28,7 @@ from src.models import (
     ThesisChain,
 )
 from src.pipeline import _load_cached_extraction, run_pipeline
+from src.scholarly import extract_scholarly_citations
 
 
 # ---------------------------------------------------------------------------
@@ -342,3 +343,47 @@ class TestChapterCacheSkipsLLM:
         mock_analyzer.analyze_chunk.assert_not_called(), (
             "analyze_chunk must NOT be called when all chapters are cached"
         )
+
+
+# ---------------------------------------------------------------------------
+# Test 4: Scholarly citations extraction (unit test)
+# ---------------------------------------------------------------------------
+
+class TestScholarlyExtraction:
+    """Verify extract_scholarly_citations returns properly typed citations."""
+
+    def test_scholarly_returns_citations(self, tmp_path):
+        """extract_scholarly_citations should return Citation objects with scholarly type."""
+        chunks_dir = tmp_path / "chunks"
+        chunks_dir.mkdir()
+
+        notes = (
+            "## CAPITULO 2\n\n"
+            "- 19 FORSYTH, P. T. This Life and the Next. Independent Press, 1947.\n"
+        )
+        (chunks_dir / "chunk_29_notas.md").write_text(notes, encoding="utf-8")
+
+        result = extract_scholarly_citations(chunks_dir)
+
+        assert len(result) > 0
+        for c in result:
+            assert c.citation_type == "scholarly"
+
+    def test_scholarly_integration_with_pipeline(self, tmp_path):
+        """extract_scholarly_citations results can be added to citation list."""
+        chunks_dir = tmp_path / "chunks"
+        chunks_dir.mkdir()
+        (chunks_dir / "chunk_29_notas.md").write_text(
+            "## CAPITULO 3\n\n- 1 DENNEY, James. Studies in Theology. Hodder, 1906.\n",
+            encoding="utf-8",
+        )
+
+        scholarly = extract_scholarly_citations(chunks_dir)
+        all_citations = [
+            Citation(reference="Jo 3:16", citation_type="biblical"),
+        ]
+        all_citations.extend(scholarly)
+
+        assert len(all_citations) > 1
+        scholarly_count = sum(1 for c in all_citations if c.citation_type == "scholarly")
+        assert scholarly_count > 0

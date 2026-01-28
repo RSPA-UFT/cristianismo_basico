@@ -12,7 +12,13 @@ from .config import Settings, settings
 from .extractor import PDFExtractor
 from .models import BookAnalysis, ChapterAnalysis, ExtractionResult
 from .output import OutputWriter
-from .validators import log_quality_report, validate_citations, validate_theses
+from .scholarly import extract_footnotes_from_notes, extract_scholarly_citations
+from .validators import (
+    detect_footnotes,
+    log_quality_report,
+    validate_citations,
+    validate_theses,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -145,6 +151,18 @@ def run_pipeline(cfg: Settings | None = None) -> BookAnalysis:
     logger.info(
         f"Phase 3a complete: {len(all_theses)} theses, "
         f"{len(all_citations)} citations across {len(chunks)} chunks"
+    )
+
+    # Phase 3a+: Scholarly citations & footnotes extraction
+    logger.info("Phase 3a+: Extracting scholarly citations and footnotes...")
+    scholarly = extract_scholarly_citations(cfg.chunks_dir)
+    footnotes = extract_footnotes_from_notes(cfg.chunks_dir)
+    all_citations.extend(scholarly)
+    all_citations.extend(footnotes)
+    all_citations = detect_footnotes(all_citations)
+    logger.info(
+        f"Phase 3a+ complete: {len(scholarly)} scholarly, "
+        f"{len(footnotes)} footnotes added"
     )
 
     # Phase 3b: Chain extraction

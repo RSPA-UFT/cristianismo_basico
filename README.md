@@ -8,10 +8,16 @@ Pipeline de extracao e analise automatizada de teses teologicas do livro
 - Extracao de texto de PDF (3-tier: Docling, PyMuPDF, Tesseract OCR)
 - Chunking hierarquico por capitulos e partes do livro
 - Extracao de teses, citacoes biblicas e notas com LLMs
+- Extracao de citacoes scholarly (teologos, pensadores) com author/work/context
+- Deteccao de notas de rodape (footnotes)
 - Identificacao de cadeias logicas entre teses
 - Correlacao tematica de citacoes biblicas
 - Sintese e deduplicacao de teses
 - Validacao pos-processamento de citacoes e referencias
+- Dashboard interativo (7 abas: visao geral, rede logica, hierarquia, citacoes, fluxo, dados, Sankey)
+- Export de graficos como PNG/SVG
+- Apresentacao Reveal.js (10 slides auto-contidos)
+- Relatorio HTML print-ready (PDF via WeasyPrint ou Ctrl+P)
 - Geracao de relatorio em Markdown
 
 ## Estrutura do Livro Analisado
@@ -32,6 +38,11 @@ Pipeline de extracao e analise automatizada de teses teologicas do livro
 uv sync
 cp .env.example .env
 # Editar .env com configuracoes do LLM
+
+# Extras opcionais
+uv sync --extra ocr    # Tesseract OCR + pdf2image
+uv sync --extra pdf    # WeasyPrint para geracao de PDF
+uv sync --extra dev    # pytest + pytest-cov
 ```
 
 ## Uso
@@ -57,17 +68,20 @@ uv run python -m src
 
 | Arquivo | Descricao |
 |---------|-----------|
-| `output/theses.json` | Teses finais consolidadas |
-| `output/chains.json` | Cadeias logicas entre teses |
-| `output/citations.json` | Todas as citacoes |
-| `output/citation_groups.json` | Citacoes agrupadas por tema |
-| `output/report.md` | Relatorio legivel em Markdown |
+| `output/theses.json` | 52 teses finais consolidadas |
+| `output/chains.json` | 57 cadeias logicas entre teses |
+| `output/citations.json` | 186 citacoes (169 biblicas + 17 scholarly) |
+| `output/citation_groups.json` | 8 grupos tematicos de citacoes |
+| `output/report.md` | Relatorio completo em Markdown (com secao scholarly) |
+| `output/visualizacao.html` | Dashboard interativo (7 abas, D3.js + Chart.js + d3-sankey) |
+| `output/apresentacao.html` | Apresentacao Reveal.js (10 slides auto-contidos) |
+| `output/relatorio.html` | Relatorio HTML print-ready para PDF |
 
 ## Testes
 
 ```bash
 uv sync --extra dev
-uv run pytest tests/ -v
+uv run pytest tests/ -v              # 143 testes
 uv run pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
@@ -75,25 +89,29 @@ uv run pytest tests/ -v --cov=src --cov-report=term-missing
 
 ```
 src/
-  __main__.py    - Entry point CLI
-  pipeline.py    - Orquestrador 4 estagios
-  extractor.py   - Extracao PDF (3-tier)
-  chunker.py     - Chunking hierarquico
-  analyzer.py    - Analise LLM (4 fases)
-  validators.py  - Validacao pos-processamento
-  models.py      - Modelos Pydantic
-  prompts.py     - Templates de prompt
-  output.py      - Geracao de output
-  config.py      - Configuracao via .env
+  __main__.py      - Entry point CLI
+  pipeline.py      - Orquestrador 4 estagios
+  extractor.py     - Extracao PDF (3-tier)
+  chunker.py       - Chunking hierarquico
+  analyzer.py      - Analise LLM (4 fases)
+  scholarly.py     - Extracao de citacoes scholarly e footnotes
+  validators.py    - Validacao pos-processamento + detect_footnotes
+  models.py        - Modelos Pydantic (Thesis, Citation, etc.)
+  prompts.py       - Templates de prompt para LLM
+  output.py        - Geracao de output (JSON, Markdown)
+  pdf_report.py    - Geracao de relatorio PDF/HTML print-ready
+  slides.py        - Geracao de apresentacao Reveal.js
+  config.py        - Configuracao via .env (Pydantic Settings)
 ```
 
 ### Pipeline (4 estagios)
 
 1. **Extracao PDF** - Extrai texto do PDF usando Docling, PyMuPDF ou Tesseract
 2. **Chunking** - Divide texto em ~30 chunks por capitulos/secoes
-3. **Analise LLM** (4 fases):
-   - 3a: Extracao de teses e citacoes por chunk
+3. **Analise LLM** (5 fases):
+   - 3a: Extracao de teses e citacoes por chunk + validacao
+   - 3a+: Extracao de citacoes scholarly e footnotes (src/scholarly.py)
    - 3b: Identificacao de cadeias logicas entre teses
    - 3c: Correlacao tematica de citacoes biblicas
    - 3d: Deduplicacao e sintese final
-4. **Output** - Gera JSON estruturado e relatorio Markdown
+4. **Output** - Gera JSON estruturado, relatorio Markdown, PDF e slides

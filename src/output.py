@@ -207,6 +207,36 @@ class OutputWriter:
                 lines.append(f"- **{book}:** {refs}")
             lines.append("")
 
+        # Scholarly citations section
+        scholarly_citations = [
+            c for c in analysis.citations if c.citation_type == "scholarly"
+        ]
+        if scholarly_citations:
+            lines.extend([
+                "---",
+                "",
+                "## Citacoes Academicas",
+                "",
+            ])
+            # Group by author
+            by_author: dict[str, list] = defaultdict(list)
+            for c in scholarly_citations:
+                author_key = c.author or c.reference
+                by_author[author_key].append(c)
+
+            for author in sorted(by_author.keys()):
+                refs = by_author[author]
+                first = refs[0]
+                work_str = f" — *{first.work}*" if first.work else ""
+                context_str = f": {first.context}" if first.context else ""
+                lines.append(f"- **{author}**{work_str}{context_str}")
+                # If multiple entries by same author with different works
+                for ref in refs[1:]:
+                    w = f" — *{ref.work}*" if ref.work else ""
+                    ctx = f": {ref.context}" if ref.context else ""
+                    lines.append(f"  - {ref.reference}{w}{ctx}")
+            lines.append("")
+
         # Statistics
         lines.extend([
             "---",

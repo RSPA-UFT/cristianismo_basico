@@ -115,3 +115,50 @@ def log_quality_report(chapter_analyses: list[ChapterAnalysis]) -> None:
     logger.info(f"  Low confidence theses (<0.7): {low_confidence}")
     logger.info(f"  Citation types: {dict(type_counts)}")
     logger.info("=" * 50)
+
+
+# Pattern for footnote markers: number at end of sentence/quote
+_FOOTNOTE_MARKER = re.compile(r'[."\']\s*(\d{1,2})\s*$')
+
+
+def detect_footnotes(citations: list[Citation]) -> list[Citation]:
+    """Classify citations that look like footnotes.
+
+    Examines the reference field for patterns indicating footnote markers
+    (numbers at the end of sentences) and reclassifies them as
+    ``citation_type="footnote"``.
+
+    Parameters
+    ----------
+    citations : list[Citation]
+        List of citations to check.
+
+    Returns
+    -------
+    list[Citation]
+        The same list with footnote reclassification applied.
+    """
+    reclassified = 0
+    for c in citations:
+        ref = (c.reference or "").strip()
+        if not ref:
+            continue
+
+        # If reference is just a number (1-99), it's likely a footnote marker
+        if re.fullmatch(r"\d{1,2}", ref):
+            if c.citation_type not in ("scholarly",):
+                c.citation_type = "footnote"
+                reclassified += 1
+            continue
+
+        # If the text field has a footnote-style marker
+        text = (c.text or "").strip()
+        if text and _FOOTNOTE_MARKER.search(text):
+            if c.citation_type not in ("biblical", "scholarly"):
+                c.citation_type = "footnote"
+                reclassified += 1
+
+    if reclassified:
+        logger.info(f"Footnote detection: reclassified {reclassified} citations as footnote")
+
+    return citations

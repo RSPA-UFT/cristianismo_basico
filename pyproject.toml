@@ -19,6 +19,9 @@ ocr = [
     "pytesseract>=0.3.10",
     "pdf2image>=1.16.0",
 ]
+pdf = [
+    "weasyprint>=62.0",
+]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=6.0",

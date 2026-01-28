@@ -42,6 +42,9 @@ class Citation(BaseModel):
     text: str | None = None
     page: int | None = None
     citation_type: str = "biblical"  # "biblical", "scholarly", "footnote"
+    author: str | None = None    # e.g. "C.S. Lewis" (scholarly citations)
+    work: str | None = None      # e.g. "Miracles" (scholarly citations)
+    context: str | None = None   # How Stott uses the reference
 
 
 class Thesis(BaseModel):

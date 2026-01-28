@@ -14,6 +14,8 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 |---------|-------------|-------------|----------------------|------------------------|
 | Teses extraidas | 117 | 16 (genericas) | 37 (selecionadas) | **52** (4-5/capitulo) |
 | Citacoes biblicas | ~65 (+27% vazias) | 43 | 30 (limpas) | **169** (unicas, dedup) |
+| Citacoes scholarly | 0 | 0 | 0 | **17** (autores identificados) |
+| Notas de rodape | 0 | 0 | 0 | **detectadas** (detect_footnotes) |
 | Chains logicas | — | 20 (IDs placeholder) | 29 (IDs reais) | **57** (IDs reais) |
 | Grupos tematicos | — | 5 | 6 | **8** |
 | Resumo executivo | — | VAZIO | 1.273 chars | **1.183 chars** |
@@ -118,7 +120,7 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 | 3. Chain IDs placeholder | **RESOLVIDO** — 29 chains com IDs reais |
 | 4. Refs vazias | Ja mitigado (validador) |
 | 5. Classificacao errada | **RESOLVIDO** — todas reclassificadas manualmente |
-| 6. Zero notas de rodape | NAO RESOLVIDO — requer re-extracao |
+| 6. Zero notas de rodape | **RESOLVIDO** — detect_footnotes() + extract_footnotes_from_notes() |
 | 7. Artefatos OCR | **RESOLVIDO** — removidos |
 | 8. Refs incompletas | **RESOLVIDO** — corrigidas ("Co" → "1Co") |
 | 9. Duplicatas intra-chunk | **RESOLVIDO** — deduplicacao global |
@@ -144,25 +146,39 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 - 8 grupos tematicos de citacoes
 - **Todas as teses tem supporting_text com citacoes diretas do texto de Stott**
 
+### Iteracao 4: Citacoes Scholarly + Footnotes + Visualizacao + PDF/Slides
+- **17 citacoes scholarly** extraidas (10 de notas de rodape, 7 inline)
+- **Autores identificados:** Forsyth, Lewis, Thomas, Simpson, Denney, Orr, Machen, Latham, Studdert Kennedy, Archbishop Temple, John Stuart Mill, Carnegie Simpson, Charles Lamb, Emerson, Thomas Arnold, Sir Edward Clarke
+- **detect_footnotes()** reclassifica refs numericas como `citation_type: "footnote"`
+- **Modelo Citation ampliado** com campos `author`, `work`, `context` (backward-compatible)
+- **Sankey diagram** (7a aba no dashboard) com fluxo inter-partes via d3-sankey
+- **Export PNG/SVG** em todos os paineis do dashboard
+- **Apresentacao Reveal.js** (`output/apresentacao.html`) com 10 slides
+- **Relatorio HTML print-ready** (`output/relatorio.html`) para impressao/PDF
+- **143 testes passando** (30 novos: scholarly, footnotes, slides, PDF, output, pipeline)
+
 ---
 
 ## Recomendacoes Restantes
 
 ### Futura melhoria (se necessario)
-1. **Notas de rodape:** Nenhuma foi classificada como `citation_type: "footnote"` -- requer pre-processamento de texto para marcar notas antes da extracao
+1. ~~**Notas de rodape:**~~ **RESOLVIDO** — `detect_footnotes()` e `extract_footnotes_from_notes()` em src/validators.py e src/scholarly.py
 2. **Integrar Claude como provedor LLM no pipeline** (adicionar suporte Anthropic API em analyzer.py para automatizar re-extracao)
-3. **Citacoes scholarly:** O livro cita teologos (C.S. Lewis, etc.) que nao foram extraidos como citacoes scholarly
+3. ~~**Citacoes scholarly:**~~ **RESOLVIDO** — `extract_scholarly_citations()` em src/scholarly.py (17 citacoes com author/work/context)
 
 ---
 
 ## Arquivos de Referencia
 
-### Output final (v2)
+### Output final (v2 + scholarly)
 - Teses finais (52): `output/theses.json`
 - Chains logicas (57): `output/chains.json`
-- Citacoes biblicas (169): `output/citations.json`
+- Citacoes (186 = 169 biblicas + 17 scholarly): `output/citations.json`
 - Grupos de citacoes (8): `output/citation_groups.json`
-- Relatorio completo: `output/report.md`
+- Relatorio Markdown: `output/report.md`
+- Dashboard interativo (7 abas): `output/visualizacao.html`
+- Apresentacao Reveal.js (10 slides): `output/apresentacao.html`
+- Relatorio HTML print-ready: `output/relatorio.html`
 
 ### Scripts e dados intermediarios
 - Script de sintese v1: scratchpad `synthesize.py`
@@ -171,6 +187,10 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 - Teses por chunk (v1/qwen2.5): `output/per_chapter/chapter_*.json`
 
 ### Codigo-fonte
+- Scholarly: `src/scholarly.py`
 - Validador: `src/validators.py`
 - Prompts: `src/prompts.py`
 - Pipeline: `src/pipeline.py`
+- PDF report: `src/pdf_report.py`
+- Slides: `src/slides.py`
+- Output: `src/output.py`

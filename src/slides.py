@@ -1,0 +1,288 @@
+"""Presentation slides generator using Reveal.js.
+
+Generates a self-contained HTML file with Reveal.js CDN v5 for presenting
+the theological analysis results.
+"""
+
+import json
+import logging
+from collections import defaultdict
+from pathlib import Path
+
+from .models import BookAnalysis, Citation, Thesis, ThesisChain
+
+logger = logging.getLogger(__name__)
+
+_PART_COLORS = {
+    "Parte 1": "#4682B4",
+    "Parte 2": "#DC143C",
+    "Parte 3": "#FF8C00",
+    "Parte 4": "#228B22",
+}
+
+
+def _esc(text: str) -> str:
+    """Escape HTML special characters."""
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def generate_slides(
+    output_dir: Path,
+    analysis: BookAnalysis | None = None,
+) -> Path:
+    """Generate a Reveal.js slide presentation from analysis data.
+
+    Parameters
+    ----------
+    output_dir : Path
+        Directory to write the presentation to.
+    analysis : BookAnalysis | None
+        If provided, uses this data. Otherwise loads from JSON files in output_dir.
+
+    Returns
+    -------
+    Path
+        Path to the generated apresentacao.html file.
+    """
+    if analysis is None:
+        analysis = _load_analysis(output_dir)
+
+    html = _build_slides(analysis)
+    path = output_dir / "apresentacao.html"
+    path.write_text(html, encoding="utf-8")
+    logger.info(f"Presentation generated: {path}")
+    return path
+
+
+def _build_slides(analysis: BookAnalysis) -> str:
+    """Build a Reveal.js HTML presentation."""
+    # Collect stats
+    type_counts: dict[str, int] = defaultdict(int)
+    for t in analysis.theses:
+        type_counts[t.thesis_type] += 1
+
+    biblical = sum(1 for c in analysis.citations if c.citation_type == "biblical")
+    scholarly = [c for c in analysis.citations if c.citation_type == "scholarly"]
+
+    # Group theses by part
+    by_part: dict[str, list[Thesis]] = defaultdict(list)
+    for t in analysis.theses:
+        part_key = t.part or "Geral"
+        by_part[part_key].append(t)
+
+    # Build part slides (one per part)
+    part_slides = []
+    part_info = [
+        ("Parte 1 - A Pessoa de Cristo", "#4682B4", "Cap. 1-4: Quem e Jesus Cristo?"),
+        ("Parte 2 - A Necessidade do Homem", "#DC143C", "Cap. 5-6: O problema do pecado"),
+        ("Parte 3 - A Obra de Cristo", "#FF8C00", "Cap. 7-8: A solucao na cruz"),
+        ("Parte 4 - A Resposta do Homem", "#228B22", "Cap. 9-11: O que fazer?"),
+    ]
+
+    for part_name, color, subtitle in part_info:
+        theses = [t for t in analysis.theses if part_name in (t.part or "")]
+        if not theses:
+            # Try partial match
+            short = part_name.split(" - ")[0] if " - " in part_name else part_name
+            theses = [t for t in analysis.theses if short in (t.part or "")]
+
+        main_theses = [t for t in theses if t.thesis_type == "main"]
+        thesis_items = ""
+        for t in main_theses[:4]:
+            thesis_items += f'<li><strong>{_esc(t.id)}</strong>: {_esc(t.title)}</li>\n'
+
+        part_slides.append(f"""
+        <section data-background-color="{color}10">
+          <h2 style="color:{color};">{_esc(part_name)}</h2>
+          <p class="subtitle">{_esc(subtitle)}</p>
+          <ul class="thesis-list">
+            {thesis_items}
+          </ul>
+          <p class="count">{len(theses)} teses &bull; {len(main_theses)} principais</p>
+        </section>
+        """)
+
+    # Scholarly citations slide
+    scholarly_items = ""
+    for c in scholarly[:8]:
+        author = c.author or c.reference
+        work = f" &mdash; <em>{_esc(c.work)}</em>" if c.work else ""
+        scholarly_items += f"<li><strong>{_esc(author)}</strong>{work}</li>\n"
+
+    html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apresentacao: Cristianismo Basico - John Stott</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+<style>
+  .reveal h1 {{ color: #2c3e50; font-size: 1.8em; }}
+  .reveal h2 {{ color: #2c3e50; font-size: 1.4em; }}
+  .reveal h3 {{ color: #555; font-size: 1.1em; }}
+  .reveal .subtitle {{ color: #666; font-size: 0.9em; margin-top: -10px; }}
+  .reveal .stat-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }}
+  .reveal .stat-box {{ background: #f8f9fa; border-radius: 8px; padding: 16px; text-align: center; }}
+  .reveal .stat-box .num {{ font-size: 2.2em; font-weight: bold; color: #3498db; }}
+  .reveal .stat-box .label {{ font-size: 0.8em; color: #666; }}
+  .reveal .thesis-list {{ text-align: left; font-size: 0.75em; list-style: none; }}
+  .reveal .thesis-list li {{ margin: 8px 0; padding: 6px 12px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #3498db; }}
+  .reveal .count {{ font-size: 0.7em; color: #888; margin-top: 16px; }}
+  .reveal .flow-card {{ background: #f8f9fa; padding: 14px; border-radius: 6px; margin: 8px 0; text-align: left; font-size: 0.7em; line-height: 1.5; }}
+  .reveal .scholarly-list {{ text-align: left; font-size: 0.7em; list-style: none; }}
+  .reveal .scholarly-list li {{ margin: 6px 0; padding: 4px 0; border-bottom: 1px solid #eee; }}
+  .reveal .chain-viz {{ display: flex; justify-content: center; align-items: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }}
+  .reveal .chain-node {{ background: #3498db; color: white; padding: 8px 14px; border-radius: 6px; font-size: 0.7em; font-weight: bold; }}
+  .reveal .chain-arrow {{ font-size: 1.5em; color: #999; }}
+  .reveal .method-list {{ text-align: left; font-size: 0.75em; }}
+  .reveal .method-list li {{ margin: 10px 0; }}
+  .p1 {{ background: #4682B4; }} .p2 {{ background: #DC143C; }}
+  .p3 {{ background: #FF8C00; }} .p4 {{ background: #228B22; }}
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+  <!-- Slide 1: Title -->
+  <section>
+    <h1>Cristianismo Basico</h1>
+    <h3>John Stott</h3>
+    <p class="subtitle">Analise teologica estruturada: teses, cadeias logicas e citacoes</p>
+  </section>
+
+  <!-- Slide 2: Summary -->
+  <section>
+    <h2>Resumo Executivo</h2>
+    <div class="flow-card">
+      {_esc(analysis.summary or '(Nao disponivel)')}
+    </div>
+  </section>
+
+  <!-- Slide 3: Stats -->
+  <section>
+    <h2>Visao Geral</h2>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="num">{len(analysis.theses)}</div><div class="label">Teses</div></div>
+      <div class="stat-box"><div class="num">{len(analysis.chains)}</div><div class="label">Cadeias Logicas</div></div>
+      <div class="stat-box"><div class="num">{biblical}</div><div class="label">Citacoes Biblicas</div></div>
+      <div class="stat-box"><div class="num">{len(scholarly)}</div><div class="label">Citacoes Academicas</div></div>
+    </div>
+    <p class="count">
+      {type_counts.get('main', 0)} principais &bull;
+      {type_counts.get('supporting', 0)} suporte &bull;
+      {type_counts.get('conclusion', 0)} conclusoes &bull;
+      {type_counts.get('premise', 0)} premissas
+    </p>
+  </section>
+
+  <!-- Slides 4-7: Parts -->
+  {''.join(part_slides)}
+
+  <!-- Slide 8: Argument Flow -->
+  <section>
+    <h2>Fluxo Argumentativo</h2>
+    <div class="chain-viz">
+      <div class="chain-node p1">P1: Pessoa</div>
+      <div class="chain-arrow">&rarr;</div>
+      <div class="chain-node p2">P2: Pecado</div>
+      <div class="chain-arrow">&rarr;</div>
+      <div class="chain-node p3">P3: Cruz</div>
+      <div class="chain-arrow">&rarr;</div>
+      <div class="chain-node p4">P4: Resposta</div>
+    </div>
+    <div class="flow-card">
+      {_esc(analysis.argument_flow or '(Nao disponivel)')}
+    </div>
+  </section>
+
+  <!-- Slide 9: Scholarly Citations -->
+  <section>
+    <h2>Citacoes Academicas</h2>
+    <ul class="scholarly-list">
+      {scholarly_items if scholarly_items else '<li>(Nenhuma citacao academica)</li>'}
+    </ul>
+    <p class="count">{len(scholarly)} autores/obras citados</p>
+  </section>
+
+  <!-- Slide 10: Methodology -->
+  <section>
+    <h2>Metodologia</h2>
+    <ul class="method-list">
+      <li><strong>Extracao:</strong> PDF &rarr; texto estruturado (Docling/PyMuPDF)</li>
+      <li><strong>Chunking:</strong> Divisao hierarquica por capitulos ({len(analysis.theses)} teses)</li>
+      <li><strong>Analise LLM:</strong> Claude Opus 4.5 para extracao de argumentos</li>
+      <li><strong>Validacao:</strong> Cross-referencia com texto original</li>
+      <li><strong>Sintese:</strong> Deduplicacao + selecao das teses mais relevantes</li>
+    </ul>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({{
+    hash: true,
+    slideNumber: true,
+    transition: 'slide',
+    width: 1100,
+    height: 700,
+  }});
+</script>
+</body>
+</html>"""
+
+    return html
+
+
+def _load_analysis(output_dir: Path) -> BookAnalysis:
+    """Load BookAnalysis from JSON files in the output directory."""
+    theses = []
+    theses_path = output_dir / "theses.json"
+    if theses_path.exists():
+        data = json.loads(theses_path.read_text(encoding="utf-8"))
+        theses = [Thesis(**t) for t in data]
+
+    chains = []
+    chains_path = output_dir / "chains.json"
+    if chains_path.exists():
+        data = json.loads(chains_path.read_text(encoding="utf-8"))
+        chains = [ThesisChain(**c) for c in data]
+
+    citations = []
+    citations_path = output_dir / "citations.json"
+    if citations_path.exists():
+        data = json.loads(citations_path.read_text(encoding="utf-8"))
+        citations = [Citation(**c) for c in data]
+
+    summary = ""
+    argument_flow = ""
+    report_path = output_dir / "report.md"
+    if report_path.exists():
+        import re
+        report_text = report_path.read_text(encoding="utf-8")
+        summary_match = re.search(
+            r"## Resumo Executivo\s*\n\s*(.*?)(?=\n---)", report_text, re.DOTALL
+        )
+        if summary_match:
+            summary = summary_match.group(1).strip()
+        flow_match = re.search(
+            r"## Fluxo Argumentativo\s*\n\s*(.*?)(?=\n---)", report_text, re.DOTALL
+        )
+        if flow_match:
+            argument_flow = flow_match.group(1).strip()
+
+    return BookAnalysis(
+        theses=theses,
+        chains=chains,
+        citations=citations,
+        summary=summary,
+        argument_flow=argument_flow,
+    )

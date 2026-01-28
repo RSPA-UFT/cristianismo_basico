@@ -772,3 +772,61 @@ def make_synthesis_response(
 
     payload = {"theses": theses, "summary": summary}
     return json.dumps(payload, ensure_ascii=False)
+
+
+# ---------------------------------------------------------------------------
+# Scholarly fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture()
+def sample_scholarly_citation() -> Citation:
+    """Return a scholarly Citation for C.S. Lewis."""
+    return Citation(
+        reference="LEWIS, C.S.. Miracles. Bles. 1947",
+        text="Cap. 2 — Referencia sobre milagres",
+        citation_type="scholarly",
+        author="LEWIS, C.S.",
+        work="Miracles",
+        context="Referencia sobre milagres e a intervencao divina no mundo natural",
+    )
+
+
+@pytest.fixture()
+def sample_notes_chunk(tmp_path: Path) -> Path:
+    """Create a realistic chunk_29_notas.md file for testing scholarly extraction."""
+    chunks_dir = tmp_path / "chunks"
+    chunks_dir.mkdir(exist_ok=True)
+
+    notes = (
+        "# Notas\n\n"
+        "## CAPITULO 2\n\n"
+        "- 1 Joao 5.17; 10.30.\n"
+        "- 19 FORSYTH, P. T. This Life and the Next. Independent Press, 1947.\n"
+        "- 20 LEWIS, C. S. Miracles. Bles, 1947.\n\n"
+        "## CAPITULO 3\n\n"
+        "- 1 Citado por THOMAS, W. H. Griffth in Christianity is Christ, 1909.\n"
+        "- 2 SIMPSON, P. Carnegie. The Fact of Christ. James Clarke, 1930.\n"
+        "- 4 DENNEY, James. Studies in Theology. Hodder e Stoughton, 1906.\n"
+    )
+
+    notes_path = chunks_dir / "chunk_29_notas.md"
+    notes_path.write_text(notes, encoding="utf-8")
+    return chunks_dir
+
+
+@pytest.fixture()
+def sample_book_analysis_with_scholarly(
+    sample_book_analysis: BookAnalysis,
+    sample_scholarly_citation: Citation,
+) -> BookAnalysis:
+    """Return a BookAnalysis that includes scholarly citations."""
+    citations = list(sample_book_analysis.citations)
+    citations.append(sample_scholarly_citation)
+    return BookAnalysis(
+        theses=sample_book_analysis.theses,
+        chains=sample_book_analysis.chains,
+        citations=citations,
+        summary=sample_book_analysis.summary,
+        argument_flow=sample_book_analysis.argument_flow,
+    )

@@ -46,6 +46,12 @@ Para cada tese, forneca:
 3. Classifique corretamente: se `reference` contem uma referencia biblica (livro + capitulo:versiculo), use `citation_type: "biblical"`, NAO "scholarly".
 4. Identifique tambem notas de rodape como citacoes com `citation_type: "footnote"`.
 5. O campo `supporting_text` deve conter um trecho literal do texto que sustenta diretamente o titulo da tese. NAO use textos genericos ou desconectados.
+6. Quando o texto cita um teologo, pensador ou autor (ex: C.S. Lewis, Forsyth, Carnegie Simpson), identifique como `citation_type: "scholarly"` e preencha os campos:
+   - `reference`: Nome do autor (ex: "C.S. Lewis", "P.T. Forsyth")
+   - `author`: Nome completo do autor
+   - `work`: Nome da obra citada, se disponivel
+   - `context`: Como Stott usa a referencia no argumento
+7. Notas de rodape (marcadores numericos no final de citacoes ou frases) devem ser classificadas como `citation_type: "footnote"`.
 
 **Exemplo de uma tese bem formatada:**
 ```json
