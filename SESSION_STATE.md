@@ -1,6 +1,7 @@
 # Estado da Sessao - Cristianismo Basico
 
 Data: 2026-01-27
+Versao atual: v0.7.0
 Ultima sessao encerrada com todos os objetivos cumpridos.
 
 ---
@@ -33,14 +34,14 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | `validators.py` | Validacao pos-processamento + detect_footnotes() | OK |
 | `output.py` | Geracao de output (JSON, Markdown, secao scholarly) | OK |
 | `pdf_report.py` | Geracao de relatorio PDF/HTML print-ready | OK |
-| `slides.py` | Geracao de apresentacao Reveal.js (10 slides) | OK |
+| `slides.py` | Geracao de apresentacao Reveal.js (10+ slides, sub-slides, grid) | OK |
 | `scrollytelling.py` | Scrollytelling (Scrollama.js + D3.js, 12 secoes) | OK |
 | `pipeline.py` | Orquestrador dos 4 estagios (com fase 3a+ e scrollytelling) | OK |
 
 ### Testes (tests/)
-- **160 testes passando** (pytest)
-- Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators, scholarly, pdf_report, slides, scrollytelling
-- Arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (5), `test_scrollytelling.py` (17)
+- **199 testes passando** (pytest)
+- Cobertura: conftest, models, config, extractor, chunker, analyzer, output, pipeline, validators, scholarly, pdf_report, slides, scrollytelling, html_audit
+- Arquivos de teste: `test_scholarly.py` (9), `test_pdf_report.py` (4), `test_slides.py` (12), `test_scrollytelling.py` (17), `test_html_audit.py` (18)
 - Testes atualizados: test_models (+3), test_validators (+3), test_output (+2), test_pipeline (+2)
 - Dependencias dev: pytest>=8.0, pytest-cov>=6.0
 
@@ -52,8 +53,8 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 | `citations.json` | 36 KB | 186 citacoes (169 biblicas + 17 scholarly) |
 | `citation_groups.json` | 4 KB | 8 grupos tematicos |
 | `report.md` | 57 KB | Relatorio completo em Markdown (com secao scholarly) |
-| `visualizacao.html` | 150 KB | Dashboard interativo (7 abas, D3.js + Chart.js + d3-sankey) |
-| `apresentacao.html` | 11 KB | Apresentacao Reveal.js (10 slides auto-contidos) |
+| `visualizacao.html` | 150 KB | Dashboard interativo (8 abas, D3.js + Chart.js + d3-sankey) |
+| `apresentacao.html` | 13 KB | Apresentacao Reveal.js (10+ slides, sub-slides verticais) |
 | `relatorio.html` | 74 KB | Relatorio HTML print-ready para PDF |
 | `scrollytelling.html` | 98 KB | Scrollytelling narrativo (Scrollama.js + D3.js, 12 secoes) |
 | `extracted_text.md` | 265 KB | Texto bruto extraido do PDF |
@@ -116,22 +117,44 @@ Pipeline Python de 4 estagios para extracao e analise automatizada de teses teol
 - **GitHub Pages** (`docs/`) — 3 paginas com navegacao inter-paginas
 - **src/scrollytelling.py** — modulo gerador (507 linhas)
 - **160 testes** (17 novos, 0 falhas)
+
+### Iteracao 6: Identidade visual ICE + derivacao de IDs (v0.6.0)
+- Identidade visual ICE Metropolitana (`#048fcc`), tipografia sans-serif
+- `derive_part_from_id()` / `derive_chapter_from_id()` para backfill
+- Navegacao Narrativa / Painel / Apresentacao
+- Paleta harmonizada: `#048fcc`, `#dc3545`, `#fd7e14`, `#28a745`
+- **176 testes** (16 novos, 0 falhas)
+
+### Iteracao 7: Correcoes de painel, slides e confianca (v0.7.0)
+- Unicode escapes `\u00XX` substituidos por UTF-8 real em `docs/visualizacao.html`
+- Diacriticos portugueses completos em todo o texto user-facing
+- `TYPE_LABELS` traduzidos: principal, suporte, conclusao, premissa
+- Aba "Confianca" separada da Visao Geral (8 abas total no dashboard)
+- Paleta consistente: `#3498db` eliminado, `#048fcc` em todos os graficos
+- Contraste WCAG nos slides: headings escurecidos (`#036c9a`, `#b02a37`, `#c96209`, `#1e7b34`)
+- Fluxo argumentativo em sub-slides verticais (nested sections)
+- Citacoes academicas em grid 2 colunas
+- Resumo executivo truncado (600 chars) + overflow-y fallback
+- `tests/test_html_audit.py` — 18 testes de auditoria HTML automatizada
+- **199 testes** (23 novos, 0 falhas)
 - Este e o output final atual
 
 ---
 
 ## Visualizacao (output/visualizacao.html)
 
-Dashboard HTML auto-contido com 7 abas:
-1. **Visao Geral** - Donut charts (distribuicao por parte, raciocinio) + barras (capitulos, confianca)
+Dashboard HTML auto-contido com 8 abas:
+1. **Visao Geral** - Donut charts (distribuicao por tipo, raciocinio) + barras (capitulos)
 2. **Rede Logica** - Grafo D3.js force-directed (52 nos, 57 arestas, drag/zoom/hover/click)
 3. **Hierarquia** - Arvore colapsavel D3.js (Livro > Parte > Capitulo > Tese)
 4. **Citacoes Biblicas** - Barras por livro biblico (AT/NT) e por grupo tematico
 5. **Fluxo Argumentativo** - 4 movimentos do argumento em HTML formatado
-6. **Dados** - Tabela pesquisavel com todas as 52 teses
-7. **Fluxo Sankey** - Diagrama Sankey (D3-sankey) com fluxo inter-partes
+6. **Fluxo Sankey** - Diagrama Sankey (D3-sankey) com fluxo inter-partes
+7. **Confianca** - Grafico de barras com indice de confianca LLM por tese (aba propria desde v0.7.0)
+8. **Dados** - Tabela pesquisavel com todas as 52 teses (badges em portugues)
 
-Cores por parte: P1=#4682B4 (azul), P2=#DC143C (vermelho), P3=#FF8C00 (laranja), P4=#228B22 (verde)
+Cores por parte: P1=#048fcc (azul), P2=#dc3545 (vermelho), P3=#fd7e14 (laranja), P4=#28a745 (verde)
+Tipos traduzidos: principal, suporte, conclusao, premissa (via TYPE_LABELS)
 CDNs: D3.js v7, Chart.js v4, d3-sankey v0.12
 Export: Botoes PNG/SVG em todos os paineis
 
@@ -208,7 +231,7 @@ cd /mnt/c/cristianismo_basico
 
 # Verificar ambiente
 .venv/bin/python --version   # Python 3.12
-uv run pytest tests/ -q      # 160 passed
+uv run pytest tests/ -q      # 199 passed
 
 # Executar pipeline completo (requer Ollama rodando)
 uv run python -m src

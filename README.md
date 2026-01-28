@@ -14,13 +14,15 @@ Pipeline de extracao e analise automatizada de teses teologicas do livro
 - Correlacao tematica de citacoes biblicas
 - Sintese e deduplicacao de teses
 - Validacao pos-processamento de citacoes e referencias
-- Dashboard interativo (7 abas: visao geral, rede logica, hierarquia, citacoes, fluxo, dados, Sankey)
+- Dashboard interativo (8 abas: visao geral, rede logica, hierarquia, citacoes, fluxo, Sankey, confianca, dados)
+- Tipos de tese traduzidos para portugues (principal, suporte, conclusao, premissa)
 - Export de graficos como PNG/SVG
 - Scrollytelling narrativo (12 secoes com Scrollama.js + D3.js)
-- Apresentacao Reveal.js (10 slides auto-contidos)
+- Apresentacao Reveal.js (10+ slides auto-contidos, sub-slides verticais, grid 2 colunas)
 - Relatorio HTML print-ready (PDF via WeasyPrint ou Ctrl+P)
 - Geracao de relatorio em Markdown
 - GitHub Pages com 3 paginas navegaveis (scrollytelling, dashboard, slides)
+- Auditoria automatizada de HTML (diacriticos, paleta, acessibilidade)
 
 ## Estrutura do Livro Analisado
 
@@ -75,8 +77,8 @@ uv run python -m src
 | `output/citations.json` | 186 citacoes (169 biblicas + 17 scholarly) |
 | `output/citation_groups.json` | 8 grupos tematicos de citacoes |
 | `output/report.md` | Relatorio completo em Markdown (com secao scholarly) |
-| `output/visualizacao.html` | Dashboard interativo (7 abas, D3.js + Chart.js + d3-sankey) |
-| `output/apresentacao.html` | Apresentacao Reveal.js (10 slides auto-contidos) |
+| `output/visualizacao.html` | Dashboard interativo (8 abas, D3.js + Chart.js + d3-sankey) |
+| `output/apresentacao.html` | Apresentacao Reveal.js (10+ slides, sub-slides verticais) |
 | `output/relatorio.html` | Relatorio HTML print-ready para PDF |
 | `output/scrollytelling.html` | Scrollytelling narrativo (12 secoes, Scrollama.js + D3.js) |
 
@@ -84,7 +86,7 @@ uv run python -m src
 
 ```bash
 uv sync --extra dev
-uv run pytest tests/ -v              # 160 testes
+uv run pytest tests/ -v              # 199 testes
 uv run pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
@@ -141,10 +143,10 @@ Mudancas documentadas em [CHANGELOG.md](CHANGELOG.md).
 ### Estrategia de branches
 
 - **`master`** — branch principal, sempre deployavel via GitHub Pages
-- **Tags** — cada release recebe tag `vX.Y.Z` (ex: `v0.6.0`)
+- **Tags** — cada release recebe tag `vX.Y.Z` (ex: `v0.7.0`)
 - **Feature branches** — para novas funcionalidades, prefixo `feat/`
 - **Fix branches** — para correcoes, prefixo `fix/`
 
 ```
-master ─── v0.1.0 ─── v0.3.0 ─── v0.4.0 ─── v0.5.0 ─── v0.6.0
+master ─── v0.1.0 ─── v0.3.0 ─── v0.4.0 ─── v0.5.0 ─── v0.6.0 ─── v0.7.0
 ```

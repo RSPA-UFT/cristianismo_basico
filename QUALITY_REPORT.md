@@ -176,6 +176,27 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 - **pipeline.py** atualizado com chamada `generate_scrollytelling()`
 - **160 testes passando** (17 novos: criacao, estrutura, dados, secoes, acessibilidade, load)
 
+### Iteracao 6: Identidade visual ICE + derivacao de IDs (v0.6.0)
+- **Identidade visual ICE Metropolitana**: cor brand `#048fcc`, tipografia sans-serif, botoes arredondados
+- **`derive_part_from_id()` / `derive_chapter_from_id()`** em models.py — preenchimento automatico de part/chapter via ID
+- **Backfill** de campos `part` e `chapter` em `OutputWriter.save_book_analysis()`
+- **Navegacao** Narrativa / Painel / Apresentacao em todas as paginas
+- **Paleta de cores harmonizada**: `#048fcc`, `#dc3545`, `#fd7e14`, `#28a745`
+- **176 testes passando** (16 novos)
+
+### Iteracao 7: Correcoes de painel, slides e confianca (v0.7.0)
+- **Unicode escapes corrigidos**: substituicao de `\u00XX` literal por caracteres UTF-8 reais em `docs/visualizacao.html`
+- **Diacriticos portugueses completos**: todos os textos user-facing corrigidos (Analise→Análise, Citacoes→Citações, etc.)
+- **TYPE_LABELS em portugues**: badges, tooltips e tabela traduzidos (main→principal, supporting→suporte, conclusion→conclusão, premise→premissa)
+- **Aba "Confianca" separada**: grafico de confianca movido da Visao Geral para aba propria com texto explicativo
+- **Paleta consistente**: `#3498db` substituido por `#048fcc` em todos os graficos
+- **Contraste WCAG nos slides**: headings das partes usam cores escurecidas (`#036c9a`, `#b02a37`, `#c96209`, `#1e7b34`)
+- **Overflow corrigido nos slides**: fluxo argumentativo dividido em sub-slides verticais (Reveal.js nested sections)
+- **Citacoes academicas em 2 colunas** (grid layout) para caber em 1 slide
+- **Resumo executivo truncado** (600 chars) com `max-height`/`overflow-y` como fallback
+- **18 testes de auditoria HTML** (`tests/test_html_audit.py`): unicode escapes, diacriticos, labels ingleses, paleta, TYPE_LABELS, aba confianca, contraste, overflow, navegacao, lang/charset
+- **199 testes passando** (23 novos: 18 auditoria + 5 slides)
+
 ---
 
 ## Recomendacoes Restantes
@@ -189,14 +210,14 @@ Modelo de sintese v2 (re-extracao): Claude Opus 4.5 (diretamente dos textos orig
 
 ## Arquivos de Referencia
 
-### Output final (v2 + scholarly + scrollytelling)
+### Output final (v2 + scholarly + scrollytelling + correcoes v0.7.0)
 - Teses finais (52): `output/theses.json`
 - Chains logicas (57): `output/chains.json`
 - Citacoes (186 = 169 biblicas + 17 scholarly): `output/citations.json`
 - Grupos de citacoes (8): `output/citation_groups.json`
 - Relatorio Markdown: `output/report.md`
-- Dashboard interativo (7 abas): `output/visualizacao.html`
-- Apresentacao Reveal.js (10 slides): `output/apresentacao.html`
+- Dashboard interativo (8 abas): `output/visualizacao.html`
+- Apresentacao Reveal.js (10+ slides, com sub-slides verticais): `output/apresentacao.html`
 - Relatorio HTML print-ready: `output/relatorio.html`
 - Scrollytelling (12 secoes): `output/scrollytelling.html`
 
