@@ -13,6 +13,7 @@ from .extractor import PDFExtractor
 from .models import BookAnalysis, ChapterAnalysis, ExtractionResult
 from .output import OutputWriter
 from .scholarly import extract_footnotes_from_notes, extract_scholarly_citations
+from .scrollytelling import generate_scrollytelling
 from .validators import (
     detect_footnotes,
     log_quality_report,
@@ -195,6 +196,9 @@ def run_pipeline(cfg: Settings | None = None) -> BookAnalysis:
     )
 
     paths = writer.save_book_analysis(book_analysis)
+
+    generate_scrollytelling(cfg.output_dir, book_analysis)
+
     elapsed = time.time() - t0
 
     logger.info("=" * 60)

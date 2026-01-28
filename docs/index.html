@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cristianismo Basico - John Stott | Scrollytelling</title>
+<style>
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: #2c3e50;
+  background: #fafafa;
+  line-height: 1.7;
+  font-size: 18px;
+}
+
+/* Hero */
+.scroll-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.scroll-hero h1 {
+  font-size: 3.2rem;
+  margin-bottom: 0.3rem;
+  animation: fadeInUp 1s ease-out;
+}
+
+.scroll-hero .author {
+  font-size: 1.4rem;
+  color: #b0c4de;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.scroll-hero .tagline {
+  font-size: 1.1rem;
+  color: #8899aa;
+  max-width: 600px;
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.scroll-hero .scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 0.85rem;
+  color: #556;
+  animation: bounce 2s infinite 2s;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Scrolly container */
+#scrolly {
+  position: relative;
+  display: flex;
+}
+
+.scroll-graphic {
+  position: sticky;
+  top: 0;
+  width: 55%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  z-index: 1;
+}
+
+#viz-container {
+  width: 90%;
+  height: 80%;
+  position: relative;
+}
+
+.viz-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.viz-panel.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scroll-text {
+  width: 45%;
+  padding: 0 2rem;
+}
+
+/* Steps */
+.step {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 1rem;
+  opacity: 0.3;
+  transition: opacity 0.4s ease;
+}
+
+.step.is-active {
+  opacity: 1;
+}
+
+.step h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
+}
+
+.step h3 {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.step p {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 0.8rem;
+}
+
+.step .step-meta {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+/* Part accent bars */
+.step[data-part="1"] h2 { border-left: 4px solid #4682B4; padding-left: 12px; }
+.step[data-part="2"] h2 { border-left: 4px solid #DC143C; padding-left: 12px; }
+.step[data-part="3"] h2 { border-left: 4px solid #FF8C00; padding-left: 12px; }
+.step[data-part="4"] h2 { border-left: 4px solid #228B22; padding-left: 12px; }
+
+/* Overview counters */
+.counter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.counter-box {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 24px 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.counter-num {
+  font-size: 2.8rem;
+  font-weight: bold;
+  color: #3498db;
+  display: block;
+}
+
+.counter-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Part bar */
+.part-bar {
+  display: flex;
+  width: 100%;
+  max-width: 500px;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 24px;
+}
+
+.part-bar-seg {
+  transition: width 0.8s ease;
+}
+
+/* Intro viz */
+.intro-viz {
+  text-align: center;
+  width: 100%;
+}
+
+.intro-viz .part-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.intro-viz .pillars {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.intro-viz .pillar {
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.viz-panel.active .pillar {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.viz-panel.active .pillar:nth-child(2) { transition-delay: 0.15s; }
+.viz-panel.active .pillar:nth-child(3) { transition-delay: 0.3s; }
+
+/* Thesis cards in viz */
+.thesis-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.thesis-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-left: 4px solid #ccc;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.viz-panel.active .thesis-card {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.viz-panel.active .thesis-card:nth-child(2) { transition-delay: 0.1s; }
+.viz-panel.active .thesis-card:nth-child(3) { transition-delay: 0.2s; }
+.viz-panel.active .thesis-card:nth-child(4) { transition-delay: 0.3s; }
+.viz-panel.active .thesis-card:nth-child(5) { transition-delay: 0.4s; }
+
+.thesis-card .badge {
+  display: inline-block;
+  background: #eee;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.thesis-card .card-title {
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.thesis-card .confidence-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: #e0e0e0;
+  margin-top: 6px;
+}
+
+.thesis-card .confidence-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+/* Network SVG */
+#network-svg, #citations-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Conclusion */
+.scroll-conclusion {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+  color: #fff;
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.scroll-conclusion h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.scroll-conclusion .final-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.scroll-conclusion .final-stat {
+  text-align: center;
+}
+
+.scroll-conclusion .final-stat .num {
+  font-size: 2.2rem;
+  font-weight: bold;
+  display: block;
+}
+
+.scroll-conclusion .final-stat .label {
+  font-size: 0.8rem;
+  color: #8899aa;
+}
+
+.scroll-conclusion .convergence {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.scroll-conclusion .conv-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #fff;
+  transition: transform 0.5s ease;
+}
+
+.scroll-conclusion .summary-text {
+  max-width: 700px;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #b0c4de;
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .step { opacity: 1; }
+  .viz-panel { opacity: 1; pointer-events: auto; }
+  .thesis-card { opacity: 1; transform: none; }
+  .pillar { opacity: 1; transform: none; }
+}
+
+/* Mobile: stacked layout */
+@media (max-width: 768px) {
+  body { font-size: 16px; }
+
+  .scroll-hero h1 { font-size: 2rem; }
+  .scroll-hero .author { font-size: 1.1rem; }
+
+  #scrolly { flex-direction: column; }
+
+  .scroll-graphic {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .scroll-text {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .step { min-height: 60vh; }
+
+  .counter-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .counter-num { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" style="background:#1a1a2e;padding:8px 16px;display:flex;gap:16px;justify-content:center;font-family:sans-serif;font-size:0.9rem;">
+  <a href="index.html" style="color:#b0c4de;text-decoration:none;">Scrollytelling</a>
+  <a href="visualizacao.html" style="color:#b0c4de;text-decoration:none;">Dashboard</a>
+  <a href="apresentacao.html" style="color:#b0c4de;text-decoration:none;">Slides</a>
+</nav>
+
+<section class="scroll-hero" id="hero" aria-label="Introducao">
+  <h1>Cristianismo Basico</h1>
+  <div class="author">John Stott</div>
+  <div class="tagline">Uma jornada pelo argumento central da fe crista &mdash;
+    52 teses, 186 citacoes, 4 partes</div>
+  <div class="scroll-hint" aria-hidden="true">&#8595; Role para explorar</div>
+</section>
+
+<div id="scrolly">
+  <div class="scroll-graphic" id="graphic">
+    <div id="viz-container" aria-label="Area de visualizacao interativa">
+      <div id="viz-overview" class="viz-panel"></div>
+      <div id="viz-part-intro" class="viz-panel"></div>
+      <div id="viz-part-theses" class="viz-panel"></div>
+      <div id="viz-network" class="viz-panel"><svg id="network-svg" aria-label="Rede logica de teses"></svg></div>
+      <div id="viz-citations" class="viz-panel"><svg id="citations-svg" aria-label="Grafico de citacoes biblicas"></svg></div>
+    </div>
+  </div>
+  <div class="scroll-text">
+    <div class="step" data-step="1" aria-label="Visao geral">
+  <h2>Visao Geral</h2>
+  <p>O argumento de Stott se desdobra em 4 partes progressivas,
+    construindo um caso cumulativo pela fe crista.</p>
+  <p class="step-meta">52 teses &bull;
+    57 cadeias logicas &bull;
+    169 citacoes biblicas &bull;
+    17 citacoes academicas</p>
+</div>
+    <div class="step" data-step="2" data-part="1"
+     aria-label="Parte 1 introducao">
+  <h2>Quem e Jesus Cristo?</h2>
+  <p>Stott examina tres linhas de evidencia: as declaracoes de Cristo, seu carater e sua ressurreicao.</p>
+  <p class="step-meta">0 teses (0 principais) &bull;
+    Parte 1 de 4</p>
+</div><div class="step" data-step="3" data-part="1"
+     aria-label="Parte 1 teses">
+  <h3>Teses Principais &mdash; Parte 1</h3>
+  <p>Teses desta parte serao reveladas ao explorar os dados completos.</p>
+  <p class="step-meta">0 teses principais exibidas</p>
+</div><div class="step" data-step="4" data-part="2"
+     aria-label="Parte 2 introducao">
+  <h2>O pecado e universal</h2>
+  <p>Tres consequencias do pecado: separacao de Deus, escravidao moral e conflito interior.</p>
+  <p class="step-meta">0 teses (0 principais) &bull;
+    Parte 2 de 4</p>
+</div><div class="step" data-step="5" data-part="2"
+     aria-label="Parte 2 teses">
+  <h3>Teses Principais &mdash; Parte 2</h3>
+  <p>Teses desta parte serao reveladas ao explorar os dados completos.</p>
+  <p class="step-meta">0 teses principais exibidas</p>
+</div><div class="step" data-step="6" data-part="3"
+     aria-label="Parte 3 introducao">
+  <h2>A cruz: sacrificio redentor</h2>
+  <p>A morte de Cristo nao foi exemplo moral, mas sacrificio substitutivo. Do Antigo Testamento a cruz, o plano redentor se revela.</p>
+  <p class="step-meta">0 teses (0 principais) &bull;
+    Parte 3 de 4</p>
+</div><div class="step" data-step="7" data-part="3"
+     aria-label="Parte 3 teses">
+  <h3>Teses Principais &mdash; Parte 3</h3>
+  <p>Teses desta parte serao reveladas ao explorar os dados completos.</p>
+  <p class="step-meta">0 teses principais exibidas</p>
+</div><div class="step" data-step="8" data-part="4"
+     aria-label="Parte 4 introducao">
+  <h2>O custo do discipulado</h2>
+  <p>Eis que estou a porta e bato (Ap 3:20). A resposta exigida: arrependimento, fe e obediencia.</p>
+  <p class="step-meta">0 teses (0 principais) &bull;
+    Parte 4 de 4</p>
+</div><div class="step" data-step="9" data-part="4"
+     aria-label="Parte 4 teses">
+  <h3>Teses Principais &mdash; Parte 4</h3>
+  <p>Teses desta parte serao reveladas ao explorar os dados completos.</p>
+  <p class="step-meta">0 teses principais exibidas</p>
+</div>
+    <div class="step" data-step="10" aria-label="Rede logica completa">
+  <h2>Rede Logica Completa</h2>
+  <p>As teses se conectam por cadeias logicas, formando uma rede
+    argumentativa coerente. Conexoes entre partes aparecem em dourado.</p>
+  <p class="step-meta">Visualizacao interativa com D3.js force-directed graph</p>
+</div>
+    <div class="step" data-step="11" aria-label="Citacoes biblicas">
+  <h2>Citacoes Biblicas</h2>
+  <p>As citacoes se distribuem por livros da Biblia, agrupadas em temas teologicos.</p>
+  <div class="group-tag">Revelacao e Iniciativa Divina (7)</div><div class="group-tag">Identidade e Divindade de Cristo (15)</div><div class="group-tag">Impecabilidade e Carater de Cristo (9)</div><div class="group-tag">Ressurreicao de Cristo (8)</div><div class="group-tag">Pecado e Natureza Humana (15)</div><div class="group-tag">Sacrificio, Cruz e Redencao (22)</div><div class="group-tag">Salvacao, Espirito Santo e Igreja (13)</div><div class="group-tag">Discipulado, Decisao e Vida Crista (12)</div>
+  <p class="step-meta">Barras horizontais D3 por livro biblico</p>
+</div>
+  </div>
+</div>
+
+<section class="scroll-conclusion" id="conclusion" aria-label="Conclusao">
+  <h2>Um Argumento Coerente</h2>
+  <div class="convergence">
+    <div class="conv-icon" style="background:#4682B4;">P1</div>
+    <div class="conv-icon" style="background:#DC143C;">P2</div>
+    <div class="conv-icon" style="background:#FF8C00;">P3</div>
+    <div class="conv-icon" style="background:#228B22;">P4</div>
+  </div>
+  <div class="final-stats">
+    <div class="final-stat"><span class="num">52</span><span class="label">teses</span></div>
+    <div class="final-stat"><span class="num">186</span><span class="label">citacoes</span></div>
+    <div class="final-stat"><span class="num">57</span><span class="label">cadeias</span></div>
+  </div>
+  <p class="summary-text">&quot;Cristianismo Basico&quot; de John Stott apresenta uma defesa sistematica e progressiva da fe crista em quatro movimentos. Na Parte 1, Stott estabelece a divindade de Cristo por meio de tres linhas convergentes de evidencia: suas declaracoes extraordinarias (incluindo o uso do nome divino 'Eu Sou'), seu carater impecavel (confirmado por amigos e inimigos), e sua ressurreicao historica (sustentada pelo tumulo vazio, pelas aparicoes e pela transformacao dos discipulos). Na Parte 2, diagnostica a condicao humana: o pecado e universal, e fundamentalmente a exaltacao do eu a custa de Deus, resultando em separacao de Deus, escravidao interior e conflito relacional. Na Parte 3, apresenta a solucao divina: a morte substitutiva de Cristo na cruz, que nao e mero exemplo moral mas sacrificio redentor prefigurado pelo sistema sacrificial do Antigo Testamento. A salvacao abrange perdao, transformacao interior pelo Espirito Santo, e incorporacao a igreja como corpo de Cristo. Na Parte 4, expoe a resposta exigida: calcular o custo do discipulado, tomar uma decisao pessoal e definitiva por Cristo, e viver a vida crista com responsabilidade triplice -- para com Deus, a igreja e o mundo.</p>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://unpkg.com/scrollama@3.2.0/build/scrollama.min.js"></script>
+<script>
+const THESES = [{"id": "T1.1.1", "title": "A iniciativa divina na revelacao e salvacao", "description": "Stott argumenta que o cristianismo comeca com a iniciativa de Deus, nao do homem. Deus falou (revelacao) e agiu (salvacao) antes que o homem o buscasse, e essas duas acoes convergem na pessoa de Jesus Cristo.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Gn 1:1", "citation_type": "biblical"}, {"reference": "Hb 1:1-2", "citation_type": "biblical"}, {"reference": "Jo 1:14", "citation_type": "biblical"}]}, {"id": "T1.1.2", "title": "A necessidade da revelacao divina para conhecer a Deus", "description": "A mente finita do homem e incapaz de alcancar a mente infinita de Deus por conta propria. O metodo empirico e inadequado para questoes metafisicas. Somente pela revelacao divina, culminando em Cristo, o homem pode conhecer a Deus.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.93, "citations": [{"reference": "Jo 18:38", "citation_type": "biblical"}, {"reference": "At 17:23", "citation_type": "biblical"}, {"reference": "Sl 19:1", "citation_type": "biblical"}, {"reference": "Rm 1:19-20", "citation_type": "biblical"}, {"reference": "1 Jo 1:1", "citation_type": "biblical"}]}, {"id": "T1.1.3", "title": "Cristo como Salvador: Deus agiu para redimir os pecadores", "description": "Alem de falar, Deus agiu para salvar o homem do pecado. Jesus veio como Salvador, e o cristianismo e uma religiao de salvacao sem paralelo nas religioes nao-cristas.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Mt 1:21", "citation_type": "biblical"}, {"reference": "1 Tm 1:15", "citation_type": "biblical"}, {"reference": "Lc 19:10", "citation_type": "biblical"}]}, {"id": "T1.1.4", "title": "A busca humilde, honesta e obediente como condicao para encontrar a Deus", "description": "O homem deve buscar a Deus com diligencia, humildade, honestidade e obediencia. A busca exige nao apenas abertura intelectual, mas disposicao moral para mudar de vida. Preconceito intelectual e rebeldia moral sao os maiores impedimentos.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.92, "citations": [{"reference": "Sl 14:2-3", "citation_type": "biblical"}, {"reference": "Mt 7:7", "citation_type": "biblical"}, {"reference": "Jr 29:13", "citation_type": "biblical"}, {"reference": "Mt 11:25", "citation_type": "biblical"}, {"reference": "Jo 7:17", "citation_type": "biblical"}]}, {"id": "T1.2.1", "title": "O ensino autocentrado de Jesus o distingue de todos os lideres religiosos", "description": "A caracteristica mais marcante do ensino de Jesus e que ele falava de si mesmo. Diferentemente de outros fundadores religiosos que apontavam para uma verdade ou caminho, Jesus declarou ser ele mesmo a verdade, o caminho e a vida, exigindo fe e amor dirigidos a sua propria pessoa.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.97, "citations": [{"reference": "Jo 6:35", "citation_type": "biblical"}, {"reference": "Jo 8:12", "citation_type": "biblical"}, {"reference": "Jo 11:25", "citation_type": "biblical"}, {"reference": "Jo 14:6", "citation_type": "biblical"}, {"reference": "Mt 11:28-29", "citation_type": "biblical"}, {"reference": "Lc 14:26", "citation_type": "biblical"}, {"reference": "Jo 12:32", "citation_type": "biblical"}]}, {"id": "T1.2.2", "title": "Jesus afirmou diretamente ser o Messias e divino", "description": "Jesus acreditava ser o Messias predito no Antigo Testamento e reivindicou divindade atraves de declaracoes diretas, incluindo o uso do titulo divino 'Eu Sou' e a aceitacao da confissao de Tome 'Senhor meu e Deus meu'. Sua reivindicacao de filiacao divina descreve um relacionamento unico e eterno com Deus.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.97, "citations": [{"reference": "Mc 1:15", "citation_type": "biblical"}, {"reference": "Jo 5:17", "citation_type": "biblical"}, {"reference": "Jo 10:30", "citation_type": "biblical"}, {"reference": "Jo 14:10", "citation_type": "biblical"}, {"reference": "Mt 11:27", "citation_type": "biblical"}, {"reference": "Jo 8:58", "citation_type": "biblical"}, {"reference": "Ex 3:14", "citation_type": "biblical"}, {"reference": "Jo 20:28", "citation_type": "biblical"}]}, {"id": "T1.2.3", "title": "As afirmacoes indiretas: perdoar pecados, conceder vida, ensinar verdade e julgar o mundo", "description": "Jesus exerceu quatro funcoes que cabiam exclusivamente a Deus: perdoar pecados, conceder vida eterna, ensinar com autoridade divina propria e reivindicar o papel de juiz final da humanidade. Cada uma dessas funcoes implica indiretamente sua divindade.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.94, "citations": [{"reference": "Mc 2:5", "citation_type": "biblical"}, {"reference": "Lc 7:48", "citation_type": "biblical"}, {"reference": "Jo 6:68", "citation_type": "biblical"}, {"reference": "Jo 7:46", "citation_type": "biblical"}, {"reference": "Mt 7:28-29", "citation_type": "biblical"}]}, {"id": "T1.2.4", "title": "Os milagres como afirmacoes dramatizadas da identidade de Jesus", "description": "Os milagres de Jesus nao eram meras demonstracoes de poder sobrenatural, mas 'sinais' que ilustravam visualmente suas declaracoes verbais. Cada milagre correspondia a uma afirmacao 'Eu sou', revelando que ele era o Messias e que os homens estao espiritualmente famintos, cegos e mortos.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.91, "citations": [{"reference": "Jo 20:30-31", "citation_type": "biblical"}, {"reference": "Jo 4:26", "citation_type": "biblical"}]}, {"id": "T1.2.5", "title": "As declaracoes de Jesus exigem uma explicacao: impostor, iludido ou divino", "description": "Stott argumenta que as declaracoes de Jesus sao tao extraordinarias que nao podem ser ignoradas. Ele nao pode ser considerado simplesmente um grande mestre moral se estava errado sobre o ponto principal de seu ensino - ele mesmo. As opcoes sao: impostor, iludido ou verdadeiramente divino.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.93, "citations": []}, {"id": "T1.3.1", "title": "A impecabilidade de Cristo como evidencia de sua divindade", "description": "O pecado e uma doenca universal que atinge todos os homens. Se Jesus de Nazare nao pecou, ele nao era um homem comum -- era sobrenatural. Sua ausencia de pecado e o pressuposto para a redencao, pois sem ela ele precisaria ser salvo tanto quanto nos.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.96, "citations": [{"reference": "Jo 8:7", "citation_type": "biblical"}, {"reference": "Jo 8:46", "citation_type": "biblical"}, {"reference": "Jo 8:29", "citation_type": "biblical"}]}, {"id": "T1.3.2", "title": "O testemunho convergente de amigos e inimigos sobre a impecabilidade de Cristo", "description": "A impecabilidade de Cristo nao depende apenas de sua propria afirmacao: seus amigos (Pedro, Joao, Paulo) a confirmaram indiretamente em seus escritos, e seus inimigos, apesar de tentarem acusa-lo, nao encontraram falha moral genuina, tendo que recorrer a falsas testemunhas no julgamento.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "1 Pe 1:19", "citation_type": "biblical"}, {"reference": "1 Pe 2:22", "citation_type": "biblical"}, {"reference": "1 Jo 3:5", "citation_type": "biblical"}, {"reference": "2 Co 5:21", "citation_type": "biblical"}, {"reference": "Hb 7:26", "citation_type": "biblical"}, {"reference": "Hb 4:15", "citation_type": "biblical"}, {"reference": "Sl 14:3", "citation_type": "biblical"}, {"reference": "Is 53:6", "citation_type": "biblical"}]}, {"id": "T1.3.3", "title": "O paradoxo do carater de Cristo: humildade e autoridade simultaneas", "description": "O carater de Jesus revela um paradoxo unico: ele combinava as maiores afirmacoes de autoridade divina com o mais profundo altruismo e humildade. No pensamento exigia o primeiro lugar; nos atos colocava-se em ultimo. Esse desprendimento total e o que a Biblia chama de amor, e Deus e amor.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.92, "citations": []}, {"id": "T1.3.4", "title": "Jesus nunca pecou porque era altruista -- e Deus e amor", "description": "Stott conclui que a essencia da impecabilidade de Jesus esta em seu altruismo absoluto. A abnegacao total e a definicao biblica do amor, e como Deus e amor, o carater de Jesus confirma sua natureza divina.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.9, "citations": []}, {"id": "T1.4.1", "title": "A ressurreicao como evidencia historica da divindade de Cristo", "description": "A ressurreicao de Jesus nao e mera sobrevivencia espiritual ou recuperacao fisica, mas uma vitoria sobre a morte e passagem para uma dimensao diferente de existencia. Embora por si so nao prove sua divindade, e um argumento consistente e coerente com ela.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.96, "citations": [{"reference": "Rm 1:4", "citation_type": "biblical"}]}, {"id": "T1.4.2", "title": "O tumulo vazio e as teorias alternativas refutadas", "description": "Stott examina e refuta cinco teorias alternativas para o tumulo vazio: tumulo errado, desmaio, roubo por ladroes, remocao pelos discipulos e custodia pelas autoridades. Nenhuma resiste a exame critico. O silencio das autoridades e particularmente eloquente: se tivessem o corpo, poderiam ter destruido o cristianismo apresentando-o.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.94, "citations": [{"reference": "Mt 27:63-65", "citation_type": "biblical"}, {"reference": "Mt 28:13", "citation_type": "biblical"}, {"reference": "Mc 16:2", "citation_type": "biblical"}]}, {"id": "T1.4.3", "title": "As aparicoes do Senhor ressurreto nao sao invencoes nem alucinacoes", "description": "Stott argumenta que as dez aparicoes de Jesus ressurreto a diferentes pessoas, em diversos lugares e circunstancias, nao podem ser explicadas como invencoes deliberadas (os apostolos eram sinceros e sofreram por sua mensagem) nem como alucinacoes (faltavam as condicoes psicologicas necessarias: os discipulos eram ceticos, incredulos e nao esperavam a ressurreicao).", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "1 Co 15:6", "citation_type": "biblical"}, {"reference": "1 Co 15:7", "citation_type": "biblical"}, {"reference": "At 1:3", "citation_type": "biblical"}, {"reference": "Jo 20:1-10", "citation_type": "biblical"}]}, {"id": "T1.4.4", "title": "A transformacao dos discipulos como maior evidencia da ressurreicao", "description": "A mudanca radical nos discipulos -- de homens desanimados e medrosos para pregadores corajosos dispostos a morrer -- e talvez a maior evidencia da ressurreicao. Pedro, que negou Cristo tres vezes, tornou-se ousado pregador; Tiago, irmao incredulo de Jesus, tornou-se lider da igreja apos ve-lo ressurreto.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "1 Co 15:8", "citation_type": "biblical"}]}, {"id": "T1.4.5", "title": "O peso cumulativo das tres evidencias leva a confissao de fe", "description": "Stott conclui que nenhum dos tres argumentos (declaracoes, carater e ressurreicao) e definitivo isoladamente, mas o peso acumulado das evidencias e praticamente conclusivo, levando a confissao de Tome como resposta racional a fe.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.96, "citations": [{"reference": "Jo 20:28", "citation_type": "biblical"}]}, {"id": "T2.5.1", "title": "A universalidade do pecado", "description": "Stott argumenta que o pecado e universal, afetando toda a humanidade sem excecao, conforme testemunho unanime dos autores biblicos do Antigo e do Novo Testamento.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Sl 14:1-3", "citation_type": "biblical"}, {"reference": "Sl 130:3", "citation_type": "biblical"}, {"reference": "Sl 143:2", "citation_type": "biblical"}, {"reference": "Is 53:6", "citation_type": "biblical"}, {"reference": "Is 64:6", "citation_type": "biblical"}, {"reference": "Rm 3:22-23", "citation_type": "biblical"}, {"reference": "1Jo 1:8", "citation_type": "biblical"}, {"reference": "1Jo 1:10", "citation_type": "biblical"}]}, {"id": "T2.5.2", "title": "A natureza do pecado como transgressao e falha moral", "description": "Stott define pecado tanto negativamente (falha, defeito, fracasso em alcancar um padrao moral) quanto positivamente (transgressao, violacao da lei de Deus), mostrando que ambas as dimensoes implicam a existencia de um padrao moral absoluto.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.92, "citations": [{"reference": "Tg 4:17", "citation_type": "biblical"}, {"reference": "1Jo 3:4", "citation_type": "biblical"}, {"reference": "Rm 7:7", "citation_type": "biblical"}]}, {"id": "T2.5.3", "title": "O pecado como exaltacao do eu a custa de Deus", "description": "Stott argumenta, a partir dos Dez Mandamentos, que o pecado e fundamentalmente a exaltacao do proprio eu em detrimento de Deus, sendo o egoismo a raiz de toda transgressao moral.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.93, "citations": [{"reference": "Ex 20:3", "citation_type": "biblical"}, {"reference": "Ex 20:4", "citation_type": "biblical"}, {"reference": "Ex 20:7", "citation_type": "biblical"}, {"reference": "Ex 20:8", "citation_type": "biblical"}, {"reference": "Ex 20:12", "citation_type": "biblical"}, {"reference": "Ex 20:13", "citation_type": "biblical"}, {"reference": "Ex 20:14", "citation_type": "biblical"}, {"reference": "Ex 20:15", "citation_type": "biblical"}, {"reference": "Ex 20:16", "citation_type": "biblical"}, {"reference": "Ex 20:17", "citation_type": "biblical"}]}, {"id": "T2.5.4", "title": "Os mandamentos revelam pecados interiores e nao apenas exteriores", "description": "Stott demonstra que Jesus aprofundou os Dez Mandamentos, mostrando que Deus ve as intencoes do coracao - a raiva equivale a homicidio, a cobicha equivale a roubo, o olhar impuro equivale a adulterio, tornando todos os homens culpados.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.9, "citations": [{"reference": "1Jo 3:15", "citation_type": "biblical"}, {"reference": "Mt 5:28", "citation_type": "biblical"}, {"reference": "Cl 3:5", "citation_type": "biblical"}, {"reference": "Hb 4:13", "citation_type": "biblical"}]}, {"id": "T2.5.5", "title": "A lei de Deus como instrumento de convencimento do pecado", "description": "Stott conclui que o proposito da lei divina e expor o pecado humano, e que nada e mais poderoso para convencer o homem de sua pecaminosidade do que a sublime e justa lei de Deus.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.93, "citations": [{"reference": "Rm 7:7", "citation_type": "biblical"}]}, {"id": "T2.6.1", "title": "O pecado causa separacao de Deus", "description": "Stott argumenta que a consequencia mais terrivel do pecado e a separacao de Deus, que e a fonte de vida, resultando em morte espiritual e, se persistir na rejeicao de Cristo, em separacao eterna.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Is 57:15", "citation_type": "biblical"}, {"reference": "1Tm 6:15-16", "citation_type": "biblical"}, {"reference": "1Jo 1:5-6", "citation_type": "biblical"}, {"reference": "Hb 12:29", "citation_type": "biblical"}, {"reference": "Is 33:14", "citation_type": "biblical"}, {"reference": "Hc 1:13", "citation_type": "biblical"}, {"reference": "2Co 6:14", "citation_type": "biblical"}, {"reference": "Rm 6:23", "citation_type": "biblical"}, {"reference": "Is 59:1-2", "citation_type": "biblical"}, {"reference": "Lm 3:44", "citation_type": "biblical"}]}, {"id": "T2.6.2", "title": "O pecado como escravidao interior", "description": "Stott sustenta que o pecado nao apenas separa o homem de Deus, mas o escraviza interiormente. A corrupcao interior (pecado original) e a raiz dos pecados exteriores, e o homem e incapaz de se libertar por suas proprias forcas.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Mc 7:21-23", "citation_type": "biblical"}, {"reference": "Jr 17:9", "citation_type": "biblical"}, {"reference": "Gl 5:19-21", "citation_type": "biblical"}, {"reference": "Jo 8:31-34", "citation_type": "biblical"}, {"reference": "Rm 6:17", "citation_type": "biblical"}, {"reference": "Ef 2:3", "citation_type": "biblical"}, {"reference": "Tt 3:3", "citation_type": "biblical"}]}, {"id": "T2.6.3", "title": "O pecado gera conflitos nos relacionamentos humanos", "description": "Stott argumenta que o egoismo humano, essencia do pecado, e a causa raiz de todos os conflitos nos relacionamentos - familiares, conjugais, profissionais e internacionais. O pecado inverte a ordem divina: Deus primeiro, o proximo em segundo, e nos mesmos em ultimo.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.93, "citations": [{"reference": "Lv 19:18", "citation_type": "biblical"}, {"reference": "Dt 6:5", "citation_type": "biblical"}, {"reference": "Mt 22:37-40", "citation_type": "biblical"}]}, {"id": "T2.6.4", "title": "A necessidade de um Salvador", "description": "Stott conclui que o homem nao pode resolver o problema do pecado por si mesmo - regras de conduta, sermoes e educacao sao insuficientes. O homem precisa de uma mudanca radical de natureza que so um Salvador pode oferecer.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.94, "citations": [{"reference": "Mc 2:17", "citation_type": "biblical"}]}, {"id": "T3.7.1", "title": "A reconciliacao com Deus como iniciativa divina atraves da cruz", "description": "Stott argumenta que o cristianismo e uma religiao de resgate em que Deus tomou a iniciativa de reconciliar a humanidade consigo mesmo por meio da morte de Cristo. A reconciliacao nao e conquista humana, mas dom divino recebido pela fe.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "2Co 5:18-19", "citation_type": "biblical"}, {"reference": "Jo 3:16", "citation_type": "biblical"}, {"reference": "Cl 1:19-20", "citation_type": "biblical"}, {"reference": "Rm 6:23", "citation_type": "biblical"}]}, {"id": "T3.7.2", "title": "A centralidade da cruz nas Escrituras e na fe crista", "description": "Stott demonstra que a morte sacrificial de Cristo e o cerne da mensagem biblica, prenunciada pelos sacrificios do AT, profetizada pelos profetas (especialmente Isaias 53), ensinada por Jesus como necessidade divina, e proclamada pelos apostolos como centro do evangelho.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Hb 9:22", "citation_type": "biblical"}, {"reference": "Is 53:7", "citation_type": "biblical"}, {"reference": "1Co 1:22-24", "citation_type": "biblical"}, {"reference": "1Co 2:2", "citation_type": "biblical"}, {"reference": "1Co 15:3", "citation_type": "biblical"}, {"reference": "Hb 9:26", "citation_type": "biblical"}, {"reference": "Ap 5:5-12", "citation_type": "biblical"}, {"reference": "Gl 2:20", "citation_type": "biblical"}, {"reference": "Gl 6:14", "citation_type": "biblical"}]}, {"id": "T3.7.3", "title": "Cristo carregou nossos pecados como substituto na cruz", "description": "Stott expoe que 'levar o pecado' no AT significa sofrer as consequencias do pecado em lugar de outro. Os sacrificios levitivos, o Dia da Expiacao e o Servo Sofredor de Isaias 53 prenunciam Cristo, que identificou-se com os pecados da humanidade e recebeu o castigo da separacao de Deus em nosso lugar.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "1Pe 2:24", "citation_type": "biblical"}, {"reference": "Lv 5:17", "citation_type": "biblical"}, {"reference": "Lv 16:20-22", "citation_type": "biblical"}, {"reference": "Hb 10:4", "citation_type": "biblical"}, {"reference": "Is 53:5-6", "citation_type": "biblical"}, {"reference": "Is 53:11-12", "citation_type": "biblical"}, {"reference": "Jo 1:29", "citation_type": "biblical"}, {"reference": "2Co 5:21", "citation_type": "biblical"}, {"reference": "Sl 22:1", "citation_type": "biblical"}]}, {"id": "T3.7.4", "title": "A morte de Cristo e mais do que um exemplo moral", "description": "Stott refuta a ideia de que a cruz seria apenas um exemplo inspirador de sofrimento paciente. Embora Cristo tenha deixado um modelo de submissao, a cruz e primordialmente um sacrificio substitutivo pelo pecado, pois um mero exemplo nao pode perdoar pecados nem reconciliar com Deus.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.93, "citations": [{"reference": "1Pe 2:21", "citation_type": "biblical"}, {"reference": "Mc 10:45", "citation_type": "biblical"}, {"reference": "Mt 26:28", "citation_type": "biblical"}]}, {"id": "T3.7.5", "title": "A impossibilidade da auto-salvacao e a necessidade da morte substitutiva", "description": "Stott conclui que a morte substitutiva de Cristo torna impossivel qualquer sistema de salvacao baseado em meritos humanos. Se o homem pudesse salvar-se por boas obras, a morte de Cristo na cruz nao teria sentido. Afirmar auto-suficiencia moral e insultar o sacrificio de Cristo.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.92, "citations": [{"reference": "1Pe 3:18", "citation_type": "biblical"}, {"reference": "1Pe 1:19", "citation_type": "biblical"}, {"reference": "1Co 5:7", "citation_type": "biblical"}, {"reference": "Gl 2:21", "citation_type": "biblical"}, {"reference": "Gl 3:13", "citation_type": "biblical"}, {"reference": "Dt 21:23", "citation_type": "biblical"}]}, {"id": "T3.8.1", "title": "A salvacao abrange perdao, transformacao interior e comunhao", "description": "Stott define salvacao como conceito amplo que vai alem do perdao. Inclui tres dimensoes: reconciliacao com Deus (pela morte de Cristo), libertacao do egoismo (pelo Espirito Santo), e restauracao dos relacionamentos (pela igreja). Cada dimensao corresponde a uma obra distinta de Cristo.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.94, "citations": [{"reference": "Jo 3:3", "citation_type": "biblical"}, {"reference": "2Co 5:17", "citation_type": "biblical"}]}, {"id": "T3.8.2", "title": "O Espirito Santo como agente da transformacao interior", "description": "Stott ensina que a mudanca da natureza humana e obra do Espirito Santo, que habita em todo verdadeiro cristao. O Espirito produz o 'fruto' de virtudes cristas (amor, alegria, paz, etc.) enquanto o cristao luta contra a 'carne'. A santificacao nao e imitacao externa de Cristo, mas transformacao interior pelo seu Espirito.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.94, "citations": [{"reference": "Mt 7:17-18", "citation_type": "biblical"}, {"reference": "Rm 8:9", "citation_type": "biblical"}, {"reference": "Gl 5:17", "citation_type": "biblical"}, {"reference": "Gl 5:22-23", "citation_type": "biblical"}, {"reference": "Gl 5:24", "citation_type": "biblical"}, {"reference": "2Co 3:18", "citation_type": "biblical"}]}, {"id": "T3.8.3", "title": "A igreja como povo de Deus e corpo de Cristo", "description": "Stott apresenta a igreja como cumprimento da promessa de Deus a Abraao de abencoar todas as familias da terra. A igreja nao e uma nacao separada, mas uma comunidade de todas as racas unida pelo Espirito Santo, descrita por Paulo como 'corpo de Cristo' em que cada membro tem funcao necessaria.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.93, "citations": [{"reference": "Gl 3:29", "citation_type": "biblical"}, {"reference": "Mt 28:19", "citation_type": "biblical"}]}, {"id": "T3.8.4", "title": "A unidade espiritual da igreja pelo Espirito Santo e o amor fraternal", "description": "Stott afirma que a unidade da igreja e indissoluvel porque e 'unidade do Espirito', nao unidade organizacional. O Espirito Santo produz amor fraterno que supera divisoes sociais e raciais, e o cristao deve participar da igreja local apesar de suas imperfeicoes.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.9, "citations": [{"reference": "Ef 4:3", "citation_type": "biblical"}, {"reference": "Fp 2:1", "citation_type": "biblical"}, {"reference": "1Jo 3:14", "citation_type": "biblical"}]}, {"id": "T3.8.5", "title": "A distincao entre igreja visivel e igreja verdadeira", "description": "Stott faz uma distincao entre os membros da igreja visivel (inscritos no rol de membros) e os que pertencem verdadeiramente a Cristo. Nem todos que professam a fe a praticam de fato; somente Deus conhece quem verdadeiramente lhe pertence.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.88, "citations": [{"reference": "2Tm 2:19", "citation_type": "biblical"}]}, {"id": "T4.9.1", "title": "O compromisso cristao exige calculo previo do custo", "description": "Stott argumenta que ser cristao nao e simplesmente concordar com proposicoes teologicas, mas exige um compromisso pessoal serio com Jesus Cristo. Jesus nunca rebaixou seus padroes para facilitar a adesao, e usou a parabola da torre inacabada para advertir contra o discipulado superficial.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Lc 14:28-30", "citation_type": "biblical"}]}, {"id": "T4.9.2", "title": "A renuncia ao pecado como condicao do arrependimento", "description": "Stott ensina que seguir a Cristo requer primeiramente renunciar ao pecado com arrependimento genuino, que envolve mudanca interior de mente e atitude, e nao apenas remorso emocional. O arrependimento verdadeiro pode incluir reparacao dos danos causados a outros.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Mc 8:34", "citation_type": "biblical"}]}, {"id": "T4.9.3", "title": "A triplice renuncia ao eu: negar, crucificar e perder a si mesmo", "description": "Stott identifica tres expressoes de Jesus que descrevem a renuncia ao eu exigida do discipulo: negar a si mesmo (como Pedro negou a Cristo), tomar a cruz (crucificar a natureza corrupta diariamente), e perder a vida (entregar o ego a Cristo). Esta renuncia nao destroi a individualidade, mas revela a verdadeira identidade.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Mc 8:34-37", "citation_type": "biblical"}, {"reference": "Gl 5:24", "citation_type": "biblical"}]}, {"id": "T4.9.4", "title": "O senhorio de Cristo sobre todas as areas da vida", "description": "Stott rejeita a ideia de que se pode desfrutar da salvacao sem aceitar o senhorio de Cristo. Fazer de Cristo o Senhor significa submeter a ele todas as areas da vida: carreira, casamento, familia, dinheiro e tempo. A declaracao 'Jesus e Senhor' e a mais antiga confissao de fe crista.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Fp 2:10-11", "citation_type": "biblical"}, {"reference": "Mt 10:37", "citation_type": "biblical"}, {"reference": "2 Co 6:14", "citation_type": "biblical"}, {"reference": "Rm 10:10", "citation_type": "biblical"}]}, {"id": "T4.9.5", "title": "O paradoxo da perda e do ganho no discipulado", "description": "Stott apresenta tres incentivos para o compromisso cristao: pelo proprio bem (quem perde a vida a encontra), pelo bem dos outros (sal e luz do mundo), e por causa de Cristo (ele deu a si mesmo primeiro). O custo de nao ser cristao e maior que o custo de ser -- significa perder a si mesmo.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.9, "citations": [{"reference": "Mc 8:35-37", "citation_type": "biblical"}, {"reference": "Mc 8:38", "citation_type": "biblical"}]}, {"id": "T4.10.1", "title": "A necessidade de uma decisao pessoal por Cristo", "description": "Stott argumenta que nascer em um pais cristao, ter educacao crista, ou concordar intelectualmente com doutrinas nao torna ninguem cristao. A conviccao intelectual deve conduzir ao compromisso pessoal. Todo adulto responsavel precisa tomar uma decisao a favor ou contra Cristo individualmente.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Ap 3:20", "citation_type": "biblical"}]}, {"id": "T4.10.2", "title": "Cristo bate a porta mas nao forca a entrada", "description": "Usando Apocalipse 3:20 e o quadro de Holman Hunt, Stott enfatiza que Cristo respeita a liberdade humana. Ele bate a porta da vida humana, mas nao forca a entrada. A macaneta esta do lado de dentro. Ele poderia ordenar, mas se contenta em aconselhar, tratando-nos com condescendencia, humildade e liberdade.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Ap 3:17", "citation_type": "biblical"}, {"reference": "Ap 3:18", "citation_type": "biblical"}, {"reference": "Ap 3:20", "citation_type": "biblical"}]}, {"id": "T4.10.3", "title": "A abertura da porta como ato definitivo, individual, unico e urgente", "description": "Stott descreve cinco caracteristicas do ato de abrir a porta a Cristo: e definitivo (a porta esta fechada e precisa ser aberta), individual (ninguem pode decidir por voce), unico (uma vez que Cristo entra, nao sai mais), deliberado (nao depende de experiencia sobrenatural), e urgente (nao deve ser adiado).", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Hb 13:5", "citation_type": "biblical"}, {"reference": "Pv 27:1", "citation_type": "biblical"}]}, {"id": "T4.10.4", "title": "Cristo entra como Salvador e Senhor simultaneamente", "description": "Stott insiste que Cristo entra na vida humana em dupla funcao: como Salvador (purificando, perdoando, restaurando comunhao) e como Senhor (assumindo o controle total da casa). A entrega ao senhorio deve ser total e incondicional, entregando todas as chaves da casa.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Ap 3:20", "citation_type": "biblical"}]}, {"id": "T4.10.5", "title": "A razoabilidade do compromisso com Cristo", "description": "Stott compara o compromisso com Cristo ao casamento: ambos exigem entrega incondicional sem conhecer o futuro. Porem, e mais razoavel confiar no Filho de Deus do que em qualquer ser humano, pois Cristo nunca traira a confianca depositada nele.", "thesis_type": "premise", "part": "", "chapter": "", "confidence": 0.9, "citations": []}, {"id": "T4.11.1", "title": "O novo nascimento e a filiacao divina", "description": "Stott ensina que ao receber Cristo, ocorre um milagre: Deus concede nova vida, o crente nasce de novo e se torna filho de Deus. A Biblia distingue entre a relacao geral de Deus como Criador de todos e a relacao especial de Pai com aqueles que nascem de novo em Cristo.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Jo 1:11-12", "citation_type": "biblical"}]}, {"id": "T4.11.2", "title": "A seguranca do relacionamento com Deus baseada nas promessas, nao nos sentimentos", "description": "Stott distingue entre a relacao familiar (consequencia do nascimento, permanente) e a comunhao familiar (dependente do comportamento, restauravel pela confissao). O cristao deve basear sua seguranca nas promessas de Deus e no testemunho do Espirito Santo, nao em sentimentos voluveis.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "1 Jo 5:11-12", "citation_type": "biblical"}, {"reference": "1 Jo 5:10", "citation_type": "biblical"}, {"reference": "Rm 5:5", "citation_type": "biblical"}, {"reference": "Rm 8:16-17", "citation_type": "biblical"}, {"reference": "Rm 8:14", "citation_type": "biblical"}, {"reference": "1 Jo 1:9", "citation_type": "biblical"}]}, {"id": "T4.11.3", "title": "A triplice responsabilidade crista: Deus, igreja e mundo", "description": "Stott organiza as responsabilidades do cristao em tres esferas: para com Deus (leitura biblica e oracao diaria), para com a igreja (participacao na comunidade local, batismo, ceia do Senhor), e para com o mundo (servico filantropico e evangelismo). O crescimento espiritual depende dessas tres disciplinas.", "thesis_type": "main", "part": "", "chapter": "", "confidence": 0.95, "citations": [{"reference": "Gl 5:22-23", "citation_type": "biblical"}, {"reference": "1 Pe 2:2", "citation_type": "biblical"}]}, {"id": "T4.11.4", "title": "A tensao crista entre viver em Cristo e no mundo", "description": "Stott conclui que o cristao e cidadao de dois reinos e deve viver simultaneamente 'em Cristo' e 'no mundo', sem refugiar-se do mundo nem esquecer-se de Cristo. A solucao nao e escolher um polo, mas manter ambas as responsabilidades guiado pelas Escrituras.", "thesis_type": "conclusion", "part": "", "chapter": "", "confidence": 0.9, "citations": []}, {"id": "T4.11.5", "title": "O evangelismo como responsabilidade de todo cristao", "description": "Stott afirma que nem todos sao chamados para ser pastores ou missionarios, mas todos os cristaos devem testemunhar de Jesus em seus contextos. O testemunho eficaz combina uma vida transformada com palavras honestas e humildes, precedido por oracao pelos inconversos.", "thesis_type": "supporting", "part": "", "chapter": "", "confidence": 0.9, "citations": []}];
+const CHAINS = [{"from_thesis_id": "T1.1.1", "to_thesis_id": "T1.1.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T1.1.1", "to_thesis_id": "T1.1.3", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T1.1.2", "to_thesis_id": "T1.1.4", "relationship": "precedes", "strength": 0.85}, {"from_thesis_id": "T1.1.4", "to_thesis_id": "T1.2.1", "relationship": "precedes", "strength": 0.85}, {"from_thesis_id": "T1.2.1", "to_thesis_id": "T1.2.2", "relationship": "supports", "strength": 0.95}, {"from_thesis_id": "T1.2.2", "to_thesis_id": "T1.2.3", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T1.2.2", "to_thesis_id": "T1.2.4", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T1.2.1", "to_thesis_id": "T1.2.5", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T1.2.5", "to_thesis_id": "T1.3.1", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T1.3.1", "to_thesis_id": "T1.3.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T1.3.2", "to_thesis_id": "T1.3.3", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T1.3.3", "to_thesis_id": "T1.3.4", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T1.3.4", "to_thesis_id": "T1.4.1", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T1.4.1", "to_thesis_id": "T1.4.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T1.4.1", "to_thesis_id": "T1.4.3", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T1.4.2", "to_thesis_id": "T1.4.4", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T1.4.3", "to_thesis_id": "T1.4.4", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T1.4.4", "to_thesis_id": "T1.4.5", "relationship": "precedes", "strength": 0.95}, {"from_thesis_id": "T1.4.5", "to_thesis_id": "T2.5.1", "relationship": "precedes", "strength": 0.85}, {"from_thesis_id": "T2.5.1", "to_thesis_id": "T2.5.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T2.5.2", "to_thesis_id": "T2.5.3", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T2.5.3", "to_thesis_id": "T2.5.4", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T2.5.4", "to_thesis_id": "T2.5.5", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T2.5.5", "to_thesis_id": "T2.6.1", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T2.6.1", "to_thesis_id": "T2.6.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T2.6.2", "to_thesis_id": "T2.6.3", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T2.6.3", "to_thesis_id": "T2.6.4", "relationship": "precedes", "strength": 0.95}, {"from_thesis_id": "T2.6.4", "to_thesis_id": "T3.7.1", "relationship": "precedes", "strength": 0.95}, {"from_thesis_id": "T3.7.1", "to_thesis_id": "T3.7.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T3.7.2", "to_thesis_id": "T3.7.3", "relationship": "supports", "strength": 0.95}, {"from_thesis_id": "T3.7.3", "to_thesis_id": "T3.7.4", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T3.7.4", "to_thesis_id": "T3.7.5", "relationship": "precedes", "strength": 0.95}, {"from_thesis_id": "T3.7.5", "to_thesis_id": "T3.8.1", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T3.8.1", "to_thesis_id": "T3.8.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T3.8.1", "to_thesis_id": "T3.8.3", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T3.8.3", "to_thesis_id": "T3.8.4", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T3.8.4", "to_thesis_id": "T3.8.5", "relationship": "supports", "strength": 0.8}, {"from_thesis_id": "T3.8.1", "to_thesis_id": "T4.9.1", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T4.9.1", "to_thesis_id": "T4.9.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T4.9.2", "to_thesis_id": "T4.9.3", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T4.9.3", "to_thesis_id": "T4.9.4", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T4.9.4", "to_thesis_id": "T4.9.5", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T4.9.5", "to_thesis_id": "T4.10.1", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T4.10.1", "to_thesis_id": "T4.10.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T4.10.2", "to_thesis_id": "T4.10.3", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T4.10.3", "to_thesis_id": "T4.10.4", "relationship": "precedes", "strength": 0.9}, {"from_thesis_id": "T4.10.4", "to_thesis_id": "T4.10.5", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T4.10.4", "to_thesis_id": "T4.11.1", "relationship": "precedes", "strength": 0.95}, {"from_thesis_id": "T4.11.1", "to_thesis_id": "T4.11.2", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T4.11.1", "to_thesis_id": "T4.11.3", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T4.11.3", "to_thesis_id": "T4.11.4", "relationship": "precedes", "strength": 0.85}, {"from_thesis_id": "T4.11.3", "to_thesis_id": "T4.11.5", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T1.2.2", "to_thesis_id": "T3.7.3", "relationship": "supports", "strength": 0.95}, {"from_thesis_id": "T1.4.5", "to_thesis_id": "T3.7.3", "relationship": "supports", "strength": 0.9}, {"from_thesis_id": "T1.1.1", "to_thesis_id": "T4.11.4", "relationship": "supports", "strength": 0.85}, {"from_thesis_id": "T2.6.4", "to_thesis_id": "T3.7.5", "relationship": "supports", "strength": 0.95}, {"from_thesis_id": "T1.3.1", "to_thesis_id": "T3.7.3", "relationship": "supports", "strength": 0.95}];
+const CITATIONS = [{"reference": "Gn 1:1", "citation_type": "biblical", "text": "No principio criou Deus os ceus e a terra"}, {"reference": "Ex 20:12", "citation_type": "biblical", "text": "Honra a teu pai e a tua mae."}, {"reference": "Ex 20:13", "citation_type": "biblical", "text": "Nao mataras."}, {"reference": "Ex 20:14", "citation_type": "biblical", "text": "Nao adulteraras."}, {"reference": "Ex 20:15", "citation_type": "biblical", "text": "Nao furtaras."}, {"reference": "Ex 20:16", "citation_type": "biblical", "text": "Nao daras falso testemunho contra o teu proximo."}, {"reference": "Ex 20:17", "citation_type": "biblical", "text": "Nao cobicaras."}, {"reference": "Ex 20:3", "citation_type": "biblical", "text": "Nao teras outros deuses diante de mim."}, {"reference": "Ex 20:4", "citation_type": "biblical", "text": "Nao faras para ti imagem de escultura."}, {"reference": "Ex 20:7", "citation_type": "biblical", "text": "Nao tomaras o nome do Senhor teu Deus em vao."}, {"reference": "Ex 20:8", "citation_type": "biblical", "text": "Lembra-te do dia de sabado, para o santificar."}, {"reference": "Ex 3:14", "citation_type": "biblical", "text": "Eu Sou o que Sou [...] Assim diras aos filhos de Israel: Eu Sou me enviou a vos outros"}, {"reference": "Lv 16:20-22", "citation_type": "biblical", "text": "o bode levara sobre si as iniquidades deles para terra solitaria"}, {"reference": "Lv 19:18", "citation_type": "biblical", "text": "Amaras o teu proximo como a ti mesmo."}, {"reference": "Lv 5:17", "citation_type": "biblical", "text": "Se alguma pessoa pecar e fizer contra algum de todos os mandamentos do Senhor aquilo que se nao deve fazer, ainda que o nao soubesse, contudo sera culpado e levara a sua iniquidade"}, {"reference": "Dt 21:23", "citation_type": "biblical", "text": "qualquer que for pendurado no madeiro e maldito de Deus"}, {"reference": "Dt 6:5", "citation_type": "biblical", "text": "Amaras o Senhor teu Deus de todo o teu coracao, de toda a tua alma e de todo o teu entendimento."}, {"reference": "Jo 10:30", "citation_type": "biblical", "text": "Eu e o Pai somos um"}, {"reference": "Jo 11:25", "citation_type": "biblical", "text": "Eu sou a ressurreicao e a vida. Quem cre em mim, ainda que morra, vivera"}, {"reference": "Jo 12:32", "citation_type": "biblical", "text": "Mas eu, quando for levantado da terra, atrairei todos a mim"}, {"reference": "Jo 14:10", "citation_type": "biblical", "text": "Eu estou no Pai e o Pai esta em mim"}, {"reference": "Jo 14:6", "citation_type": "biblical", "text": "Eu sou o caminho, e a verdade, e a vida; ninguem vem ao Pai senao por mim"}, {"reference": "Jo 18:38", "citation_type": "biblical", "text": "O que e a verdade?"}, {"reference": "Jo 1:11-12", "citation_type": "biblical", "text": "veio para o que era seu, e os seus nao o receberam. Mas, a todos quantos o receberam, deu-lhes o poder de serem feitos filhos de Deus, a saber, aos que creem no seu nome."}, {"reference": "Jo 1:14", "citation_type": "biblical", "text": "o Verbo se fez carne e habitou entre nos"}, {"reference": "Jo 1:29", "citation_type": "biblical", "text": "Eis o Cordeiro de Deus que tira o pecado do mundo!"}, {"reference": "Jo 20:1-10", "citation_type": "biblical", "text": "Entao entrou tambem o outro discipulo, que chegara primeiro ao sepulcro, e viu e creu"}, {"reference": "Jo 20:28", "citation_type": "biblical", "text": "Senhor meu e Deus meu"}, {"reference": "Jo 20:30-31", "citation_type": "biblical", "text": "Joao percebeu isso claramente. Seu Evangelho gira em torno de seis ou sete 'sinais' selecionados"}, {"reference": "Jo 3:16", "citation_type": "biblical", "text": "Porque Deus amou ao mundo de tal maneira que deu o seu Filho Unigenito, para que todo o que nele cre nao pereca, mas tenha a vida eterna"}, {"reference": "Jo 3:3", "citation_type": "biblical", "text": "Em verdade, em verdade te digo que se alguem nao nascer de novo, nao pode ver o reino de Deus... Importa-vos nascer de novo"}, {"reference": "Jo 4:26", "citation_type": "biblical", "text": "Eu o sou, eu, que falo contigo"}, {"reference": "Jo 5:17", "citation_type": "biblical", "text": "Meu Pai trabalha ate agora, e eu trabalho tambem"}, {"reference": "Jo 6:35", "citation_type": "biblical", "text": "Eu sou o pao da vida; o que vem a mim jamais tera fome, e o que cre em mim nunca tera sede"}, {"reference": "Jo 6:68", "citation_type": "biblical", "text": "Senhor, para quem iremos? Tu tens as palavras da vida eterna"}, {"reference": "Jo 7:17", "citation_type": "biblical", "text": "Se alguem quiser fazer a vontade de Deus, conhecera a respeito da doutrina, se ela e de Deus ou se falo por mim mesmo"}, {"reference": "Jo 7:46", "citation_type": "biblical", "text": "Jamais alguem falou como este homem"}, {"reference": "Jo 8:12", "citation_type": "biblical", "text": "Eu sou a luz do mundo. Quem me segue nao andara nas trevas, pelo contrario, tera a luz da vida"}, {"reference": "Jo 8:29", "citation_type": "biblical", "text": "Eu faco sempre o que lhe agrada"}, {"reference": "Jo 8:31-34", "citation_type": "biblical", "text": "Se vos permanecerdes na minha palavra, sois verdadeiramente meus discipulos; e conhecereis a verdade, e a verdade vos libertara... Em verdade, em verdade vos digo: Todo o que comete pecado e escravo do pecado."}, {"reference": "Jo 8:46", "citation_type": "biblical", "text": "Quem dentre vos me convence de pecado?"}, {"reference": "Jo 8:58", "citation_type": "biblical", "text": "Em verdade, em verdade vos digo: Antes que Abraao existisse, Eu Sou"}, {"reference": "Jo 8:7", "citation_type": "biblical", "text": "Aquele que dentre vos estiver sem pecado, seja o primeiro que lhe atire pedra"}, {"reference": "Sl 130:3", "citation_type": "biblical", "text": "Se observares, Senhor, iniquidades, quem, Senhor, subsistira?"}, {"reference": "Sl 143:2", "citation_type": "biblical", "text": "Nao entres em juizo com teu servo, porque a tua vista nao ha justo nenhum vivente."}, {"reference": "Sl 14:1-3", "citation_type": "biblical", "text": "Corrompem-se e praticam abominacao; ja nao ha quem faca o bem. Do ceu olha o Senhor para os filhos dos homens, para ver se ha quem entenda, se ha quem busque a Deus. Todos se extraviaram e juntamente se corromperam; nao ha quem faca o bem, nao ha nem um sequer."}, {"reference": "Sl 14:2-3", "citation_type": "biblical", "text": "Do ceu olha o Senhor para os filhos dos homens, para ver se ha quem entenda, se ha quem busque a Deus. Todos se desviaram e juntamente se corromperam; nao ha quem faca o bem, nao ha nem um sequer"}, {"reference": "Sl 14:3", "citation_type": "biblical", "text": "Todos se desviaram, igualmente se corromperam; nao ha ninguem que faca o bem, nao ha nem um sequer"}, {"reference": "Sl 19:1", "citation_type": "biblical", "text": "Os ceus proclamam a gloria de Deus e o firmamento anuncia as obras das suas maos"}, {"reference": "Sl 22:1", "citation_type": "biblical", "text": "Deus meu, Deus meu, por que me desamparaste?"}, {"reference": "Pv 27:1", "citation_type": "biblical", "text": "Nao te glories no dia de amanha, porque nao sabes o que trara a luz"}, {"reference": "Is 33:14", "citation_type": "biblical", "text": "Quem dentre nos habitara com o fogo devorador? Quem dentre nos habitara com chamas eternas?"}, {"reference": "Is 53:11-12", "citation_type": "biblical", "text": "As iniquidades deles levara sobre si... Ele levou sobre si o pecado de muitos"}, {"reference": "Is 53:5-6", "citation_type": "biblical", "text": "transpassado pelas nossas transgressoes e moido pelas nossas iniquidades; o castigo que nos traz a paz estava sobre ele, e pelas suas feridas fomos sarados"}, {"reference": "Is 53:6", "citation_type": "biblical", "text": "Todos nos, tal qual ovelhas, nos desviamos, cada um de nos se voltou para o seu proprio caminho"}, {"reference": "Is 53:7", "citation_type": "biblical", "text": "como cordeiro foi levado ao matadouro, carregando o pecado de muitos"}, {"reference": "Is 57:15", "citation_type": "biblical", "text": "Porque assim diz o Alto, o Sublime, que habita a eternidade, o qual tem o nome de santo: Habito no alto e santo lugar."}, {"reference": "Is 59:1-2", "citation_type": "biblical", "text": "Eis que a mao do Senhor nao esta encolhida, para que nao possa salvar, nem surdo o seu ouvido, para nao poder ouvir."}, {"reference": "Is 64:6", "citation_type": "biblical", "text": "Todos nos somos como o imundo, e todas as nossas justicas como trapo da imundicia."}, {"reference": "Jr 17:9", "citation_type": "biblical", "text": "Enganoso e o coracao, mais do que todas as coisas, e desesperadamente corrupto, quem o conhecera?"}, {"reference": "Jr 29:13", "citation_type": "biblical", "text": "Buscar-me-eis e me achareis quando me buscardes de todo o vosso coracao"}, {"reference": "Lm 3:44", "citation_type": "biblical", "text": "De nuvens te encobriste, para que nao passe a nossa oracao."}, {"reference": "Hc 1:13", "citation_type": "biblical", "text": "Tu es tao puro de olhos, que nao podes ver o mal, e a opressao nao podes contemplar."}, {"reference": "Mt 10:37", "citation_type": "biblical", "text": "Quem ama seu pai ou sua mae mais do que a mim, nao é digno de mim; quem ama seu filho ou sua filha mais do que a mim nao é digno de mim."}, {"reference": "Mt 11:25", "citation_type": "biblical", "text": "Gracas te dou, o Pai, Senhor do ceu e da terra, porque ocultaste estas coisas aos sabios e entendidos, e as revelaste aos pequeninos"}, {"reference": "Mt 11:27", "citation_type": "biblical", "text": "Tudo me foi entregue por meu Pai. Ninguem conhece o Filho senao o Pai, e ninguem conhece o Pai senao o Filho e aquele a quem o Filho o quiser revelar"}, {"reference": "Mt 11:28-29", "citation_type": "biblical", "text": "Vinde a mim todos os que estais cansados e sobrecarregados, e eu vos aliviarei. Tomai sobre vos o meu jugo e aprendei de mim, porque sou manso e humilde de coracao, e achareis descanso para as vossas almas"}, {"reference": "Mt 1:21", "citation_type": "biblical", "text": "Ela dara a luz um filho e lhe poras o nome de Jesus, porque ele salvara o seu povo dos pecados deles"}, {"reference": "Mt 22:37-40", "citation_type": "biblical", "text": "Amaras o Senhor teu Deus de todo o teu coracao, de toda a tua alma e de todo o teu entendimento. Este e o grande e primeiro mandamento. O segundo, semelhante a este, e: Amaras o teu proximo como a ti mesmo. Destes dois mandamentos dependem toda a Lei e os profetas."}, {"reference": "Mt 26:28", "citation_type": "biblical", "text": "sangue da alianca... para remissao de pecados"}, {"reference": "Mt 27:63-65", "citation_type": "biblical", "text": "Senhor, lembramo-nos de que aquele embusteiro, enquanto vivia, disse: Depois de tres dias ressuscitarei. Ordena, pois, que o sepulcro seja guardado com seguranca ate ao terceiro dia"}, {"reference": "Mt 28:13", "citation_type": "biblical", "text": "Vieram de noite os discipulos dele e o roubaram, enquanto dormiamos"}, {"reference": "Mt 28:19", "citation_type": "biblical", "text": "Ide, fazei discipulos de todas as nacoes"}, {"reference": "Mt 5:28", "citation_type": "biblical", "text": "Olhar para uma mulher com intencao impura, no coracao ja adulterou com ela."}, {"reference": "Mt 7:17-18", "citation_type": "biblical", "text": "Toda arvore boa produz bons frutos, porem a arvore ma produz frutos maus. Nao pode a arvore boa produzir frutos maus, nem a arvore ma produzir frutos bons"}, {"reference": "Mt 7:28-29", "citation_type": "biblical", "text": "Quando Jesus acabou de proferir estas palavras, estavam as multidoes maravilhadas da sua doutrina, porque ele as ensinava como quem tem autoridade, e nao como os escribas"}, {"reference": "Mt 7:7", "citation_type": "biblical", "text": "Busquem, e encontrarao"}, {"reference": "Mc 10:45", "citation_type": "biblical", "text": "daria a sua vida em resgate por muitos"}, {"reference": "Mc 16:2", "citation_type": "biblical", "text": "muito cedo, no primeiro dia da semana"}, {"reference": "Mc 1:15", "citation_type": "biblical", "text": "O tempo esta cumprido e o reino de Deus esta proximo"}, {"reference": "Mc 2:17", "citation_type": "biblical", "text": "Os saos nao precisam de medico, e sim os doentes. Eu nao vim chamar justos, e sim pecadores."}, {"reference": "Mc 2:5", "citation_type": "biblical", "text": "Filho, os teus pecados estao perdoados"}, {"reference": "Mc 7:21-23", "citation_type": "biblical", "text": "Porque de dentro, do coracao dos homens e que procedem os maus designios, a prostituicao, os furtos, os homicidios, os adulterios, a avareza, as malicias, o dolo, a lascivia, a inveja, a blasfemia, a soberba, a loucura. Ora, todos estes males vem de dentro e contaminam o homem."}, {"reference": "Mc 8:34", "citation_type": "biblical", "text": "Se alguém quer vir apos mim, a si mesmo se negue, tome a sua cruz e siga-me."}, {"reference": "Mc 8:34-37", "citation_type": "biblical", "text": "Se alguém quer vir apos mim, a si mesmo se negue, tome a sua cruz e siga-me. Quem quiser, pois, salvar a sua vida, perde-la-a, e quem perder a vida por causa de mim"}, {"reference": "Mc 8:35-37", "citation_type": "biblical", "text": "Quem quiser, pois, salvar a sua vida, perde-la-a, e quem perder a vida por causa de mim e do evangelho, salva-la-a. Que aproveita ao homem ganhar o mundo inteiro e perder a sua alma? Que daria um homem em troca de sua alma?"}, {"reference": "Mc 8:38", "citation_type": "biblical", "text": "qualquer um que nesta geracao adultera e pecadora se envergonhar de mim e das minhas palavras, também o Filho do homem se envergonhara dele quando vier na gloria de seu Pai com os santos anjos"}, {"reference": "Lc 14:26", "citation_type": "biblical", "text": "Se alguem vem a mim e nao aborrece a seu pai, e mae, e mulher, e filhos, e irmaos, e ainda sua propria vida, nao pode ser meu discipulo"}, {"reference": "Lc 14:28-30", "citation_type": "biblical", "text": "Pois qual de vos, pretendendo construir uma torre, nao se assenta primeiro para calcular a despesa e verificar se tem os meios para a concluir? Para nao suceder que, tendo lancado os alicerces e nao a podendo acabar, todos os que a virem zombem dele, dizendo: Este homem comecou a construir e nao pode acabar."}, {"reference": "Lc 19:10", "citation_type": "biblical", "text": "Porque o Filho do homem veio buscar e salvar o perdido"}, {"reference": "Lc 7:48", "citation_type": "biblical", "text": "Perdoados sao os teus pecados"}, {"reference": "At 17:23", "citation_type": "biblical", "text": "Ao deus desconhecido"}, {"reference": "At 1:3", "citation_type": "biblical", "text": "se apresentou [aos apostolos] vivo, com muitas provas incontestaveis, aparecendo-lhes durante quarenta dias"}, {"reference": "Rm 10:10", "citation_type": "biblical", "text": "Porque com o coracao se cre para justica, e com a boca se confessa a respeito da salvacao."}, {"reference": "Rm 1:19-20", "citation_type": "biblical", "text": "Porquanto o que de Deus se pode conhecer e manifesto entre eles, porque Deus lhes manifestou. Porque os atributos invisiveis de Deus, assim o seu eterno poder como tambem a sua propria divindade, claramente se reconhecem, desde que foram criadas"}, {"reference": "Rm 1:4", "citation_type": "biblical", "text": "designado Filho de Deus com poder, segundo o espirito de santidade, pela ressurreicao dos mortos"}, {"reference": "Rm 3:22-23", "citation_type": "biblical", "text": "Nao ha distincao, pois todos pecaram e carecem da gloria de Deus."}, {"reference": "Rm 5:5", "citation_type": "biblical", "text": "Porque o amor de Deus é derramado em nossos coracoes pelo Espirito Santo que nos foi outorgado"}, {"reference": "Rm 6:17", "citation_type": "biblical", "text": "Porque, outrora escravos do pecado..."}, {"reference": "Rm 6:23", "citation_type": "biblical", "text": "O salario do pecado e a morte."}, {"reference": "Rm 7:7", "citation_type": "biblical", "text": "Eu nao teria conhecido o pecado senao por intermedio da lei."}, {"reference": "Rm 8:14", "citation_type": "biblical", "text": "Todos os que sao guiados pelo Espirito de Deus sao filhos de Deus"}, {"reference": "Rm 8:16-17", "citation_type": "biblical", "text": "o proprio Espirito testifica com o nosso espirito que somos filhos de Deus"}, {"reference": "Rm 8:9", "citation_type": "biblical", "text": "Se alguem nao tem o Espirito de Cristo, esse tal nao e dele"}, {"reference": "1 Co 15:6", "citation_type": "biblical", "text": "mais de quinhentos irmaos de uma so vez"}, {"reference": "1 Co 15:7", "citation_type": "biblical", "text": "depois foi visto por Tiago"}, {"reference": "1 Co 15:8", "citation_type": "biblical", "text": "e afinal, depois de todos, foi visto tambem por mim"}, {"reference": "1Co 15:3", "citation_type": "biblical", "text": "Antes de tudo vos entreguei o que tambem recebi: que Cristo morreu pelos nossos pecados, segundo as Escrituras"}, {"reference": "1Co 1:22-24", "citation_type": "biblical", "text": "Porque tanto os judeus pedem sinais como os gregos buscam sabedoria, mas nos pregamos a Cristo crucificado, escandalo para os judeus, loucura para os gentios, mas para os que foram chamados, tanto judeus como gregos, pregamos a Cristo, poder de Deus e sabedoria de Deus"}, {"reference": "1Co 2:2", "citation_type": "biblical", "text": "Porque decidi nada saber entre vos, senao a Jesus Cristo, e este, crucificado"}, {"reference": "1Co 5:7", "citation_type": "biblical", "text": "Cristo, nosso cordeiro pascal, foi imolado"}, {"reference": "2 Co 5:21", "citation_type": "biblical", "text": "nao conheceu pecado"}, {"reference": "2 Co 6:14", "citation_type": "biblical", "text": "Nao vos ponhais em jugo desigual com os incrédulos."}, {"reference": "2Co 3:18", "citation_type": "biblical", "text": "E todos nos, com o rosto desvendado, contemplando, como por espelho, a gloria do Senhor, somos transformados de gloria em gloria, na sua propria imagem, como pelo Senhor, o Espirito"}, {"reference": "2Co 5:17", "citation_type": "biblical", "text": "Alguem em Cristo - nova criatura"}, {"reference": "2Co 5:18-19", "citation_type": "biblical", "text": "Deus, que nos reconciliou consigo mesmo por meio de Cristo... Deus em Cristo estava reconciliando consigo o mundo"}, {"reference": "2Co 5:21", "citation_type": "biblical", "text": "Aquele que nao conheceu pecado, ele o fez pecado por nos, para que fossemos feitos justica de Deus"}, {"reference": "2Co 6:14", "citation_type": "biblical", "text": "Porquanto que sociedade pode haver entre a justica e a iniquidade? Ou que comunhao da luz com as trevas?"}, {"reference": "Gl 2:20", "citation_type": "biblical", "text": "o Filho de Deus... me amou... e a si mesmo se entregou por mim"}, {"reference": "Gl 2:21", "citation_type": "biblical", "text": "se a justica (isto e, a nossa aceitacao por parte de Deus) e mediante a lei (isto e, por meio da nossa obediencia), segue-se que Cristo morreu em vao"}, {"reference": "Gl 3:13", "citation_type": "biblical", "text": "Cristo nos resgatou da maldicao da Lei... Maldito todo aquele que for pendurado em madeiro"}, {"reference": "Gl 3:29", "citation_type": "biblical", "text": "Se sois de Cristo, tambem sois descendentes de Abraao e herdeiros segundo a promessa"}, {"reference": "Gl 5:17", "citation_type": "biblical", "text": "a carne milita contra o Espirito, e o Espirito contra a carne"}, {"reference": "Gl 5:19-21", "citation_type": "biblical", "text": "Ora, as obras da carne sao conhecidas, e sao: prostituicao, impureza, lascivia, idolatria, feiticarias, inimizades, porfias, ciumes, iras, discordias, dissensoes, faccoes, invejas, bebedices, glutonarias e coisas semelhantes a estas."}, {"reference": "Gl 5:22-23", "citation_type": "biblical", "text": "amor, alegria, paz, longanimidade, benignidade, bondade, fidelidade, mansidao, dominio proprio"}, {"reference": "Gl 5:24", "citation_type": "biblical", "text": "Os que sao de Cristo Jesus crucificaram a carne, com as suas paixoes e concupiscencias"}, {"reference": "Gl 6:14", "citation_type": "biblical", "text": "longe esteja de mim gloriar-me, senao na cruz de nosso Senhor Jesus Cristo"}, {"reference": "Ef 2:3", "citation_type": "biblical", "text": "Entre os quais nos tambem todos nos andamos outrora, segundo as inclinacoes da nossa carne, fazendo a vontade da carne e dos pensamentos."}, {"reference": "Ef 4:3", "citation_type": "biblical", "text": "unidade do Espirito"}, {"reference": "Fp 2:1", "citation_type": "biblical", "text": "comunhao do Espirito"}, {"reference": "Fp 2:10-11", "citation_type": "biblical", "text": "ao nome de Jesus se dobre todo joelho, nos céus, na terra e debaixo da terra e toda lingua confesse que Jesus Cristo é Senhor, para gloria de Deus Pai"}, {"reference": "Cl 1:19-20", "citation_type": "biblical", "text": "Porque aprouve a Deus que nele residisse toda a plenitude, e que... reconciliasse consigo mesmo todas as coisas, quer sobre a terra, quer nos ceus"}, {"reference": "Cl 3:5", "citation_type": "biblical", "text": "A ganancia... e idolatria."}, {"reference": "1 Tm 1:15", "citation_type": "biblical", "text": "Fiel e a palavra e digna de toda aceitacao: que Cristo Jesus veio ao mundo para salvar os pecadores"}, {"reference": "1Tm 6:15-16", "citation_type": "biblical", "text": "[Jesus] o bendito e unico Soberano, o Rei dos reis e Senhor dos senhores, o unico que possui imortalidade e que habita em luz inacessivel."}, {"reference": "2Tm 2:19", "citation_type": "biblical", "text": "o Senhor conhece os que lhe pertencem"}, {"reference": "Tt 3:3", "citation_type": "biblical", "text": "Pois nos tambem, outrora, eramos nescios, desobedientes, desgarrados, escravos de toda sorte de paixoes e prazeres."}, {"reference": "Hb 10:4", "citation_type": "biblical", "text": "e impossivel que sangue de touros e de bodes remova pecados"}, {"reference": "Hb 12:29", "citation_type": "biblical", "text": "O nosso Deus e fogo consumidor."}, {"reference": "Hb 13:5", "citation_type": "biblical", "text": "De maneira alguma te deixarei, nunca jamais te abandonarei"}, {"reference": "Hb 1:1-2", "citation_type": "biblical", "text": "Havendo Deus outrora falado muitas vezes e de muitas maneiras aos pais, pelos profetas, nestes ultimos dias nos falou pelo Filho"}, {"reference": "Hb 4:13", "citation_type": "biblical", "text": "Todas as coisas estao descobertas e patentes aos olhos daquele a quem temos de prestar contas."}, {"reference": "Hb 4:15", "citation_type": "biblical", "text": "mas sem pecado"}, {"reference": "Hb 7:26", "citation_type": "biblical", "text": "santo, inculpavel, sem macula, separado dos pecadores"}, {"reference": "Hb 9:22", "citation_type": "biblical", "text": "a vida da carne esta no sangue... sem derramamento de sangue nao ha remissao"}, {"reference": "Hb 9:26", "citation_type": "biblical", "text": "Cristo se manifestou uma vez por todas, para aniquilar pelo sacrificio de si mesmo o pecado"}, {"reference": "Tg 4:17", "citation_type": "biblical", "text": "Aquele que sabe que deve fazer o bem e nao o faz, nisso esta pecando."}, {"reference": "1 Pe 1:19", "citation_type": "biblical", "text": "um cordeiro sem defeito e sem macula"}, {"reference": "1 Pe 2:2", "citation_type": "biblical", "text": "nascidas, o genuino leite espiritual, para que por ele vos seja dado crescimento para salvacao"}, {"reference": "1 Pe 2:22", "citation_type": "biblical", "text": "nao cometeu pecado, nem dolo algum se achou em sua boca"}, {"reference": "1Pe 1:19", "citation_type": "biblical", "text": "redimidos... pelo precioso sangue de Cristo, como de um cordeiro sem defeito e sem mancha"}, {"reference": "1Pe 2:21", "citation_type": "biblical", "text": "pois tambem Cristo sofreu no lugar de voces, deixando-lhes exemplo, para que sigam os seus passos"}, {"reference": "1Pe 2:24", "citation_type": "biblical", "text": "Carregando ele mesmo em seu corpo, sobre o madeiro, os nossos pecados"}, {"reference": "1Pe 3:18", "citation_type": "biblical", "text": "Pois tambem Cristo morreu uma unica vez pelos pecados, o justo pelos injustos, para conduzir-nos a Deus"}, {"reference": "1 Jo 1:1", "citation_type": "biblical", "text": "O que era desde o principio, o que temos ouvido, o que temos visto com os nossos proprios olhos, o que contemplamos e as nossas maos apalparam [...] anunciamos a vos outros"}, {"reference": "1 Jo 1:9", "citation_type": "biblical", "text": "se confessarmos os nossos pecados ele é fiel e justo para nos perdoar os pecados e nos purificar de toda a injustica"}, {"reference": "1 Jo 3:5", "citation_type": "biblical", "text": "em Cristo, que se manifestou para tirar os nossos pecados, nao ha pecado"}, {"reference": "1 Jo 5:10", "citation_type": "biblical", "text": "aquele que nao da crédito a Deus, o faz mentiroso, porque nao cre no testemunho que Deus da acerca de seu Filho"}, {"reference": "1 Jo 5:11-12", "citation_type": "biblical", "text": "E o testemunho é este, que Deus nos deu a vida eterna, e esta vida esta no seu Filho. Aquele que tem o Filho tem a vida; aquele que nao tem o Filho de Deus nao tem a vida."}, {"reference": "1Jo 1:10", "citation_type": "biblical", "text": "Se dissermos que nao temos cometido pecado, fazemo-lo mentiroso."}, {"reference": "1Jo 1:5-6", "citation_type": "biblical", "text": "Deus e luz, e nao ha nele treva alguma. Se dissermos que mantemos comunhao com ele, e andarmos nas trevas, mentimos e nao praticamos a verdade."}, {"reference": "1Jo 1:8", "citation_type": "biblical", "text": "Se dissermos que nao temos pecado nenhum, a nos mesmos nos enganamos."}, {"reference": "1Jo 3:14", "citation_type": "biblical", "text": "Sabemos que ja passamos da morte para a vida porque amamos os irmaos"}, {"reference": "1Jo 3:15", "citation_type": "biblical", "text": "Todo aquele que odeia o seu irmao e assassino."}, {"reference": "1Jo 3:4", "citation_type": "biblical", "text": "Tambem transgride a lei, porque o pecado e a transgressao da lei."}, {"reference": "Ap 3:17", "citation_type": "biblical", "text": "Pois dizes: Estou rico e abastado e nao preciso de coisa alguma, e nem sabes que és infeliz, sim, miseravel, pobre, cego e nu"}, {"reference": "Ap 3:18", "citation_type": "biblical", "text": "Aconselho-te"}, {"reference": "Ap 3:20", "citation_type": "biblical", "text": "Eis que estou a porta, e bato; se alguém ouvir a minha voz, e abrir a porta, entrarei"}, {"reference": "Ap 5:5-12", "citation_type": "biblical", "text": "Digno e o Cordeiro que foi morto de receber o poder e riqueza, e sabedoria, e forca, e honra, e gloria e louvor!"}, {"reference": "FORSYTH, P.T.. This Life and the Next. Independent Press. 1947", "citation_type": "scholarly", "text": "Cap. 2 — Citado por Stott como referencia sobre vida apos a morte"}, {"reference": "LEWIS, C.S.. Miracles. Bles. 1947", "citation_type": "scholarly", "text": "Cap. 2 — Referencia sobre milagres e a intervencao divina no mundo natural"}, {"reference": "THOMAS, W.H. Griffith. Christianity is Christ. Church Book Room Press. 1909", "citation_type": "scholarly", "text": "Cap. 3 — Citado para demonstrar que o carater de Cristo e o centro do cristianismo"}, {"reference": "SIMPSON, P. Carnegie. The Fact of Christ. James Clarke. 1930", "citation_type": "scholarly", "text": "Cap. 3 — Referencia sobre a singularidade do carater de Cristo como fato historico"}, {"reference": "DENNEY, James. Studies in Theology. Hodder e Stoughton. 1906", "citation_type": "scholarly", "text": "Cap. 3 — Citado como referencia teologica sobre a relacao entre teologia e a pessoa de Cristo"}, {"reference": "ORR, James. The Virgin Birth of Christ. Hodder e Stoughton. 1907", "citation_type": "scholarly", "text": "Cap. 4 — Referencia sobre a questao do nascimento virginal de Jesus"}, {"reference": "MACHEN, J. Gresham. The Virgin Birth. Marshall, Morgan e Scott. 1936", "citation_type": "scholarly", "text": "Cap. 4 — Referencia sobre a defesa historica e teologica do nascimento virginal"}, {"reference": "LATHAM, Henry. The Risen Master. Leighton Bell. 1904", "citation_type": "scholarly", "text": "Cap. 4 — Referencia sobre as evidencias da ressurreicao de Cristo"}, {"reference": "Studdert Kennedy", "citation_type": "scholarly", "text": "Cap. 6 — Citado no contexto das consequencias do pecado"}, {"reference": "Archbishop Temple. Christianity and Social Order. SCM Press. 1942", "citation_type": "scholarly", "text": "Cap. 6 — Referencia sobre a relacao entre cristianismo e ordem social"}, {"reference": "Emerson", "citation_type": "scholarly", "text": "Cap. 2 — Mencionado no contexto das afirmacoes de Cristo sobre si mesmo"}, {"reference": "John Stuart Mill", "citation_type": "scholarly", "text": "Cap. 3 — Citado sobre o carater unico de Cristo"}, {"reference": "Carnegie Simpson", "citation_type": "scholarly", "text": "Cap. 3 — Citado como testemunho do impacto do carater de Cristo"}, {"reference": "Charles Lamb", "citation_type": "scholarly", "text": "Cap. 3 — Citado sobre a reverencia que o carater de Cristo inspira"}, {"reference": "Thomas Arnold", "citation_type": "scholarly", "text": "Cap. 4 — Citado como historiador que afirmou a historicidade da ressurreicao"}, {"reference": "Sir Edward Clarke", "citation_type": "scholarly", "text": "Cap. 4 — Citado como jurista que avaliou as evidencias da ressurreicao"}, {"reference": "C.S. Lewis", "citation_type": "scholarly", "text": "Cap. 10 — Citado no contexto de tomar uma decisao por Cristo"}];
+const GROUPS = [{"theme": "Revelacao e Iniciativa Divina", "description": "Passagens que mostram Deus tomando a iniciativa de se revelar e buscar o homem, culminando na encarnacao do Verbo.", "citations": ["Gn 1:1", "Hb 1:1-2", "Jo 1:14", "Sl 19:1", "Rm 1:19-20", "At 17:23", "1 Jo 1:1"]}, {"theme": "Identidade e Divindade de Cristo", "description": "Declaracoes diretas e indiretas de Jesus sobre sua divindade, incluindo titulos messianiicos, as afirmacoes 'Eu Sou', e o trilema (impostor, iludido ou divino).", "citations": ["Jo 6:35", "Jo 8:12", "Jo 8:58", "Jo 10:30", "Jo 11:25", "Jo 14:6", "Jo 14:10", "Jo 20:28", "Ex 3:14", "Mt 11:27", "Mt 11:28-29", "Mc 2:5", "Jo 5:17", "Jo 4:26", "Jo 20:30-31"]}, {"theme": "Impecabilidade e Carater de Cristo", "description": "Testemunhos biblicos sobre a ausencia de pecado em Jesus, confirmados por amigos e inimigos, e o paradoxo de sua humildade e autoridade.", "citations": ["Jo 8:7", "Jo 8:29", "Jo 8:46", "1 Pe 1:19", "1 Pe 2:22", "1 Jo 3:5", "2 Co 5:21", "Hb 4:15", "Hb 7:26"]}, {"theme": "Ressurreicao de Cristo", "description": "Evidencias historicas da ressurreicao: o tumulo vazio, as aparicoes, a transformacao dos discipulos.", "citations": ["Rm 1:4", "Mt 27:63-65", "Mt 28:13", "1 Co 15:6", "1 Co 15:7", "1 Co 15:8", "At 1:3", "Jo 20:1-10"]}, {"theme": "Pecado e Natureza Humana", "description": "Passagens sobre a universalidade, natureza e gravidade do pecado como exaltacao do eu, escravidao interior e corrupcao do coracao.", "citations": ["Sl 14:1-3", "Sl 130:3", "Sl 143:2", "Is 53:6", "Is 64:6", "Jr 17:9", "Rm 3:22-23", "Rm 7:7", "1Jo 1:8", "1Jo 3:4", "Mc 7:21-23", "Gl 5:19-21", "Jo 8:31-34", "Tg 4:17", "Ex 20:3"]}, {"theme": "Sacrificio, Cruz e Redencao", "description": "Passagens que conectam o sistema sacrificial do AT ao sacrificio definitivo de Cristo como Cordeiro de Deus, enfatizando a substituicao penal.", "citations": ["Lv 5:17", "Lv 16:20-22", "Hb 9:22", "Hb 10:4", "Is 53:5-6", "Is 53:7", "Is 53:11-12", "Jo 1:29", "Jo 3:16", "1Pe 2:24", "1Pe 3:18", "1Pe 1:19", "1Co 5:7", "1Co 15:3", "2Co 5:18-19", "2Co 5:21", "Gl 2:21", "Gl 3:13", "Mc 10:45", "Mt 26:28", "Rm 6:23", "Sl 22:1"]}, {"theme": "Salvacao, Espirito Santo e Igreja", "description": "Passagens sobre a amplitude da salvacao (perdao + transformacao + comunhao), a obra do Espirito Santo e a igreja como corpo de Cristo.", "citations": ["Jo 3:3", "2Co 5:17", "2Co 3:18", "Rm 8:9", "Gl 5:17", "Gl 5:22-23", "Gl 5:24", "Gl 3:29", "Mt 28:19", "Ef 4:3", "Fp 2:1", "1Jo 3:14", "2Tm 2:19"]}, {"theme": "Discipulado, Decisao e Vida Crista", "description": "Passagens sobre o custo do discipulado, a decisao pessoal por Cristo, o novo nascimento e a vida crista responsavel.", "citations": ["Lc 14:28-30", "Mc 8:34", "Mc 8:34-37", "Mc 8:35-37", "Fp 2:10-11", "Ap 3:20", "Jo 1:11-12", "1 Jo 5:11-12", "Rm 8:16-17", "Rm 10:10", "1 Jo 1:9", "Hb 13:5"]}];
+const SUMMARY = "\"Cristianismo Basico\" de John Stott apresenta uma defesa sistematica e progressiva da fe crista em quatro movimentos. Na Parte 1, Stott estabelece a divindade de Cristo por meio de tres linhas convergentes de evidencia: suas declaracoes extraordinarias (incluindo o uso do nome divino 'Eu Sou'), seu carater impecavel (confirmado por amigos e inimigos), e sua ressurreicao historica (sustentada pelo tumulo vazio, pelas aparicoes e pela transformacao dos discipulos). Na Parte 2, diagnostica a condicao humana: o pecado e universal, e fundamentalmente a exaltacao do eu a custa de Deus, resultando em separacao de Deus, escravidao interior e conflito relacional. Na Parte 3, apresenta a solucao divina: a morte substitutiva de Cristo na cruz, que nao e mero exemplo moral mas sacrificio redentor prefigurado pelo sistema sacrificial do Antigo Testamento. A salvacao abrange perdao, transformacao interior pelo Espirito Santo, e incorporacao a igreja como corpo de Cristo. Na Parte 4, expoe a resposta exigida: calcular o custo do discipulado, tomar uma decisao pessoal e definitiva por Cristo, e viver a vida crista com responsabilidade triplice -- para com Deus, a igreja e o mundo.";
+
+
+// ── Visualization update logic ──────────────────────────────
+const panels = document.querySelectorAll('.viz-panel');
+const PART_COLORS = {"Parte 1": "#4682B4", "Parte 2": "#DC143C", "Parte 3": "#FF8C00", "Parte 4": "#228B22"};
+
+function hideAllPanels() {
+  panels.forEach(p => p.classList.remove('active'));
+}
+
+function showPanel(id) {
+  hideAllPanels();
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+// ── S1: Overview viz ────────────────────────────────────────
+function renderOverview() {
+  const container = document.getElementById('viz-overview');
+  container.innerHTML = `
+    <div class="counter-grid">
+      <div class="counter-box"><span class="counter-num" data-target="52">0</span><div class="counter-label">Teses</div></div>
+      <div class="counter-box"><span class="counter-num" data-target="57">0</span><div class="counter-label">Cadeias</div></div>
+      <div class="counter-box"><span class="counter-num" data-target="169">0</span><div class="counter-label">Citacoes Biblicas</div></div>
+      <div class="counter-box"><span class="counter-num" data-target="17">0</span><div class="counter-label">Citacoes Academicas</div></div>
+    </div>
+    <div class="part-bar">
+      <div class="part-bar-seg" style="width:0.0%;background:#4682B4;" title="Parte 1"></div>
+      <div class="part-bar-seg" style="width:0.0%;background:#DC143C;" title="Parte 2"></div>
+      <div class="part-bar-seg" style="width:0.0%;background:#FF8C00;" title="Parte 3"></div>
+      <div class="part-bar-seg" style="width:0.0%;background:#228B22;" title="Parte 4"></div>
+    </div>`;
+  animateCounters();
+}
+
+function animateCounters() {
+  document.querySelectorAll('.counter-num[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const duration = 1200;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      el.textContent = Math.round(progress * target);
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+// ── S2/4/6/8: Part intro viz ────────────────────────────────
+const PART_PILLARS = {
+  1: { icon: "?", pillars: ["Declaracoes", "Carater", "Ressurreicao"], color: "#4682B4" },
+  2: { icon: "!", pillars: ["Separacao", "Escravidao", "Conflito"], color: "#DC143C" },
+  3: { icon: "+", pillars: ["Perdao", "Transformacao", "Comunhao"], color: "#FF8C00" },
+  4: { icon: "\u2764", pillars: ["Arrependimento", "Fe", "Obediencia"], color: "#228B22" }
+};
+
+function renderPartIntro(partNum) {
+  const info = PART_PILLARS[partNum];
+  if (!info) return;
+  const container = document.getElementById('viz-part-intro');
+  container.style.background = info.color + '15';
+  container.innerHTML = `
+    <div class="intro-viz" style="color:${info.color};">
+      <span class="part-icon">${info.icon}</span>
+      <div class="pillars">
+        ${info.pillars.map(p => `<div class="pillar" style="background:${info.color};">${p}</div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ── S3/5/7/9: Part theses viz ───────────────────────────────
+function renderPartTheses(partNum) {
+  const color = PART_PILLARS[partNum]?.color || '#999';
+  const partTheses = THESES.filter(t => t.part && t.part.includes('Parte ' + partNum));
+  const mainTheses = partTheses.filter(t => t.thesis_type === 'main').slice(0, 5);
+
+  const container = document.getElementById('viz-part-theses');
+  container.innerHTML = `<div class="thesis-cards">
+    ${mainTheses.map(t => `
+      <div class="thesis-card" style="border-left-color:${color};">
+        <span class="badge">${t.id}</span>
+        <div class="card-title">${t.title}</div>
+        <div class="confidence-bar">
+          <div class="confidence-fill" style="width:${Math.round(t.confidence*100)}%;background:${color};"></div>
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+
+// ── S10: Network viz (D3 force) ─────────────────────────────
+let networkRendered = false;
+function renderNetwork() {
+  if (networkRendered) return;
+  networkRendered = true;
+
+  const svg = d3.select('#network-svg');
+  const container = document.getElementById('viz-network');
+  const width = container.clientWidth || 500;
+  const height = container.clientHeight || 400;
+
+  svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+  const nodes = THESES.map(t => ({
+    id: t.id, title: t.title, part: t.part,
+    group: t.part ? parseInt(t.part.match(/Parte (\d)/)?.[1] || '0') : 0
+  }));
+
+  const nodeIds = new Set(nodes.map(n => n.id));
+  const links = CHAINS
+    .filter(c => nodeIds.has(c.from_thesis_id) && nodeIds.has(c.to_thesis_id))
+    .map(c => ({ source: c.from_thesis_id, target: c.to_thesis_id, strength: c.strength }));
+
+  const groupColors = { 1: '#4682B4', 2: '#DC143C', 3: '#FF8C00', 4: '#228B22' };
+  const shapes = { 1: 'circle', 2: 'rect', 3: 'diamond', 4: 'triangle' };
+
+  const simulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links).id(d => d.id).distance(60))
+    .force('charge', d3.forceManyBody().strength(-120))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide().radius(18));
+
+  const link = svg.append('g')
+    .selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('stroke', d => {
+      const s = nodes.find(n => n.id === (d.source.id || d.source));
+      const t = nodes.find(n => n.id === (d.target.id || d.target));
+      return (s && t && s.group !== t.group) ? '#DAA520' : '#ccc';
+    })
+    .attr('stroke-width', d => Math.max(1, d.strength * 3))
+    .attr('stroke-opacity', 0.6);
+
+  const node = svg.append('g')
+    .selectAll('g')
+    .data(nodes)
+    .join('g')
+    .call(d3.drag()
+      .on('start', (e,d) => { if(!e.active) simulation.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+      .on('drag', (e,d) => { d.fx=e.x; d.fy=e.y; })
+      .on('end', (e,d) => { if(!e.active) simulation.alphaTarget(0); d.fx=null; d.fy=null; }));
+
+  node.each(function(d) {
+    const g = d3.select(this);
+    const color = groupColors[d.group] || '#999';
+    const shape = shapes[d.group] || 'circle';
+    if (shape === 'circle') g.append('circle').attr('r', 8).attr('fill', color);
+    else if (shape === 'rect') g.append('rect').attr('x',-7).attr('y',-7).attr('width',14).attr('height',14).attr('fill', color);
+    else if (shape === 'diamond') g.append('rect').attr('x',-7).attr('y',-7).attr('width',14).attr('height',14).attr('fill', color).attr('transform','rotate(45)');
+    else if (shape === 'triangle') g.append('polygon').attr('points','0,-9 8,7 -8,7').attr('fill', color);
+  });
+
+  node.append('title').text(d => d.id + ': ' + d.title);
+
+  simulation.on('tick', () => {
+    link
+      .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+    node.attr('transform', d => `translate(${d.x},${d.y})`);
+  });
+}
+
+// ── S11: Citations viz (D3 bars) ────────────────────────────
+let citationsRendered = false;
+function renderCitations() {
+  if (citationsRendered) return;
+  citationsRendered = true;
+
+  const biblical = CITATIONS.filter(c => c.citation_type === 'biblical');
+  const byBook = {};
+  biblical.forEach(c => {
+    const book = c.reference.split(/\s+\d/)[0].trim();
+    byBook[book] = (byBook[book] || 0) + 1;
+  });
+
+  const data = Object.entries(byBook)
+    .map(([book, count]) => ({ book, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 15);
+
+  const svg = d3.select('#citations-svg');
+  const container = document.getElementById('viz-citations');
+  const width = container.clientWidth || 500;
+  const height = container.clientHeight || 400;
+  const margin = { top: 20, right: 30, bottom: 20, left: 80 };
+
+  svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+  const y = d3.scaleBand()
+    .domain(data.map(d => d.book))
+    .range([margin.top, height - margin.bottom])
+    .padding(0.2);
+
+  const x = d3.scaleLinear()
+    .domain([0, d3.max(data, d => d.count)])
+    .range([margin.left, width - margin.right]);
+
+  svg.append('g')
+    .attr('transform', `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y))
+    .selectAll('text').style('font-size', '11px');
+
+  svg.selectAll('.bar')
+    .data(data)
+    .join('rect')
+    .attr('class', 'bar')
+    .attr('x', margin.left)
+    .attr('y', d => y(d.book))
+    .attr('height', y.bandwidth())
+    .attr('fill', '#4682B4')
+    .attr('width', 0)
+    .transition().duration(800)
+    .attr('width', d => x(d.count) - margin.left);
+
+  svg.selectAll('.bar-label')
+    .data(data)
+    .join('text')
+    .attr('class', 'bar-label')
+    .attr('x', d => x(d.count) + 4)
+    .attr('y', d => y(d.book) + y.bandwidth() / 2 + 4)
+    .text(d => d.count)
+    .style('font-size', '11px')
+    .style('fill', '#555');
+}
+
+// ── Scrollama setup ─────────────────────────────────────────
+const scroller = scrollama();
+
+function handleStepEnter(response) {
+  // Mark active step
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('is-active'));
+  response.element.classList.add('is-active');
+
+  const step = parseInt(response.element.dataset.step);
+
+  // Show appropriate visualization
+  if (step === 1) {
+    showPanel('viz-overview');
+    renderOverview();
+  } else if (step % 2 === 0 && step >= 2 && step <= 8) {
+    showPanel('viz-part-intro');
+    renderPartIntro(step / 2);
+  } else if (step % 2 === 1 && step >= 3 && step <= 9) {
+    showPanel('viz-part-theses');
+    renderPartTheses((step - 1) / 2);
+  } else if (step === 10) {
+    showPanel('viz-network');
+    renderNetwork();
+  } else if (step === 11) {
+    showPanel('viz-citations');
+    renderCitations();
+  }
+}
+
+scroller
+  .setup({ step: '.step', offset: 0.5, progress: true })
+  .onStepEnter(handleStepEnter);
+
+window.addEventListener('resize', scroller.resize);
+
+// Show first panel on load
+if (document.querySelectorAll('.step').length > 0) {
+  showPanel('viz-overview');
+  renderOverview();
+}
+
+</script>
+</body>
+</html>
